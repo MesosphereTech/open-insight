@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/domain-list-result.v0.1.schema.json",
+  "title": "Open Insight CLI Domain List Result",
+  "type": "object",
+  "required": ["schema_version", "status", "count", "domain_packs"],
+  "properties": {
+    "schema_version": { "const": "open-insight.domain-list.v0.1" },
+    "status": { "const": "ok" },
+    "count": { "type": "integer", "minimum": 0 },
+    "domain_packs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "domain_id",
+          "namespace",
+          "version",
+          "title",
+          "market_focus",
+          "audience",
+          "default_title",
+          "default_package_id",
+          "required_questions",
+          "metric_blueprints",
+          "view_rules"
+        ],
+        "properties": {
+          "domain_id": { "type": "string", "minLength": 1 },
+          "namespace": { "type": "string", "minLength": 1 },
+          "version": { "type": "string", "minLength": 1 },
+          "title": { "type": "string", "minLength": 1 },
+          "market_focus": { "type": "string", "minLength": 1 },
+          "audience": { "type": "string", "minLength": 1 },
+          "default_title": { "type": "string", "minLength": 1 },
+          "default_package_id": { "type": "string", "minLength": 1 },
+          "required_questions": { "type": "integer", "minimum": 0 },
+          "metric_blueprints": { "type": "integer", "minimum": 0 },
+          "view_rules": { "type": "integer", "minimum": 0 }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

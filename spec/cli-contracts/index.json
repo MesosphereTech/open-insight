@@ -1,0 +1,264 @@
+{
+  "schema_version": "open-insight.cli-contract-index.v0.1",
+  "contracts": [
+    {
+      "id": "validation-result",
+      "command": "validate <package> --format json",
+      "schema_file": "validation-result.schema.json",
+      "result_schema_version": "open-insight.validation-result.v0.1"
+    },
+    {
+      "id": "schema-check-result",
+      "command": "schema check --format json",
+      "schema_file": "schema-check-result.schema.json",
+      "result_schema_version": "open-insight.schema-check.v0.1"
+    },
+    {
+      "id": "inspect-summary",
+      "command": "inspect <package> --format json",
+      "schema_file": "inspect-summary.schema.json",
+      "result_schema_version": "open-insight.inspect-summary.v0.1"
+    },
+    {
+      "id": "pack-result",
+      "command": "pack <source-dir> <output-file> --format json",
+      "schema_file": "pack-result.schema.json",
+      "result_schema_version": "open-insight.pack.v0.1"
+    },
+    {
+      "id": "unpack-result",
+      "command": "unpack <archive-file> <output-dir> --format json",
+      "schema_file": "unpack-result.schema.json",
+      "result_schema_version": "open-insight.unpack.v0.1"
+    },
+    {
+      "id": "ask-result",
+      "command": "ask <package> <question> --format json",
+      "schema_file": "ask-result.schema.json",
+      "result_schema_version": "open-insight.ask-result.v0.1"
+    },
+    {
+      "id": "compile-draft-result",
+      "command": "compile <source-file> <output-dir> [--source-mode source_bundled|source_light] [--parser auto|builtin|markitdown] --format json",
+      "schema_file": "compile-draft-result.schema.json",
+      "result_schema_version": "open-insight.compile-draft.v0.1"
+    },
+    {
+      "id": "compile-pack-result",
+      "command": "compile-pack <source-file> <output.insight> [--source-mode source_bundled|source_light] [--parser auto|builtin|markitdown] [--parser-timeout-ms <ms>] --format json",
+      "schema_file": "compile-pack-result.schema.json",
+      "result_schema_version": "open-insight.compile-pack.v0.2"
+    },
+    {
+      "id": "domain-list-result",
+      "command": "domain-list --format json",
+      "schema_file": "domain-list-result.schema.json",
+      "result_schema_version": "open-insight.domain-list.v0.1"
+    },
+    {
+      "id": "context-summary-result",
+      "command": "context summary <package> --format json",
+      "schema_file": "context-summary-result.schema.json",
+      "result_schema_version": "open-insight.context-summary.v0.1"
+    },
+    {
+      "id": "context-sources-result",
+      "command": "context list-sources <package> --format json",
+      "schema_file": "context-sources-result.schema.json",
+      "result_schema_version": "open-insight.context-sources.v0.1"
+    },
+    {
+      "id": "context-objects-result",
+      "command": "context list-objects <package> --kind <kind> --format json",
+      "schema_file": "context-objects-result.schema.json",
+      "result_schema_version": "open-insight.context-objects.v0.1"
+    },
+    {
+      "id": "context-table-query-result",
+      "command": "context query-table <package> <table-id> --op sum:<field>|count|average:<field> --format json",
+      "schema_file": "context-table-query-result.schema.json",
+      "result_schema_version": "open-insight.context-table-query.v0.1"
+    },
+    {
+      "id": "context-chunk-search-result",
+      "command": "context search-chunks <package> <query> --format json",
+      "schema_file": "context-chunk-search-result.schema.json",
+      "result_schema_version": "open-insight.context-chunk-search.v0.1"
+    },
+    {
+      "id": "context-compact-retrieval-result",
+      "command": "context search-chunks <package> <query> --compact --token-budget <tokens> --format json",
+      "schema_file": "context-compact-retrieval-result.schema.json",
+      "result_schema_version": "open-insight.context-compact-retrieval.v0.1"
+    },
+    {
+      "id": "context-token-eval-result",
+      "command": "context token-eval <package> --query <query> --format json",
+      "schema_file": "context-token-eval-result.schema.json",
+      "result_schema_version": "open-insight.context-token-eval.v0.1"
+    },
+    {
+      "id": "context-handoff-result",
+      "command": "context handoff <package> --query <query> --format json",
+      "schema_file": "context-handoff-result.schema.json",
+      "result_schema_version": "open-insight.context-handoff.v0.1"
+    },
+    {
+      "id": "context-answer-context-result",
+      "command": "context answer-context <package> --query <query> --format json",
+      "schema_file": "context-answer-context-result.schema.json",
+      "result_schema_version": "open-insight.answer-context.v0.1"
+    },
+    {
+      "id": "context-source-resolve-result",
+      "command": "context resolve-source <package> <object-or-ref-id> --format json",
+      "schema_file": "context-source-resolve-result.schema.json",
+      "result_schema_version": "open-insight.context-source-resolve.v0.1"
+    },
+    {
+      "id": "context-diagnostics-result",
+      "command": "context diagnostics <package> --format json",
+      "schema_file": "context-diagnostics-result.schema.json",
+      "result_schema_version": "open-insight.context-diagnostics.v0.1"
+    },
+    {
+      "id": "mcp-validate-context-result",
+      "interface": "mcp_tool",
+      "command": "open_insight_validate_context",
+      "schema_file": "mcp-validate-context-result.schema.json",
+      "result_schema_version": "open-insight.mcp-validate-context.v0.1"
+    },
+    {
+      "id": "context-material-contract-result",
+      "command": "context material-contract <package> --format json",
+      "schema_file": "context-material-contract-result.schema.json",
+      "result_schema_version": "open-insight.user-material-contract.v0.1"
+    },
+    {
+      "id": "version-status-result",
+      "command": "version status <package> --format json",
+      "schema_file": "version-status-result.schema.json",
+      "result_schema_version": "open-insight.version-status.v0.1"
+    },
+    {
+      "id": "version-log-result",
+      "command": "version log <package> --format json",
+      "schema_file": "version-log-result.schema.json",
+      "result_schema_version": "open-insight.version-log.v0.1"
+    },
+    {
+      "id": "version-derive-result",
+      "command": "version derive <package> <output.insight> --branch <name> --format json",
+      "schema_file": "version-derive-result.schema.json",
+      "result_schema_version": "open-insight.version-derive.v0.1"
+    },
+    {
+      "id": "version-rollback-result",
+      "command": "version rollback <package> <commit-or-ref> <output.insight> --format json",
+      "schema_file": "version-rollback-result.schema.json",
+      "result_schema_version": "open-insight.version-rollback.v0.1"
+    },
+    {
+      "id": "version-merge-result",
+      "command": "version merge <base-package> <other-package> <output.insight> --branch <name> --format json",
+      "schema_file": "version-merge-result.schema.json",
+      "result_schema_version": "open-insight.version-merge.v0.1"
+    },
+    {
+      "id": "request-export-result",
+      "command": "export-request <package> <request-id> <output-dir> --format json",
+      "schema_file": "request-export-result.schema.json",
+      "result_schema_version": "open-insight.request-export.v0.1"
+    },
+    {
+      "id": "response-create-result",
+      "command": "create-response <request-package> <output-dir> --format json",
+      "schema_file": "response-create-result.schema.json",
+      "result_schema_version": "open-insight.response-create.v0.1"
+    },
+    {
+      "id": "response-summary-result",
+      "command": "summarize-response <parent-package> <response-package> --format json",
+      "schema_file": "response-summary-result.schema.json",
+      "result_schema_version": "open-insight.response-summary.v0.1"
+    },
+    {
+      "id": "response-merge-result",
+      "command": "merge-response <parent-package> <response-package> <output-dir> --format json",
+      "schema_file": "response-merge-result.schema.json",
+      "result_schema_version": "open-insight.response-merge.v0.1"
+    },
+    {
+      "id": "review-patch-result",
+      "command": "review-patch <package> <patch-id> <approve|reject> <output-dir> --format json",
+      "schema_file": "review-patch-result.schema.json",
+      "result_schema_version": "open-insight.review-patch.v0.1"
+    },
+    {
+      "id": "apply-review-patch-result",
+      "command": "apply-review-patch <package> <patch-id> <output-dir> --format json",
+      "schema_file": "apply-review-patch-result.schema.json",
+      "result_schema_version": "open-insight.apply-review-patch.v0.1"
+    },
+    {
+      "id": "overlay-note-result",
+      "command": "add-overlay-note <package> <target-type> <target-id> <note-body> <output-dir> --format json",
+      "schema_file": "overlay-note-result.schema.json",
+      "result_schema_version": "open-insight.overlay-note.v0.1"
+    },
+    {
+      "id": "overlay-followup-import-result",
+      "command": "import-overlay-followup <package> <followup-json> <output-dir> --format json",
+      "schema_file": "overlay-followup-import-result.schema.json",
+      "result_schema_version": "open-insight.overlay-followup-import.v0.1"
+    },
+    {
+      "id": "model-status-result",
+      "command": "model-status --format json",
+      "schema_file": "model-status-result.schema.json",
+      "result_schema_version": "open-insight.model-status.v0.1"
+    },
+    {
+      "id": "model-list-result",
+      "command": "model-list --format json",
+      "schema_file": "model-list-result.schema.json",
+      "result_schema_version": "open-insight.model-list.v0.1"
+    },
+    {
+      "id": "model-ping-result",
+      "command": "model-ping --format json",
+      "schema_file": "model-ping-result.schema.json",
+      "result_schema_version": "open-insight.model-ping.v0.1"
+    },
+    {
+      "id": "model-smoke-result",
+      "command": "model-smoke <package> <question> --format json",
+      "schema_file": "model-smoke-result.schema.json",
+      "result_schema_version": "open-insight.model-smoke.v0.1"
+    },
+    {
+      "id": "conformance-list-result",
+      "command": "conformance list --format json",
+      "schema_file": "conformance-list-result.schema.json",
+      "result_schema_version": "open-insight.conformance.v0.1"
+    },
+    {
+      "id": "conformance-inspect-result",
+      "command": "conformance inspect <asset> --format json",
+      "schema_file": "conformance-inspect-result.schema.json",
+      "result_schema_version": "open-insight.conformance.v0.1"
+    },
+    {
+      "id": "conformance-check-result",
+      "command": "conformance check --format json",
+      "schema_file": "conformance-check-result.schema.json",
+      "result_schema_version": "open-insight.conformance.v0.1"
+    },
+    {
+      "id": "interop-check-result",
+      "command": "interop check --format json",
+      "schema_file": "interop-check-result.schema.json",
+      "result_schema_version": "open-insight.interop-check.v0.1"
+    }
+  ]
+}

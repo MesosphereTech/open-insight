@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/v0.1/qa.schema.json",
+  "title": "Insight Prepared Question JSONL Record",
+  "type": "object",
+  "required": ["question_id", "question", "answer", "status"],
+  "properties": {
+    "question_id": { "type": "string" },
+    "question": { "type": "string" },
+    "answer": { "type": "string" },
+    "status": { "type": "string" },
+    "generation_status": { "type": "string" },
+    "review_status": { "type": "string" },
+    "review_state": { "type": "string" },
+    "confirmation_scope": { "type": "string" },
+    "review_note": { "type": "string" },
+    "edited_by": { "type": "string" },
+    "claim_ids": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "evidence_ids": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "data_request_ids": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "active_data_request_ids": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": true
+}

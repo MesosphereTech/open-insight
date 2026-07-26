@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/contract-index.v0.1.schema.json",
+  "title": "Open Insight CLI Contract Index",
+  "type": "object",
+  "required": ["schema_version", "contracts"],
+  "properties": {
+    "schema_version": { "const": "open-insight.cli-contract-index.v0.1" },
+    "contracts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "command", "schema_file", "result_schema_version"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "interface": { "enum": ["cli", "mcp_tool"] },
+          "command": { "type": "string", "minLength": 1 },
+          "schema_file": { "type": "string", "pattern": "^[a-z0-9-]+\\.schema\\.json$" },
+          "result_schema_version": { "type": "string", "pattern": "^open-insight\\.[a-z0-9.-]+\\.v[0-9]+\\.[0-9]+$" }
+        },
+        "allOf": [
+          {
+            "if": {
+              "required": ["interface"],
+              "properties": { "interface": { "const": "mcp_tool" } }
+            },
+            "then": {
+              "properties": { "command": { "pattern": "^open_insight_[a-z0-9_]+$" } }
+            },
+            "else": {
+              "properties": { "command": { "pattern": "(^|\\s)--format\\s+json(\\s|$)" } }
+            }
+          }
+        ],
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

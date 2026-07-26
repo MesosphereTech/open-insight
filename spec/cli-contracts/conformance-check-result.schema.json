@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/conformance-check-result.v0.1.schema.json",
+  "title": "Open Insight CLI Conformance Check Result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "status",
+    "total",
+    "passed",
+    "failed",
+    "issue_code_assets",
+    "issue_code_assets_passed",
+    "issue_code_assets_failed",
+    "assets"
+  ],
+  "properties": {
+    "schema_version": { "const": "open-insight.conformance.v0.1" },
+    "status": { "enum": ["ok", "failed"] },
+    "total": { "type": "number" },
+    "passed": { "type": "number" },
+    "failed": { "type": "number" },
+    "issue_code_assets": { "type": "number" },
+    "issue_code_assets_passed": { "type": "number" },
+    "issue_code_assets_failed": { "type": "number" },
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["asset", "matches_expected"],
+        "properties": {
+          "asset": { "type": "object" },
+          "matches_expected": { "type": "boolean" }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

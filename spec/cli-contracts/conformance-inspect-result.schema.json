@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/conformance-inspect-result.v0.1.schema.json",
+  "title": "Open Insight CLI Conformance Inspect Result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "status",
+    "asset",
+    "actual_validation_status",
+    "matches_expected_status",
+    "matches_expected_issue_codes",
+    "matches_expected",
+    "missing_expected_issue_codes",
+    "issue_codes",
+    "issues",
+    "recommended_behavior"
+  ],
+  "properties": {
+    "schema_version": { "const": "open-insight.conformance.v0.1" },
+    "status": { "enum": ["ok", "mismatch"] },
+    "asset": {
+      "type": "object",
+      "required": ["id", "path", "expected_validation_status", "expected_issue_codes"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "path": { "type": "string", "minLength": 1 },
+        "expected_validation_status": { "enum": ["valid", "valid_with_warnings", "invalid"] },
+        "expected_issue_codes": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "actual_validation_status": { "enum": ["valid", "valid_with_warnings", "invalid"] },
+    "matches_expected_status": { "type": "boolean" },
+    "matches_expected_issue_codes": { "type": "boolean" },
+    "matches_expected": { "type": "boolean" },
+    "missing_expected_issue_codes": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "issue_codes": {
+      "type": "object",
+      "additionalProperties": { "type": "number" }
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["code", "severity", "path", "message"],
+        "properties": {
+          "code": { "type": "string", "minLength": 1 },
+          "severity": { "enum": ["error", "warning"] },
+          "path": { "type": "string" },
+          "message": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "recommended_behavior": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": true
+}

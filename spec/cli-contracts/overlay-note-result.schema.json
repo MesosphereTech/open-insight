@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/overlay-note-result.v0.1.schema.json",
+  "title": "Open Insight CLI Overlay Note Result",
+  "type": "object",
+  "required": ["schema_version", "status", "output_dir"],
+  "properties": {
+    "schema_version": { "const": "open-insight.overlay-note.v0.1" },
+    "status": { "enum": ["overlay_note_added", "blocked"] },
+    "output_dir": { "type": "string", "minLength": 1 },
+    "source_package_id": { "type": "string", "minLength": 1 },
+    "overlay_package_id": { "type": "string", "minLength": 1 },
+    "overlay_id": { "type": "string", "minLength": 1 },
+    "note_id": { "type": "string", "minLength": 1 },
+    "target_type": { "enum": ["package", "claim", "evidence", "view_block", "question"] },
+    "target_id": { "type": "string", "minLength": 1 },
+    "base_package_mutation": { "const": false },
+    "file_count": { "type": "integer", "minimum": 0 },
+    "validation_status": { "enum": ["valid", "valid_with_warnings", "invalid"] },
+    "validation": {
+      "type": "object",
+      "required": ["status", "issues"],
+      "properties": {
+        "status": { "enum": ["valid", "valid_with_warnings", "invalid"] },
+        "issues": { "type": "array" }
+      },
+      "additionalProperties": true
+    },
+    "reason": { "type": "string", "minLength": 1 }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": { "const": "overlay_note_added" }
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "required": [
+          "source_package_id",
+          "overlay_package_id",
+          "overlay_id",
+          "note_id",
+          "target_type",
+          "target_id",
+          "base_package_mutation",
+          "file_count",
+          "validation_status",
+          "validation"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": { "const": "blocked" }
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "required": ["reason"]
+      }
+    }
+  ],
+  "additionalProperties": true
+}

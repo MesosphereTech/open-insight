@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/v0.1/overlay-metadata.schema.json",
+  "title": "Insight Overlay Metadata",
+  "type": "object",
+  "required": [
+    "overlay_id",
+    "overlay_type",
+    "base_package_id",
+    "base_package_mutation",
+    "created_at",
+    "created_by"
+  ],
+  "properties": {
+    "overlay_id": { "type": "string", "minLength": 1 },
+    "overlay_type": { "const": "user_private_overlay" },
+    "base_package_id": { "type": "string", "minLength": 1 },
+    "base_title": { "type": "string" },
+    "base_package_mutation": { "const": false },
+    "created_at": { "type": "string", "format": "date-time" },
+    "created_by": { "type": "string", "minLength": 1 },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "updated_by": { "type": "string", "minLength": 1 }
+  },
+  "additionalProperties": true
+}

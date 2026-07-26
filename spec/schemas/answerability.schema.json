@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/v0.1/answerability.schema.json",
+  "title": "Insight Data Request JSONL Record",
+  "type": "object",
+  "required": ["request_id", "question", "status", "missing_fields", "why_needed"],
+  "properties": {
+    "request_id": { "type": "string" },
+    "question": { "type": "string" },
+    "status": { "type": "string" },
+    "missing_fields": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "required_grain": { "type": "string" },
+    "required_time_range": { "type": "string" },
+    "why_needed": { "type": "string" },
+    "priority": { "type": "string" },
+    "affected_findings": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": true
+}

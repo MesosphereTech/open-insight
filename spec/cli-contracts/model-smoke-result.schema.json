@@ -1,0 +1,173 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/model-smoke-result.v0.1.schema.json",
+  "title": "Open Insight CLI Model Smoke Result",
+  "type": "object",
+  "required": ["schema_version", "status", "package_root", "question", "warnings"],
+  "properties": {
+    "schema_version": { "const": "open-insight.model-smoke.v0.1" },
+    "status": { "enum": ["ok", "blocked", "failed"] },
+    "package_root": { "type": "string", "minLength": 1 },
+    "question": { "type": "string", "minLength": 1 },
+    "reason": { "type": "string", "minLength": 1 },
+    "diagnostic_code": {
+      "enum": [
+        "MODEL_CONFIG_MISSING",
+        "MODEL_ADAPTER_CREATE_FAILED",
+        "MODEL_OUTPUT_REJECTED",
+        "MODEL_REQUEST_FAILED",
+        "MODEL_PING_REQUEST_FAILED",
+        "MODEL_PING_RESPONSE_INVALID",
+        "PACKAGE_VALIDATION_FAILED",
+        "OVERLAY_SAVE_FAILED",
+        "OVERLAY_VALIDATION_FAILED"
+      ]
+    },
+    "model_status": {
+      "type": "object",
+      "required": ["schema_version", "available", "source", "missing", "message"],
+      "properties": {
+        "schema_version": { "const": "open-insight.model-status.v0.1" },
+        "available": { "type": "boolean" },
+        "source": { "type": "string", "minLength": 1 },
+        "missing": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "message": { "type": "string" },
+        "config": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "model_list": {
+      "type": "object",
+      "required": ["schema_version", "status", "model_enabled"],
+      "properties": {
+        "schema_version": { "const": "open-insight.model-list.v0.1" },
+        "status": { "enum": ["ok", "blocked", "failed"] },
+        "model_enabled": { "type": "boolean" },
+        "diagnostic_code": {
+          "enum": ["MODEL_ENDPOINT_CONFIG_MISSING", "MODEL_LIST_REQUEST_FAILED", "MODEL_LIST_RESPONSE_INVALID"]
+        }
+      },
+      "additionalProperties": true
+    },
+    "model_list_required": { "const": false },
+    "model_ping": {
+      "type": "object",
+      "required": ["schema_version", "status", "model_enabled"],
+      "properties": {
+        "schema_version": { "const": "open-insight.model-ping.v0.1" },
+        "status": { "enum": ["ok", "blocked", "failed"] },
+        "model_enabled": { "type": "boolean" },
+        "diagnostic_code": {
+          "enum": ["MODEL_CONFIG_MISSING", "MODEL_ADAPTER_CREATE_FAILED", "MODEL_PING_REQUEST_FAILED", "MODEL_PING_RESPONSE_INVALID"]
+        }
+      },
+      "additionalProperties": true
+    },
+    "ask": {
+      "type": "object",
+      "required": ["schema_version", "status", "package_root", "question", "requested_model_mode"],
+      "properties": {
+        "schema_version": { "const": "open-insight.ask-result.v0.1" },
+        "status": { "enum": ["answered", "unanswerable", "blocked"] },
+        "requested_model_mode": { "enum": ["auto", "deterministic", "mock", "real"] },
+        "resolved_model_mode": { "enum": ["deterministic", "mock", "real"] },
+        "model_enabled": { "type": "boolean" },
+        "source": { "type": "string" },
+        "generation_status": { "enum": ["not_model_generated", "ai_generated", "model_error"] },
+        "review_status": { "enum": ["not_applicable", "needs_review"] },
+        "diagnostic_code": {
+          "enum": ["MODEL_CONFIG_MISSING", "MODEL_ADAPTER_CREATE_FAILED", "MODEL_OUTPUT_REJECTED", "MODEL_REQUEST_FAILED"]
+        }
+      },
+      "additionalProperties": true
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source", "status", "reason"],
+        "properties": {
+          "source": { "const": "model-list" },
+          "status": { "enum": ["blocked", "failed"] },
+          "reason": { "type": "string", "minLength": 1 },
+          "diagnostic_code": {
+            "enum": ["MODEL_ENDPOINT_CONFIG_MISSING", "MODEL_LIST_REQUEST_FAILED", "MODEL_LIST_RESPONSE_INVALID"]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "validation_status": { "enum": ["valid", "valid_with_warnings", "invalid"] },
+    "validation": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "overlay": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "status",
+        "output_dir",
+        "source_package_id",
+        "overlay_package_id",
+        "overlay_id",
+        "qa_id",
+        "question",
+        "base_package_mutation",
+        "file_count",
+        "validation_status",
+        "validation"
+      ],
+      "properties": {
+        "schema_version": { "const": "open-insight.overlay-qa-save.v0.1" },
+        "status": { "const": "overlay_qa_added" },
+        "output_dir": { "type": "string", "minLength": 1 },
+        "source_package_id": { "type": "string", "minLength": 1 },
+        "overlay_package_id": { "type": "string", "minLength": 1 },
+        "overlay_id": { "type": "string", "minLength": 1 },
+        "qa_id": { "type": "string", "minLength": 1 },
+        "question": { "type": "string", "minLength": 1 },
+        "base_package_mutation": { "const": false },
+        "file_count": { "type": "integer", "minimum": 0 },
+        "validation_status": { "enum": ["valid", "valid_with_warnings", "invalid"] },
+        "validation": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "message": { "type": "string" }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": { "const": "ok" }
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "required": ["model_status", "model_list", "model_list_required", "model_ping", "ask", "message"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": { "enum": ["blocked", "failed"] }
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "required": ["reason"]
+      }
+    }
+  ],
+  "additionalProperties": true
+}

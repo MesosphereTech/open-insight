@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/request-export-result.v0.1.schema.json",
+  "title": "Open Insight CLI Request Export Result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "status",
+    "output_dir",
+    "parent_package_id",
+    "request_id",
+    "file_count",
+    "copied_context",
+    "validation_status",
+    "validation"
+  ],
+  "properties": {
+    "schema_version": { "const": "open-insight.request-export.v0.1" },
+    "status": { "const": "exported" },
+    "output_dir": { "type": "string", "minLength": 1 },
+    "parent_package_id": { "type": "string", "minLength": 1 },
+    "request_id": { "type": "string", "minLength": 1 },
+    "file_count": { "type": "integer", "minimum": 0 },
+    "copied_context": { "$ref": "#/$defs/counts" },
+    "validation_status": { "enum": ["valid", "valid_with_warnings", "invalid"] },
+    "validation": {
+      "type": "object",
+      "required": ["status", "issues"],
+      "properties": {
+        "status": { "enum": ["valid", "valid_with_warnings", "invalid"] },
+        "issues": { "type": "array" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "counts": {
+      "type": "object",
+      "required": ["claims", "evidence", "prepared_questions", "datasets", "metrics", "lineage_sources"],
+      "properties": {
+        "claims": { "type": "integer", "minimum": 0 },
+        "evidence": { "type": "integer", "minimum": 0 },
+        "prepared_questions": { "type": "integer", "minimum": 0 },
+        "datasets": { "type": "integer", "minimum": 0 },
+        "metrics": { "type": "integer", "minimum": 0 },
+        "lineage_sources": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,248 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/compile-pack-result.v0.2.schema.json",
+  "title": "Open Insight CLI Compile Pack Result",
+  "type": "object",
+  "required": ["schema_version", "status"],
+  "properties": {
+    "schema_version": { "const": "open-insight.compile-pack.v0.2" },
+    "status": { "enum": ["compiled", "blocked"] },
+    "output_file": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Invocation-relative path, or external/<basename> when the output is outside the invocation root."
+    },
+    "package_id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "domain_pack": { "type": "string", "minLength": 1 },
+    "source_mode": { "enum": ["source_bundled", "source_light"] },
+    "parser_backend": { "enum": ["auto", "builtin", "markitdown"] },
+    "parser_timeout_ms": { "type": "integer", "minimum": 5000 },
+    "ocr_mode": { "enum": ["off", "llm"] },
+    "resource_limits": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "max_source_bytes",
+        "max_total_source_bytes",
+        "max_normalized_bytes",
+        "max_total_normalized_bytes",
+        "source_hash_strategy",
+        "package_write_strategy"
+      ],
+      "properties": {
+        "schema_version": { "const": "open-insight.compile-resource-limits.v0.1" },
+        "max_source_bytes": { "type": "integer", "minimum": 1 },
+        "max_total_source_bytes": { "type": "integer", "minimum": 1 },
+        "max_normalized_bytes": { "type": "integer", "minimum": 1 },
+        "max_total_normalized_bytes": { "type": "integer", "minimum": 1 },
+        "source_hash_strategy": { "const": "streaming_sha256" },
+        "package_write_strategy": { "const": "streaming_zip" }
+      },
+      "additionalProperties": false
+    },
+    "source_analysis_cache": {
+      "type": "object",
+      "required": ["schema_version", "enabled", "hits", "misses", "writes", "read_errors"],
+      "properties": {
+        "schema_version": { "const": "open-insight.source-analysis-cache.v0.1" },
+        "enabled": { "type": "boolean" },
+        "cache_dir": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Privacy-safe invocation-relative path or external/<basename>."
+        },
+        "hits": { "type": "integer", "minimum": 0 },
+        "misses": { "type": "integer", "minimum": 0 },
+        "writes": { "type": "integer", "minimum": 0 },
+        "read_errors": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "source_files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["input_path", "package_path", "name", "type", "size_bytes", "bundled", "evidence_boundary"],
+        "properties": {
+          "input_path": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Privacy-safe source locator; never an absolute path unless debug stack output is explicitly enabled."
+          },
+          "package_path": { "type": "string", "minLength": 1 },
+          "name": { "type": "string", "minLength": 1 },
+          "type": { "type": "string", "minLength": 1 },
+          "size_bytes": { "type": "integer", "minimum": 0 },
+          "bundled": { "type": "boolean" },
+          "evidence_boundary": { "enum": ["raw_source_bundled", "raw_source_external"] },
+          "parser": { "type": "string", "minLength": 1 },
+          "parser_version": { "type": "string", "minLength": 1 },
+          "status": { "type": "string", "minLength": 1 },
+          "parser_role": { "type": "string", "minLength": 1 },
+          "cloud_used": { "type": "boolean" },
+          "row_count": { "type": "integer", "minimum": 0 },
+          "spreadsheet_formula_status": { "enum": ["ok", "none", "partial", "unsupported"] },
+          "spreadsheet_formula_count": { "type": "integer", "minimum": 0 },
+          "spreadsheet_formula_truncated": { "type": "boolean" },
+          "columns": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name"],
+              "properties": {
+                "name": { "type": "string", "minLength": 1 },
+                "type": { "type": "string", "minLength": 1 }
+              },
+              "additionalProperties": true
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "file_count": { "type": "integer", "minimum": 0 },
+    "packed_file_count": { "type": "integer", "minimum": 0 },
+    "single_file_package": { "const": true },
+    "no_zip_output": { "const": true },
+    "query_index": {
+      "type": "object",
+      "required": ["available"],
+      "properties": {
+        "available": { "type": "boolean" },
+        "schema_version": { "type": "string", "minLength": 1 },
+        "status": { "type": "string", "minLength": 1 },
+        "engine": { "type": "string", "minLength": 1 },
+        "fts": { "type": "boolean" },
+        "rebuildable": { "type": "boolean" },
+        "source_of_truth": { "type": "boolean" },
+        "database_path": { "type": "string", "minLength": 1 },
+        "database_available": { "type": "boolean" },
+        "access_strategy": {
+          "enum": ["sqlite_database", "direct_index_jsonl", "rebuild_sql", "normalized_source_fallback"]
+        },
+        "message": { "type": "string" },
+        "spreadsheet_formula_path": { "type": "string", "minLength": 1 },
+        "spreadsheet_formula_available": { "type": "boolean" },
+        "spreadsheet_formula_count": { "type": "integer", "minimum": 0 },
+        "indexed_paths": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "source_refs": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "lineage_refs": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "parse_diagnostic_ids": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "warnings": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "plan_summary": {
+      "type": "object",
+      "required": [
+        "template_sections",
+        "questions",
+        "metric_suggestions",
+        "view_suggestions",
+        "domain_view_suggestions",
+        "data_gaps"
+      ],
+      "properties": {
+        "template_sections": { "type": "integer", "minimum": 0 },
+        "questions": { "type": "integer", "minimum": 0 },
+        "metric_suggestions": { "type": "integer", "minimum": 0 },
+        "view_suggestions": { "type": "integer", "minimum": 0 },
+        "domain_view_suggestions": { "type": "integer", "minimum": 0 },
+        "data_gaps": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": true
+    },
+    "validation_status": { "enum": ["valid", "valid_with_warnings", "invalid"] },
+    "validation": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "safety": {
+      "type": "object",
+      "required": ["model_invoked", "package_code_execution", "browser_key_access", "base_package_mutation"],
+      "properties": {
+        "model_invoked": { "type": "boolean" },
+        "package_code_execution": { "const": false },
+        "browser_key_access": { "const": false },
+        "base_package_mutation": { "const": false }
+      },
+      "additionalProperties": false
+    },
+    "privacy": {
+      "type": "object",
+      "required": ["path_policy", "local_paths_redacted", "debug_stack_opt_in"],
+      "properties": {
+        "path_policy": { "const": "invocation_relative_or_external_basename" },
+        "local_paths_redacted": { "type": "boolean" },
+        "debug_stack_opt_in": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "reason": { "type": "string", "minLength": 1 },
+    "debug_stack": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Opt-in maintainer diagnostic enabled only by OPEN_INSIGHT_DEBUG_STACK; may contain local paths and must not enter public reports."
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": { "const": "compiled" }
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "required": [
+          "output_file",
+          "package_id",
+          "title",
+          "source_mode",
+          "parser_backend",
+          "parser_timeout_ms",
+          "source_files",
+          "file_count",
+          "packed_file_count",
+          "single_file_package",
+          "no_zip_output",
+          "query_index",
+          "warnings",
+          "plan_summary",
+          "validation_status",
+          "validation",
+          "safety",
+          "privacy"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": { "const": "blocked" }
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "required": ["reason", "safety", "privacy"]
+      }
+    }
+  ],
+  "additionalProperties": true
+}

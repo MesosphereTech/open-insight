@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/unpack-result.v0.1.schema.json",
+  "title": "Open Insight CLI Unpack Result",
+  "type": "object",
+  "required": ["schema_version", "status", "outputDir", "fileCount"],
+  "properties": {
+    "schema_version": { "const": "open-insight.unpack.v0.1" },
+    "status": { "const": "unpacked" },
+    "outputDir": { "type": "string", "minLength": 1 },
+    "fileCount": { "type": "integer", "minimum": 0 }
+  },
+  "additionalProperties": true
+}

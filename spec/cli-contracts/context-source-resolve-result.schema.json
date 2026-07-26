@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/context-source-resolve-result.v0.1.schema.json",
+  "title": "Open Insight CLI Context Source Resolve Result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "status",
+    "profile",
+    "package_id",
+    "target_id",
+    "resolved",
+    "source_refs",
+    "lineage_refs",
+    "parse_diagnostic_ids"
+  ],
+  "properties": {
+    "schema_version": { "const": "open-insight.context-source-resolve.v0.1" },
+    "status": { "$ref": "#/$defs/status" },
+    "profile": { "$ref": "#/$defs/profile" },
+    "package_id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string" },
+    "spec_version": { "type": "string" },
+    "source_mode": { "$ref": "#/$defs/sourceMode" },
+    "source_refs": { "$ref": "#/$defs/stringArray" },
+    "lineage_refs": { "$ref": "#/$defs/stringArray" },
+    "parse_diagnostic_ids": { "$ref": "#/$defs/stringArray" },
+    "source_map_refs": { "$ref": "#/$defs/stringArray" },
+    "target_id": { "type": "string", "minLength": 1 },
+    "resolved": { "type": "boolean" },
+    "object": { "$ref": "#/$defs/contextObject" },
+    "normalized_source_fragment": { "$ref": "#/$defs/normalizedSourceFragment" },
+    "reason": { "type": "string", "minLength": 1 }
+  },
+  "$defs": {
+    "status": { "enum": ["ok", "unsupported"] },
+    "profile": { "enum": ["semantic_capsule", "v0_1_compat"] },
+    "sourceMode": { "enum": ["source_bundled", "source_light", "unknown"] },
+    "stringArray": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "contextObject": {
+      "type": "object",
+      "required": ["object_id", "kind", "title", "source_refs", "lineage_refs", "parse_diagnostic_ids"],
+      "properties": {
+        "object_id": { "type": "string", "minLength": 1 },
+        "kind": { "type": "string", "minLength": 1 },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "source_refs": { "$ref": "#/$defs/stringArray" },
+        "lineage_refs": { "$ref": "#/$defs/stringArray" },
+        "parse_diagnostic_ids": { "$ref": "#/$defs/stringArray" }
+      },
+      "additionalProperties": true
+    },
+    "normalizedSourceFragment": {
+      "type": "object",
+      "required": [
+        "fragment_scope",
+        "text",
+        "estimated_tokens",
+        "truncated",
+        "source_mode_disclosure_cn",
+        "source_refs",
+        "lineage_refs",
+        "parse_diagnostic_ids",
+        "source_map_refs"
+      ],
+      "properties": {
+        "fragment_scope": { "enum": ["query_index_chunk", "normalized_source_excerpt"] },
+        "chunk_id": { "type": "string", "minLength": 1 },
+        "normalized_source_path": { "type": "string", "minLength": 1 },
+        "text": { "type": "string" },
+        "estimated_tokens": { "type": "integer", "minimum": 1 },
+        "truncated": { "type": "boolean" },
+        "source_mode_disclosure_cn": { "type": "string", "minLength": 1 },
+        "content_role": { "type": "string", "minLength": 1 },
+        "chunk_level": { "type": "string", "minLength": 1 },
+        "heading_path": { "$ref": "#/$defs/stringArray" },
+        "page_number": { "type": "integer", "minimum": 1 },
+        "line_numbers": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 1 }
+        },
+        "source_refs": { "$ref": "#/$defs/stringArray" },
+        "lineage_refs": { "$ref": "#/$defs/stringArray" },
+        "parse_diagnostic_ids": { "$ref": "#/$defs/stringArray" },
+        "source_map_refs": { "$ref": "#/$defs/stringArray" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

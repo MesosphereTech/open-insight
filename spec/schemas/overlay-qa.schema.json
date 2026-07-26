@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/v0.1/overlay-qa.schema.json",
+  "title": "Insight Overlay QA JSONL Record",
+  "type": "object",
+  "required": [
+    "qa_id",
+    "visibility",
+    "question",
+    "answer",
+    "status",
+    "source",
+    "generation_status",
+    "review_status",
+    "model_enabled",
+    "base_package_mutation",
+    "created_at",
+    "created_by"
+  ],
+  "properties": {
+    "qa_id": { "type": "string", "minLength": 1 },
+    "visibility": { "const": "private" },
+    "question": { "type": "string", "minLength": 1 },
+    "answer": { "type": "string", "minLength": 1 },
+    "status": {
+      "type": "string",
+      "enum": ["answered", "unanswerable"]
+    },
+    "answerability_status": {
+      "type": "string",
+      "enum": ["answered", "partial", "unanswerable", "needs_review"]
+    },
+    "answer_status": { "type": "string", "minLength": 1 },
+    "requested_model_mode": {
+      "type": "string",
+      "enum": ["auto", "deterministic", "mock", "real"]
+    },
+    "resolved_model_mode": {
+      "type": "string",
+      "enum": ["deterministic", "mock", "real"]
+    },
+    "model_enabled": { "type": "boolean" },
+    "model_adapter": { "type": "string" },
+    "source": {
+      "type": "string",
+      "enum": ["prepared_question", "runtime", "grounded_model", "deterministic_fallback"]
+    },
+    "generation_status": {
+      "type": "string",
+      "enum": ["not_model_generated", "ai_generated", "model_error"]
+    },
+    "review_status": {
+      "type": "string",
+      "enum": ["not_applicable", "needs_review"]
+    },
+    "claim_ids": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "evidence_ids": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "evidence_sources": {
+      "type": "array",
+      "items": { "type": "object", "additionalProperties": true }
+    },
+    "data_request_ids": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "data_requests": {
+      "type": "array",
+      "items": { "type": "object", "additionalProperties": true }
+    },
+    "base_answer": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "base_package_mutation": { "const": false },
+    "created_at": { "type": "string", "format": "date-time" },
+    "created_by": { "type": "string", "minLength": 1 },
+    "source_command": { "type": "string" }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "generation_status": {
+            "enum": ["ai_generated", "model_error"]
+          }
+        },
+        "required": ["generation_status"]
+      },
+      "then": {
+        "properties": {
+          "model_enabled": { "const": true },
+          "review_status": { "const": "needs_review" }
+        }
+      }
+    }
+  ],
+  "additionalProperties": true
+}

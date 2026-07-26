@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/context-objects-result.v0.1.schema.json",
+  "title": "Open Insight CLI Context Objects Result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "status",
+    "profile",
+    "package_id",
+    "source_mode",
+    "objects",
+    "source_refs",
+    "lineage_refs",
+    "parse_diagnostic_ids"
+  ],
+  "properties": {
+    "schema_version": { "const": "open-insight.context-objects.v0.1" },
+    "status": { "$ref": "#/$defs/status" },
+    "profile": { "$ref": "#/$defs/profile" },
+    "package_id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string" },
+    "spec_version": { "type": "string" },
+    "source_mode": { "$ref": "#/$defs/sourceMode" },
+    "source_refs": { "$ref": "#/$defs/stringArray" },
+    "lineage_refs": { "$ref": "#/$defs/stringArray" },
+    "parse_diagnostic_ids": { "$ref": "#/$defs/stringArray" },
+    "objects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["object_id", "kind", "title", "source_refs", "lineage_refs", "parse_diagnostic_ids"],
+        "properties": {
+          "object_id": { "type": "string", "minLength": 1 },
+          "kind": {
+            "enum": ["source", "dataset", "field", "metric", "evidence", "prepared_question", "data_request", "chunk", "query_index"]
+          },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "dataset_id": { "type": "string" },
+          "formula": { "type": "string" },
+          "unit": { "type": "string" },
+          "database_path": { "type": "string" },
+          "database_available": { "type": "boolean" },
+          "rebuild_sql_path": { "type": "string" },
+          "rebuild_sql_available": { "type": "boolean" },
+          "direct_index_path": { "type": "string" },
+          "direct_index_available": { "type": "boolean" },
+          "direct_index_format": { "type": "string" },
+          "access_strategy": { "enum": ["sqlite_database", "rebuild_sql", "normalized_source_fallback"] },
+          "provenance_tables": { "$ref": "#/$defs/stringArray" },
+          "provenance_tables_available": { "type": "boolean" },
+          "sqlite_table_counts": { "$ref": "#/$defs/sqliteTableCounts" },
+          "source_refs": { "$ref": "#/$defs/stringArray" },
+          "lineage_refs": { "$ref": "#/$defs/stringArray" },
+          "parse_diagnostic_ids": { "$ref": "#/$defs/stringArray" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "reason": { "type": "string", "minLength": 1 }
+  },
+  "$defs": {
+    "status": { "enum": ["ok", "unsupported"] },
+    "profile": { "enum": ["semantic_capsule", "v0_1_compat"] },
+    "sourceMode": { "enum": ["source_bundled", "source_light", "unknown"] },
+    "stringArray": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "sqliteTableCounts": {
+      "type": "object",
+      "required": ["chunks", "parse_diagnostics", "source_maps", "digests"],
+      "properties": {
+        "chunks": { "type": "integer", "minimum": 0 },
+        "parse_diagnostics": { "type": "integer", "minimum": 0 },
+        "source_maps": { "type": "integer", "minimum": 0 },
+        "digests": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": true
+}

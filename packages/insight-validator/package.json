@@ -1,0 +1,23 @@
+{
+  "name": "@open-insight/validator",
+  "version": "0.0.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@open-insight/core": "file:../insight-core",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1"
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/mcp/validate-context-result.v0.1.schema.json",
+  "title": "Open Insight MCP Validate Context Result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "status",
+    "validation",
+    "diagnostics",
+    "source_refs",
+    "lineage_refs",
+    "parse_diagnostic_ids",
+    "source_map_refs"
+  ],
+  "properties": {
+    "schema_version": { "const": "open-insight.mcp-validate-context.v0.1" },
+    "status": { "enum": ["ok", "invalid"] },
+    "validation": {
+      "type": "object",
+      "required": ["schema_version", "status", "issues"],
+      "properties": {
+        "schema_version": { "const": "open-insight.validation-result.v0.1" },
+        "status": { "enum": ["valid", "valid_with_warnings", "invalid"] },
+        "issues": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["code", "severity", "path", "message"],
+            "properties": {
+              "code": { "type": "string", "minLength": 1 },
+              "severity": { "enum": ["error", "warning"] },
+              "path": { "type": "string" },
+              "message": { "type": "string" }
+            },
+            "additionalProperties": true
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "diagnostics": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "status",
+        "profile",
+        "package_id",
+        "source_mode",
+        "diagnostics",
+        "source_refs",
+        "lineage_refs",
+        "parse_diagnostic_ids",
+        "source_map_refs"
+      ],
+      "properties": {
+        "schema_version": { "const": "open-insight.context-diagnostics.v0.1" },
+        "status": { "enum": ["ok", "unsupported"] },
+        "profile": { "enum": ["semantic_capsule", "v0_1_compat"] },
+        "package_id": { "type": "string", "minLength": 1 },
+        "title": { "type": "string" },
+        "spec_version": { "type": "string" },
+        "source_mode": { "enum": ["source_bundled", "source_light", "unknown"] },
+        "diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["diagnostic_id", "severity", "status", "message"],
+            "properties": {
+              "diagnostic_id": { "type": "string", "minLength": 1 },
+              "severity": { "enum": ["info", "warning", "error"] },
+              "status": { "enum": ["ok", "unsupported", "warning", "error"] },
+              "message": { "type": "string", "minLength": 1 },
+              "parser_quality_status": { "enum": ["content_ready", "metadata_only_or_weak"] },
+              "recommended_action_cn": { "type": "string", "minLength": 1 },
+              "source_refs": { "$ref": "#/$defs/stringArray" },
+              "lineage_refs": { "$ref": "#/$defs/stringArray" },
+              "parse_diagnostic_ids": { "$ref": "#/$defs/stringArray" }
+            },
+            "additionalProperties": true
+          }
+        },
+        "source_refs": { "$ref": "#/$defs/stringArray" },
+        "lineage_refs": { "$ref": "#/$defs/stringArray" },
+        "parse_diagnostic_ids": { "$ref": "#/$defs/stringArray" },
+        "source_map_refs": { "$ref": "#/$defs/stringArray" }
+      },
+      "additionalProperties": true
+    },
+    "source_refs": { "$ref": "#/$defs/uniqueStringArray" },
+    "lineage_refs": { "$ref": "#/$defs/uniqueStringArray" },
+    "parse_diagnostic_ids": { "$ref": "#/$defs/uniqueStringArray" },
+    "source_map_refs": { "$ref": "#/$defs/uniqueStringArray" }
+  },
+  "$defs": {
+    "stringArray": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "uniqueStringArray": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": true
+}

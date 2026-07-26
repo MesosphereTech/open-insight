@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/overlay-followup-import-result.v0.1.schema.json",
+  "title": "Open Insight CLI Overlay Followup Import Result",
+  "type": "object",
+  "required": ["schema_version", "status", "output_dir"],
+  "properties": {
+    "schema_version": { "const": "open-insight.overlay-followup-import.v0.1" },
+    "status": { "enum": ["overlay_followup_imported", "blocked"] },
+    "output_dir": { "type": "string", "minLength": 1 },
+    "source_package_id": { "type": "string", "minLength": 1 },
+    "imported_package_id": { "type": "string", "minLength": 1 },
+    "followup_schema_version": { "const": "studio.overlay_qa_followup.v0.1" },
+    "followup_metadata_package_id": { "type": "string", "minLength": 1 },
+    "followup_source_name": { "type": "string", "minLength": 1 },
+    "prepared_questions_added": { "type": "integer", "minimum": 0 },
+    "data_requests_added": { "type": "integer", "minimum": 0 },
+    "base_package_mutation": { "const": false },
+    "file_count": { "type": "integer", "minimum": 0 },
+    "mappings": {
+      "type": "object",
+      "required": ["prepared_questions", "data_requests"],
+      "properties": {
+        "prepared_questions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["source_question_id", "question_id", "qa_id"],
+            "properties": {
+              "source_question_id": { "type": "string", "minLength": 1 },
+              "question_id": { "type": "string", "minLength": 1 },
+              "qa_id": { "type": "string", "minLength": 1 }
+            },
+            "additionalProperties": true
+          }
+        },
+        "data_requests": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["source_request_id", "request_id", "qa_id"],
+            "properties": {
+              "source_request_id": { "type": "string", "minLength": 1 },
+              "request_id": { "type": "string", "minLength": 1 },
+              "qa_id": { "type": "string", "minLength": 1 }
+            },
+            "additionalProperties": true
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "validation_status": { "enum": ["valid", "valid_with_warnings", "invalid"] },
+    "validation": {
+      "type": "object",
+      "required": ["status", "issues"],
+      "properties": {
+        "status": { "enum": ["valid", "valid_with_warnings", "invalid"] },
+        "issues": { "type": "array" }
+      },
+      "additionalProperties": true
+    },
+    "reason": { "type": "string", "minLength": 1 }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": { "const": "overlay_followup_imported" }
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "required": [
+          "source_package_id",
+          "imported_package_id",
+          "followup_schema_version",
+          "followup_metadata_package_id",
+          "followup_source_name",
+          "prepared_questions_added",
+          "data_requests_added",
+          "base_package_mutation",
+          "file_count",
+          "mappings",
+          "validation_status",
+          "validation"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": { "const": "blocked" }
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "required": ["reason"]
+      }
+    }
+  ],
+  "additionalProperties": true
+}

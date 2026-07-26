@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/version-status-result.v0.1.schema.json",
+  "title": "Open Insight CLI Version Status Result",
+  "type": "object",
+  "required": ["schema_version", "status", "package_id", "title", "versioning", "paths", "safety"],
+  "properties": {
+    "schema_version": { "const": "open-insight.version-status.v0.1" },
+    "status": { "const": "ok" },
+    "package_id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "versioning": {
+      "type": "object",
+      "required": [
+        "available",
+        "parent_count",
+        "merge_log_count",
+        "review_patch_count",
+        "review_task_count",
+        "commit_count",
+        "ref_count",
+        "rollback_count",
+        "base_package_mutation"
+      ],
+      "properties": {
+        "available": { "type": "boolean" },
+        "parent_count": { "type": "integer", "minimum": 0 },
+        "merge_log_count": { "type": "integer", "minimum": 0 },
+        "review_patch_count": { "type": "integer", "minimum": 0 },
+        "review_task_count": { "type": "integer", "minimum": 0 },
+        "commit_count": { "type": "integer", "minimum": 0 },
+        "ref_count": { "type": "integer", "minimum": 0 },
+        "rollback_count": { "type": "integer", "minimum": 0 },
+        "base_package_mutation": { "type": "boolean" },
+        "merge_policy": {
+          "type": "object",
+          "properties": {
+            "mode": { "type": "string", "minLength": 1 },
+            "parent_mutation": { "type": "boolean" }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "paths": {
+      "type": "object",
+      "required": ["parents", "merge_log", "refs", "commits", "rollback_log", "diff_summary", "review_patches"],
+      "properties": {
+        "parents": { "$ref": "#/$defs/optionalPackagePath" },
+        "merge_log": { "$ref": "#/$defs/optionalPackagePath" },
+        "refs": { "$ref": "#/$defs/optionalPackagePath" },
+        "commits": { "$ref": "#/$defs/optionalPackagePath" },
+        "rollback_log": { "$ref": "#/$defs/optionalPackagePath" },
+        "diff_summary": { "$ref": "#/$defs/optionalPackagePath" },
+        "review_patches": { "$ref": "#/$defs/optionalPackagePath" }
+      },
+      "additionalProperties": true
+    },
+    "safety": {
+      "type": "object",
+      "required": ["base_package_mutation", "model_invoked", "package_code_execution"],
+      "properties": {
+        "base_package_mutation": { "const": false },
+        "model_invoked": { "const": false },
+        "package_code_execution": { "const": false }
+      },
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "optionalPackagePath": {
+      "oneOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }]
+    }
+  },
+  "additionalProperties": true
+}

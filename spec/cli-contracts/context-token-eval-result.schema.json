@@ -1,0 +1,229 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/context-token-eval-result.v0.1.schema.json",
+  "title": "Open Insight CLI Context Token Eval Result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "status",
+    "query",
+    "estimated",
+    "token_count_is_estimated",
+    "direct_full_text_basis",
+    "baseline_disclosure_cn",
+    "direct_full_text",
+    "insight_full_normalized",
+    "insight_compact_retrieval",
+    "savings_vs_direct",
+    "noise_reduction_rate",
+    "noise_metrics",
+    "source_ref_coverage_rate",
+    "parse_diagnostic_coverage_rate",
+    "numeric_preservation_rate",
+    "table_context_coverage_rate",
+    "recommended_mode",
+    "retrieval_quality"
+  ],
+  "properties": {
+    "schema_version": { "const": "open-insight.context-token-eval.v0.1" },
+    "status": { "enum": ["completed", "degraded"] },
+    "query": { "type": "string", "minLength": 1 },
+    "estimated": { "type": "boolean" },
+    "token_count_is_estimated": { "const": true },
+    "direct_full_text_basis": { "enum": ["normalized_source_surrogate", "external_baseline_files"] },
+    "baseline_disclosure_cn": { "type": "string", "minLength": 1 },
+    "token_budget": { "type": "integer", "minimum": 500, "maximum": 12000 },
+    "direct_full_text": { "$ref": "#/$defs/tokenBucket" },
+    "insight_full_normalized": { "$ref": "#/$defs/tokenBucket" },
+    "insight_compact_retrieval": { "$ref": "#/$defs/tokenBucket" },
+    "savings_vs_direct": { "type": "number", "minimum": 0, "maximum": 1 },
+    "savings_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+    "noise_reduction_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+    "noise_metrics": { "$ref": "#/$defs/noiseMetrics" },
+    "source_ref_coverage_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+    "parse_diagnostic_coverage_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+    "numeric_preservation_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+    "table_context_coverage_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+    "table_context_coverage": {
+      "type": "object",
+      "required": [
+        "applicability",
+        "candidate_count",
+        "required_candidate_count",
+        "covered_required_candidate_count",
+        "required_candidate_coverage_rate"
+      ],
+      "properties": {
+        "applicability": { "enum": ["required", "advisory", "not_applicable"] },
+        "candidate_count": { "type": "integer", "minimum": 0 },
+        "required_candidate_count": { "type": "integer", "minimum": 0 },
+        "covered_required_candidate_count": { "type": "integer", "minimum": 0 },
+        "required_candidate_coverage_rate": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "recommended_mode": { "enum": ["compact_retrieval", "full_normalized"] },
+    "retrieval_quality": { "$ref": "#/$defs/retrievalQuality" },
+    "diagnostics": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "compact": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "tokenBucket": {
+      "type": "object",
+      "required": ["estimated_tokens"],
+      "properties": {
+        "estimated_tokens": { "type": "integer", "minimum": 0 },
+        "basis": { "enum": ["normalized_source_surrogate", "external_baseline_files"] },
+        "source": { "type": "string" },
+        "source_mode": { "type": "string" },
+        "noise_metrics": { "$ref": "#/$defs/tokenPathNoiseMetrics" },
+        "table_count": { "type": "integer", "minimum": 0 },
+        "table_candidate_count": { "type": "integer", "minimum": 0 },
+        "file_count": { "type": "integer", "minimum": 0 },
+        "total_bytes": { "type": "integer", "minimum": 0 },
+        "text_file_count": { "type": "integer", "minimum": 0 },
+        "binary_file_count": { "type": "integer", "minimum": 0 },
+        "skipped_file_count": { "type": "integer", "minimum": 0 },
+        "filtered_file_count": { "type": "integer", "minimum": 0 },
+        "included_extensions": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "source_filter": {
+          "type": "object",
+          "required": ["include_extensions", "exclude_extensions"],
+          "properties": {
+            "include_extensions": {
+              "anyOf": [
+                { "type": "null" },
+                {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              ]
+            },
+            "exclude_extensions": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          },
+          "additionalProperties": false
+        },
+        "baseline_input_kind": { "enum": ["file", "directory"] },
+        "baseline_quality": {
+          "enum": ["decoded_text", "mixed", "binary_size_heuristic_only", "large_text_size_heuristic_only", "empty"]
+        },
+        "recommended_baseline_action_cn": { "type": "string", "minLength": 1 },
+        "estimator_version": { "type": "string", "minLength": 1 },
+        "estimation_mode": { "type": "string", "minLength": 1 },
+        "input_fingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "estimation_methods": {
+          "type": "object",
+          "required": ["decoded_text_file_count", "binary_size_heuristic_file_count", "large_text_size_heuristic_file_count"],
+          "properties": {
+            "decoded_text_file_count": { "type": "integer", "minimum": 0 },
+            "binary_size_heuristic_file_count": { "type": "integer", "minimum": 0 },
+            "large_text_size_heuristic_file_count": { "type": "integer", "minimum": 0 }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": true
+    },
+    "retrievalQuality": {
+      "type": "object",
+      "required": [
+        "non_empty_context",
+        "traceable_context",
+        "fallback_used",
+        "included_source_count",
+        "total_source_count",
+        "effective_savings_vs_direct"
+      ],
+      "properties": {
+        "non_empty_context": { "type": "boolean" },
+        "traceable_context": { "type": "boolean" },
+        "fallback_used": { "type": "boolean" },
+        "partial_source_coverage": { "type": "boolean" },
+        "source_coverage_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "included_source_count": { "type": "integer", "minimum": 0 },
+        "total_source_count": { "type": "integer", "minimum": 0 },
+        "effective_savings_vs_direct": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "additionalProperties": true
+    },
+    "tokenPathNoiseMetrics": {
+      "type": "object",
+      "required": ["estimated_noise_tokens", "estimated_useful_tokens", "noise_ratio"],
+      "properties": {
+        "estimated_noise_tokens": { "type": "integer", "minimum": 0 },
+        "estimated_useful_tokens": { "type": "integer", "minimum": 0 },
+        "noise_ratio": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "noiseMetrics": {
+      "type": "object",
+      "required": [
+        "measurement_mode",
+        "noise_basis",
+        "total_index_chunk_count",
+        "included_chunk_count",
+        "excluded_chunk_count",
+        "page_furniture_filtered_count",
+        "page_furniture_filtered_tokens",
+        "disclaimer_filtered_count",
+        "disclaimer_filtered_tokens",
+        "document_chunk_excluded_count",
+        "document_chunk_excluded_tokens",
+        "non_returned_fine_grained_chunk_count",
+        "non_returned_fine_grained_tokens",
+        "compact_noise_tokens",
+        "estimated_noise_tokens_removed",
+        "noise_reduction_rate",
+        "compact_default_excludes"
+      ],
+      "properties": {
+        "measurement_mode": { "enum": ["query_index_chunks", "token_delta_fallback"] },
+        "noise_basis": { "const": "deterministic_query_scoped_filtering" },
+        "total_index_chunk_count": { "type": "integer", "minimum": 0 },
+        "included_chunk_count": { "type": "integer", "minimum": 0 },
+        "excluded_chunk_count": { "type": "integer", "minimum": 0 },
+        "page_furniture_filtered_count": { "type": "integer", "minimum": 0 },
+        "page_furniture_filtered_tokens": { "type": "integer", "minimum": 0 },
+        "disclaimer_filtered_count": { "type": "integer", "minimum": 0 },
+        "disclaimer_filtered_tokens": { "type": "integer", "minimum": 0 },
+        "document_chunk_excluded_count": { "type": "integer", "minimum": 0 },
+        "document_chunk_excluded_tokens": { "type": "integer", "minimum": 0 },
+        "non_returned_fine_grained_chunk_count": { "type": "integer", "minimum": 0 },
+        "non_returned_fine_grained_tokens": { "type": "integer", "minimum": 0 },
+        "compact_noise_tokens": { "type": "integer", "minimum": 0 },
+        "estimated_noise_tokens_removed": { "type": "integer", "minimum": 0 },
+        "noise_reduction_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "compact_default_excludes": {
+          "type": "object",
+          "required": ["content_roles", "chunk_levels"],
+          "properties": {
+            "content_roles": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "chunk_levels": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,55 @@
+name: Bug 报告
+description: 报告可公开复现的 Core OSS 问题
+title: "[Bug] "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: 请勿上传客户文件、个人信息、API key、`.env`、本机绝对路径或未脱敏日志。安全漏洞请使用 GitHub 私密报告。
+  - type: input
+    id: version
+    attributes:
+      label: Commit / 版本
+      placeholder: git rev-parse HEAD 或 CLI --version
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: 涉及模块
+      options: [Compiler / Parser, Validator / Conformance, CLI / MCP, Skill, SDK / Runtime, Package / Schema, Proof / Benchmark, Documentation, Other]
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 最小复现步骤
+      description: 使用公开 fixture 或自行构造的脱敏小样本。
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 预期行为
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际行为与脱敏输出
+    validations:
+      required: true
+  - type: dropdown
+    id: source_mode
+    attributes:
+      label: source mode
+      options: [source_bundled, source_light, 不适用, 不确定]
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: 提交确认
+      options:
+        - label: 我已删除密钥、个人信息、客户材料和本机绝对路径。
+          required: true
+        - label: 我确认这不是需要私密披露的安全漏洞。
+          required: true

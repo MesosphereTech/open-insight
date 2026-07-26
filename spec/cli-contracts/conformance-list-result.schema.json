@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/conformance-list-result.v0.1.schema.json",
+  "title": "Open Insight CLI Conformance List Result",
+  "type": "object",
+  "required": ["schema_version", "status", "assets", "commands"],
+  "properties": {
+    "schema_version": { "const": "open-insight.conformance.v0.1" },
+    "status": { "enum": ["ok", "failed"] },
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "path",
+          "expected_validation_status",
+          "expected_issue_codes",
+          "purpose",
+          "reader_studio_focus",
+          "tests"
+        ],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "kind": { "type": "string", "minLength": 1 },
+          "path": { "type": "string", "minLength": 1 },
+          "expected_validation_status": { "enum": ["valid", "valid_with_warnings", "invalid"] },
+          "expected_issue_codes": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "purpose": { "type": "string" },
+          "reader_studio_focus": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "tests": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "commands": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": true
+}

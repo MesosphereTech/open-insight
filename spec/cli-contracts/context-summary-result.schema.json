@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/context-summary-result.v0.1.schema.json",
+  "title": "Open Insight CLI Context Summary Result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "status",
+    "profile",
+    "package_id",
+    "title",
+    "spec_version",
+    "source_mode",
+    "source_refs",
+    "lineage_refs",
+    "parse_diagnostic_ids",
+    "counts",
+    "capabilities",
+    "llm_reading_strategy"
+  ],
+  "properties": {
+    "schema_version": { "const": "open-insight.context-summary.v0.1" },
+    "status": { "$ref": "#/$defs/status" },
+    "profile": { "$ref": "#/$defs/profile" },
+    "package_id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "spec_version": { "type": "string", "minLength": 1 },
+    "source_mode": { "$ref": "#/$defs/sourceMode" },
+    "source_refs": { "$ref": "#/$defs/stringArray" },
+    "lineage_refs": { "$ref": "#/$defs/stringArray" },
+    "parse_diagnostic_ids": { "$ref": "#/$defs/stringArray" },
+    "counts": {
+      "type": "object",
+      "additionalProperties": { "type": "integer", "minimum": 0 }
+    },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": { "type": "boolean" }
+    },
+    "llm_reading_strategy": {
+      "type": "object",
+      "required": [
+        "read_order",
+        "preferred_chunk_access",
+        "evidence_boundary",
+        "raw_sources_bundled",
+        "normalized_sources_available",
+        "query_index_available",
+        "source_verification_required",
+        "base_package_mutation_allowed",
+        "model_required",
+        "must_disclose_source_light",
+        "next_cli_commands",
+        "next_mcp_tools"
+      ],
+      "properties": {
+        "read_order": { "$ref": "#/$defs/stringArray" },
+        "preferred_chunk_access": { "enum": ["sqlite_fts", "direct_jsonl_index", "rebuild_sql", "runtime_fallback"] },
+        "evidence_boundary": {
+          "enum": [
+            "raw_and_normalized_sources",
+            "raw_sources_bundled",
+            "normalized_sources_without_raw",
+            "normalized_sources_available",
+            "unknown"
+          ]
+        },
+        "raw_sources_bundled": { "type": "boolean" },
+        "normalized_sources_available": { "type": "boolean" },
+        "query_index_available": { "type": "boolean" },
+        "source_verification_required": { "type": "boolean" },
+        "base_package_mutation_allowed": { "type": "boolean" },
+        "model_required": { "type": "boolean" },
+        "must_disclose_source_light": { "type": "boolean" },
+        "next_cli_commands": { "$ref": "#/$defs/stringArray" },
+        "next_mcp_tools": { "$ref": "#/$defs/stringArray" }
+      },
+      "additionalProperties": true
+    },
+    "query_index": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["available"],
+          "properties": {
+            "available": { "const": false }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "available",
+            "schema_version",
+            "status",
+            "engine",
+            "fts",
+            "rebuildable",
+            "source_of_truth",
+            "database_available",
+            "rebuild_sql_available",
+            "direct_index_available",
+            "access_strategy",
+            "message",
+            "provenance_tables",
+            "provenance_tables_available",
+            "sqlite_table_counts",
+            "spreadsheet_formula_available",
+            "spreadsheet_formula_count",
+            "indexed_paths",
+            "source_refs",
+            "lineage_refs",
+            "parse_diagnostic_ids"
+          ],
+          "properties": {
+            "available": { "const": true },
+            "schema_version": { "type": "string", "minLength": 1 },
+            "status": { "type": "string", "minLength": 1 },
+            "engine": { "type": "string", "minLength": 1 },
+            "fts": { "type": "boolean" },
+            "rebuildable": { "type": "boolean" },
+            "source_of_truth": { "type": "boolean" },
+            "index_role": { "type": "string", "minLength": 1 },
+            "database_path": { "type": "string", "minLength": 1 },
+            "database_available": { "type": "boolean" },
+            "rebuild_sql_path": { "type": "string", "minLength": 1 },
+            "rebuild_sql_available": { "type": "boolean" },
+            "direct_index_path": { "type": "string", "minLength": 1 },
+            "direct_index_available": { "type": "boolean" },
+            "direct_index_format": { "type": "string", "minLength": 1 },
+            "access_strategy": {
+              "enum": ["sqlite_database", "direct_index_jsonl", "rebuild_sql", "normalized_source_fallback"]
+            },
+            "message": { "type": "string", "minLength": 1 },
+            "provenance_tables": { "$ref": "#/$defs/stringArray" },
+            "provenance_tables_available": { "type": "boolean" },
+            "sqlite_table_counts": { "$ref": "#/$defs/sqliteTableCounts" },
+            "spreadsheet_formula_path": { "type": "string", "minLength": 1 },
+            "spreadsheet_formula_available": { "type": "boolean" },
+            "spreadsheet_formula_count": { "type": "integer", "minimum": 0 },
+            "indexed_paths": { "$ref": "#/$defs/stringArray" },
+            "source_refs": { "$ref": "#/$defs/stringArray" },
+            "lineage_refs": { "$ref": "#/$defs/stringArray" },
+            "parse_diagnostic_ids": { "$ref": "#/$defs/stringArray" }
+          },
+          "additionalProperties": true
+        }
+      ]
+    },
+    "reason": { "type": "string", "minLength": 1 }
+  },
+  "$defs": {
+    "status": { "enum": ["ok", "unsupported"] },
+    "profile": { "enum": ["semantic_capsule", "v0_1_compat"] },
+    "sourceMode": { "enum": ["source_bundled", "source_light", "unknown"] },
+    "stringArray": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "sqliteTableCounts": {
+      "type": "object",
+      "required": ["chunks", "parse_diagnostics", "source_maps", "digests"],
+      "properties": {
+        "chunks": { "type": "integer", "minimum": 0 },
+        "page_furniture": { "type": "integer", "minimum": 0 },
+        "spreadsheet_formulas": { "type": "integer", "minimum": 0 },
+        "parse_diagnostics": { "type": "integer", "minimum": 0 },
+        "source_maps": { "type": "integer", "minimum": 0 },
+        "digests": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": true
+}

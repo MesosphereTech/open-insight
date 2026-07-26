@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/model-list-result.v0.1.schema.json",
+  "title": "Open Insight CLI Model List Result",
+  "type": "object",
+  "required": ["schema_version", "status", "model_enabled"],
+  "properties": {
+    "schema_version": { "const": "open-insight.model-list.v0.1" },
+    "status": { "enum": ["ok", "blocked", "failed"] },
+    "model_enabled": { "type": "boolean" },
+    "source": { "type": "string", "minLength": 1 },
+    "model_config": {
+      "type": "object",
+      "required": ["source", "baseUrl", "name"],
+      "properties": {
+        "source": { "type": "string", "minLength": 1 },
+        "baseUrl": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": true
+    },
+    "model_count": { "type": "integer", "minimum": 0 },
+    "models": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "message": { "type": "string" },
+    "reason": { "type": "string", "minLength": 1 },
+    "diagnostic_code": {
+      "enum": ["MODEL_ENDPOINT_CONFIG_MISSING", "MODEL_LIST_REQUEST_FAILED", "MODEL_LIST_RESPONSE_INVALID"]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": { "const": "ok" }
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "required": ["source", "model_config", "model_count", "models", "message"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": { "enum": ["blocked", "failed"] }
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "required": ["reason"]
+      }
+    }
+  ],
+  "additionalProperties": true
+}

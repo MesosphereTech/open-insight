@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/pack-result.v0.1.schema.json",
+  "title": "Open Insight CLI Pack Result",
+  "type": "object",
+  "required": ["schema_version", "status"],
+  "properties": {
+    "schema_version": { "const": "open-insight.pack.v0.1" },
+    "status": { "enum": ["packed", "refused"] },
+    "outputFile": { "type": "string", "minLength": 1 },
+    "fileCount": { "type": "integer", "minimum": 0 },
+    "validation_status": { "enum": ["valid", "valid_with_warnings", "invalid"] },
+    "forced": { "type": "boolean" },
+    "reason": { "type": "string", "minLength": 1 },
+    "validation": {
+      "type": "object",
+      "required": ["status", "issues"],
+      "properties": {
+        "status": { "enum": ["valid", "valid_with_warnings", "invalid"] },
+        "issues": { "type": "array" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": { "const": "packed" }
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "required": ["outputFile", "fileCount", "validation_status", "forced"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": { "const": "refused" }
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "required": ["reason", "validation"]
+      }
+    }
+  ],
+  "additionalProperties": true
+}

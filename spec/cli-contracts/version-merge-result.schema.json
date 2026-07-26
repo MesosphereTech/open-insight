@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/version-merge-result.v0.1.schema.json",
+  "title": "Open Insight CLI Version Merge Result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "status",
+    "base_package_id",
+    "base_title",
+    "other_package_id",
+    "other_title",
+    "merged_package_id",
+    "merged_title",
+    "branch_name",
+    "reason",
+    "output_file",
+    "commit_id",
+    "base_package_digest",
+    "other_package_digest",
+    "file_count",
+    "merge_policy",
+    "version_paths",
+    "safety"
+  ],
+  "properties": {
+    "schema_version": { "const": "open-insight.version-merge.v0.1" },
+    "status": { "const": "merge_recorded" },
+    "base_package_id": { "type": "string", "minLength": 1 },
+    "base_title": { "type": "string", "minLength": 1 },
+    "other_package_id": { "type": "string", "minLength": 1 },
+    "other_title": { "type": "string", "minLength": 1 },
+    "merged_package_id": { "type": "string", "minLength": 1 },
+    "merged_title": { "type": "string", "minLength": 1 },
+    "branch_name": { "type": "string", "minLength": 1 },
+    "reason": {
+      "oneOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }]
+    },
+    "output_file": { "type": "string", "minLength": 1 },
+    "commit_id": { "type": "string", "minLength": 1 },
+    "base_package_digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "other_package_digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "file_count": { "type": "integer", "minimum": 1 },
+    "merge_policy": {
+      "type": "object",
+      "required": ["mode", "parent_mutation", "strategy"],
+      "properties": {
+        "mode": { "const": "explicit_non_destructive" },
+        "parent_mutation": { "const": false },
+        "strategy": { "const": "record_only" }
+      },
+      "additionalProperties": true
+    },
+    "version_paths": {
+      "type": "object",
+      "required": ["parents", "refs", "commits", "merge_log", "diff_summary"],
+      "properties": {
+        "parents": { "type": "string", "minLength": 1 },
+        "refs": { "type": "string", "minLength": 1 },
+        "commits": { "type": "string", "minLength": 1 },
+        "merge_log": { "type": "string", "minLength": 1 },
+        "diff_summary": { "type": "string", "minLength": 1 },
+        "rollback_log": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": true
+    },
+    "safety": {
+      "type": "object",
+      "required": ["base_package_mutation", "model_invoked", "package_code_execution"],
+      "properties": {
+        "base_package_mutation": { "const": false },
+        "model_invoked": { "const": false },
+        "package_code_execution": { "const": false }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

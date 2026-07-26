@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/v0.1/domain-pack.schema.json",
+  "title": "Open Insight Domain Pack",
+  "type": "object",
+  "required": [
+    "domain_id",
+    "namespace",
+    "version",
+    "title",
+    "market_focus",
+    "audience",
+    "default_title",
+    "default_package_id",
+    "template_sections",
+    "required_questions",
+    "metric_blueprints",
+    "evidence_rules",
+    "view_rules",
+    "review_rules",
+    "default_sources"
+  ],
+  "properties": {
+    "domain_id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+    "namespace": { "type": "string", "pattern": "^[A-Za-z0-9_.-]+$" },
+    "version": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "market_focus": { "type": "string", "minLength": 1 },
+    "audience": { "type": "string", "minLength": 1 },
+    "default_title": { "type": "string", "minLength": 1 },
+    "default_package_id": { "type": "string", "pattern": "^[A-Za-z0-9_.-]+$" },
+    "description": { "type": "string" },
+    "template_sections": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "required_questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["question_id", "question", "why_required", "evidence_expectation"],
+        "properties": {
+          "question_id": { "type": "string", "minLength": 1 },
+          "question": { "type": "string", "minLength": 1 },
+          "why_required": { "type": "string", "minLength": 1 },
+          "evidence_expectation": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": true
+      },
+      "minItems": 1
+    },
+    "metric_blueprints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["metric_id", "name", "definition", "preferred_columns"],
+        "properties": {
+          "metric_id": { "type": "string", "minLength": 1 },
+          "name": { "type": "string", "minLength": 1 },
+          "definition": { "type": "string", "minLength": 1 },
+          "preferred_columns": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "aggregation": {
+            "type": "string",
+            "enum": ["sum", "count", "latest_value", "ratio"]
+          },
+          "field_roles": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["role", "preferred_columns"],
+              "properties": {
+                "role": {
+                  "type": "string",
+                  "enum": ["summary_value", "detail_value", "entity_id", "ratio_value", "numerator", "denominator"]
+                },
+                "preferred_columns": {
+                  "type": "array",
+                  "items": { "type": "string", "minLength": 1 },
+                  "minItems": 1
+                },
+                "aggregation": {
+                  "type": "string",
+                  "enum": ["sum", "count", "latest_value", "ratio"]
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "numerator_columns": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "denominator_columns": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "evidence_requirement": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": true
+      }
+    },
+    "evidence_rules": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "view_rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["view_id", "title", "intent", "required_trace"],
+        "properties": {
+          "view_id": { "type": "string", "minLength": 1 },
+          "title": { "type": "string", "minLength": 1 },
+          "intent": { "type": "string", "minLength": 1 },
+          "required_trace": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["view_block_id", "claim_id", "metric_id", "evidence_id", "source_ref"]
+            },
+            "minItems": 1
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "review_rules": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "default_sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "path", "type"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "path": { "type": "string", "minLength": 1 },
+          "type": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

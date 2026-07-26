@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/version-derive-result.v0.1.schema.json",
+  "title": "Open Insight CLI Version Derive Result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "status",
+    "source_package_id",
+    "source_title",
+    "derived_package_id",
+    "derived_title",
+    "branch_name",
+    "reason",
+    "output_file",
+    "commit_id",
+    "source_package_digest",
+    "file_count",
+    "version_paths",
+    "safety"
+  ],
+  "properties": {
+    "schema_version": { "const": "open-insight.version-derive.v0.1" },
+    "status": { "const": "derived" },
+    "source_package_id": { "type": "string", "minLength": 1 },
+    "source_title": { "type": "string", "minLength": 1 },
+    "derived_package_id": { "type": "string", "minLength": 1 },
+    "derived_title": { "type": "string", "minLength": 1 },
+    "branch_name": { "type": "string", "minLength": 1 },
+    "reason": {
+      "oneOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }]
+    },
+    "output_file": { "type": "string", "minLength": 1 },
+    "commit_id": { "type": "string", "minLength": 1 },
+    "source_package_digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "file_count": { "type": "integer", "minimum": 1 },
+    "version_paths": {
+      "type": "object",
+      "required": ["parents", "refs", "commits"],
+      "properties": {
+        "parents": { "type": "string", "minLength": 1 },
+        "refs": { "type": "string", "minLength": 1 },
+        "commits": { "type": "string", "minLength": 1 },
+        "rollback_log": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": true
+    },
+    "safety": {
+      "type": "object",
+      "required": ["base_package_mutation", "model_invoked", "package_code_execution"],
+      "properties": {
+        "base_package_mutation": { "const": false },
+        "model_invoked": { "const": false },
+        "package_code_execution": { "const": false }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

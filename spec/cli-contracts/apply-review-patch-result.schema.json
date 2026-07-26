@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/apply-review-patch-result.v0.1.schema.json",
+  "title": "Open Insight CLI Apply Review Patch Result",
+  "type": "object",
+  "required": ["schema_version", "status", "patch_id", "output_dir"],
+  "properties": {
+    "schema_version": { "const": "open-insight.apply-review-patch.v0.1" },
+    "status": { "enum": ["applied", "blocked"] },
+    "output_dir": { "type": "string", "minLength": 1 },
+    "source_package_id": { "type": "string", "minLength": 1 },
+    "applied_package_id": { "type": "string", "minLength": 1 },
+    "patch_id": { "type": "string", "minLength": 1 },
+    "review_state": { "const": "applied" },
+    "target_claim_id": { "type": "string", "minLength": 1 },
+    "previous_status": { "type": "string", "minLength": 1 },
+    "next_status": { "type": "string", "minLength": 1 },
+    "claim_status_changed": { "const": true },
+    "file_count": { "type": "integer", "minimum": 0 },
+    "validation_status": { "enum": ["valid", "valid_with_warnings", "invalid"] },
+    "validation": {
+      "type": "object",
+      "required": ["status", "issues"],
+      "properties": {
+        "status": { "enum": ["valid", "valid_with_warnings", "invalid"] },
+        "issues": { "type": "array" }
+      },
+      "additionalProperties": true
+    },
+    "reason": { "type": "string", "minLength": 1 }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": { "const": "applied" }
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "required": [
+          "source_package_id",
+          "applied_package_id",
+          "review_state",
+          "target_claim_id",
+          "previous_status",
+          "next_status",
+          "claim_status_changed",
+          "file_count",
+          "validation_status",
+          "validation"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": { "const": "blocked" }
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "required": ["reason"]
+      }
+    }
+  ],
+  "additionalProperties": true
+}

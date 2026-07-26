@@ -1,0 +1,252 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/context-compact-retrieval-result.v0.1.schema.json",
+  "title": "Open Insight CLI Context Compact Retrieval Result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "status",
+    "profile",
+    "package_id",
+    "query",
+    "token_budget",
+    "estimated_tokens",
+    "facts",
+    "key_numbers",
+    "tables",
+    "page_cues",
+    "next_fragment_reads",
+    "coverage_hints",
+    "source_refs",
+    "lineage_refs",
+    "parse_diagnostic_ids",
+    "source_map_refs",
+    "retrieval_strategy",
+    "fallback_used",
+    "source_coverage"
+  ],
+  "properties": {
+    "schema_version": { "const": "open-insight.context-compact-retrieval.v0.1" },
+    "status": { "$ref": "#/$defs/status" },
+    "profile": { "$ref": "#/$defs/profile" },
+    "package_id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string" },
+    "spec_version": { "type": "string" },
+    "source_mode": { "$ref": "#/$defs/sourceMode" },
+    "query": { "type": "string", "minLength": 1 },
+    "token_budget": { "type": "integer", "minimum": 500, "maximum": 12000 },
+    "estimated_tokens": { "type": "integer", "minimum": 0 },
+    "compacted_from_match_count": { "type": "integer", "minimum": 0 },
+    "included_chunk_count": { "type": "integer", "minimum": 0 },
+    "facts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/compactItem" }
+    },
+    "key_numbers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["value", "snippet", "source_refs", "parse_diagnostic_ids"],
+        "properties": {
+          "value": { "type": "string", "minLength": 1 },
+          "snippet": { "type": "string" },
+          "source_refs": { "$ref": "#/$defs/stringArray" },
+          "lineage_refs": { "$ref": "#/$defs/stringArray" },
+          "parse_diagnostic_ids": { "$ref": "#/$defs/stringArray" },
+          "source_map_refs": { "$ref": "#/$defs/stringArray" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "tables": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/compactItem" }
+    },
+    "page_cues": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/pageCue" }
+    },
+    "next_fragment_reads": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/fragmentRead" }
+    },
+    "coverage_hints": { "$ref": "#/$defs/coverageHints" },
+    "source_refs": { "$ref": "#/$defs/stringArray" },
+    "lineage_refs": { "$ref": "#/$defs/stringArray" },
+    "parse_diagnostic_ids": { "$ref": "#/$defs/stringArray" },
+    "source_map_refs": { "$ref": "#/$defs/stringArray" },
+    "retrieval_strategy": {
+      "enum": [
+        "query_index_exact",
+        "query_index_context_window",
+        "query_index_substring_window",
+        "source_overview_fallback",
+        "normalized_source_fallback"
+      ]
+    },
+    "fallback_used": { "type": "boolean" },
+    "fallback_reason": { "type": "string" },
+    "source_coverage": { "$ref": "#/$defs/sourceCoverage" }
+  },
+  "$defs": {
+    "status": { "enum": ["ok", "unsupported", "degraded"] },
+    "profile": { "enum": ["semantic_capsule", "v0_1_compat"] },
+    "sourceMode": { "enum": ["source_bundled", "source_light", "unknown"] },
+    "stringArray": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "compactItem": {
+      "type": "object",
+      "required": [
+        "chunk_id",
+        "title",
+        "text",
+        "estimated_tokens",
+        "source_refs",
+        "lineage_refs",
+        "parse_diagnostic_ids",
+        "source_map_refs"
+      ],
+      "properties": {
+        "chunk_id": { "type": "string", "minLength": 1 },
+        "title": { "type": "string" },
+        "text": { "type": "string" },
+        "content_role": { "type": "string" },
+        "chunk_level": { "type": "string" },
+        "heading_path": { "$ref": "#/$defs/stringArray" },
+        "estimated_tokens": { "type": "integer", "minimum": 0 },
+        "page_number": { "type": "integer", "minimum": 1 },
+        "line_numbers": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 1 }
+        },
+        "read_order": { "type": "integer", "minimum": 1 },
+        "prev_chunk_id": { "type": "string", "minLength": 1 },
+        "next_chunk_id": { "type": "string", "minLength": 1 },
+        "parent_chunk_id": { "type": "string", "minLength": 1 },
+        "source_refs": { "$ref": "#/$defs/stringArray" },
+        "lineage_refs": { "$ref": "#/$defs/stringArray" },
+        "parse_diagnostic_ids": { "$ref": "#/$defs/stringArray" },
+        "source_map_refs": { "$ref": "#/$defs/stringArray" }
+      },
+      "additionalProperties": true
+    },
+    "pageCue": {
+      "type": "object",
+      "required": [
+        "chunk_id",
+        "title",
+        "location_label",
+        "source_refs",
+        "lineage_refs",
+        "parse_diagnostic_ids",
+        "source_map_refs"
+      ],
+      "properties": {
+        "chunk_id": { "type": "string", "minLength": 1 },
+        "title": { "type": "string" },
+        "location_label": { "type": "string", "minLength": 1 },
+        "page_number": { "type": "integer", "minimum": 1 },
+        "line_numbers": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 1 }
+        },
+        "read_order": { "type": "integer", "minimum": 1 },
+        "source_refs": { "$ref": "#/$defs/stringArray" },
+        "lineage_refs": { "$ref": "#/$defs/stringArray" },
+        "parse_diagnostic_ids": { "$ref": "#/$defs/stringArray" },
+        "source_map_refs": { "$ref": "#/$defs/stringArray" }
+      },
+      "additionalProperties": true
+    },
+    "fragmentRead": {
+      "type": "object",
+      "required": [
+        "chunk_id",
+        "title",
+        "reason_cn",
+        "cli_command",
+        "mcp_tool",
+        "mcp_arguments",
+        "expected_fragment_field",
+        "source_mode_disclosure_required",
+        "source_refs",
+        "lineage_refs",
+        "parse_diagnostic_ids",
+        "source_map_refs"
+      ],
+      "properties": {
+        "chunk_id": { "type": "string", "minLength": 1 },
+        "title": { "type": "string" },
+        "reason_cn": { "type": "string", "minLength": 1 },
+        "cli_command": { "type": "string", "pattern": "context resolve-source" },
+        "mcp_tool": { "const": "open_insight_resolve_source" },
+        "mcp_arguments": {
+          "type": "object",
+          "required": ["target_id"],
+          "properties": {
+            "target_id": { "type": "string", "minLength": 1 }
+          },
+          "additionalProperties": false
+        },
+        "expected_fragment_field": { "const": "normalized_source_fragment" },
+        "source_mode_disclosure_required": { "const": true },
+        "source_refs": { "$ref": "#/$defs/stringArray" },
+        "lineage_refs": { "$ref": "#/$defs/stringArray" },
+        "parse_diagnostic_ids": { "$ref": "#/$defs/stringArray" },
+        "source_map_refs": { "$ref": "#/$defs/stringArray" }
+      },
+      "additionalProperties": true
+    },
+    "coverageHints": {
+      "type": "object",
+      "required": [
+        "query_scope",
+        "covered_heading_paths",
+        "covered_source_refs",
+        "total_candidate_matches",
+        "included_chunk_count",
+        "truncated_by_token_budget",
+        "omitted_candidate_count",
+        "omitted_estimated_tokens",
+        "recommended_next_action",
+        "disclosure_cn"
+      ],
+      "properties": {
+        "query_scope": { "const": "query_scoped_compact_retrieval" },
+        "covered_heading_paths": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/stringArray" }
+        },
+        "covered_source_refs": { "$ref": "#/$defs/stringArray" },
+        "total_candidate_matches": { "type": "integer", "minimum": 0 },
+        "included_chunk_count": { "type": "integer", "minimum": 0 },
+        "truncated_by_token_budget": { "type": "boolean" },
+        "omitted_candidate_count": { "type": "integer", "minimum": 0 },
+        "omitted_estimated_tokens": { "type": "integer", "minimum": 0 },
+        "recommended_next_action": {
+          "enum": ["use_compact_context", "increase_token_budget", "read_normalized_source_fragment"]
+        },
+        "disclosure_cn": { "type": "string", "minLength": 1 },
+        "fallback_used": { "type": "boolean" },
+        "fallback_reason_cn": { "type": "string" },
+        "partial_source_coverage": { "type": "boolean" },
+        "source_coverage_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "source_coverage_reason_cn": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": true
+    },
+    "sourceCoverage": {
+      "type": "object",
+      "required": ["included_source_count", "total_source_count", "included_source_refs"],
+      "properties": {
+        "included_source_count": { "type": "integer", "minimum": 0 },
+        "total_source_count": { "type": "integer", "minimum": 0 },
+        "included_source_refs": { "$ref": "#/$defs/stringArray" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

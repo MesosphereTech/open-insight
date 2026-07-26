@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/context-diagnostics-result.v0.1.schema.json",
+  "title": "Open Insight CLI Context Diagnostics Result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "status",
+    "profile",
+    "package_id",
+    "source_mode",
+    "diagnostics",
+    "source_refs",
+    "lineage_refs",
+    "parse_diagnostic_ids"
+  ],
+  "properties": {
+    "schema_version": { "const": "open-insight.context-diagnostics.v0.1" },
+    "status": { "$ref": "#/$defs/status" },
+    "profile": { "$ref": "#/$defs/profile" },
+    "package_id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string" },
+    "spec_version": { "type": "string" },
+    "source_mode": { "$ref": "#/$defs/sourceMode" },
+    "source_refs": { "$ref": "#/$defs/stringArray" },
+    "lineage_refs": { "$ref": "#/$defs/stringArray" },
+    "parse_diagnostic_ids": { "$ref": "#/$defs/stringArray" },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["diagnostic_id", "severity", "status", "message"],
+        "properties": {
+          "diagnostic_id": { "type": "string", "minLength": 1 },
+          "severity": { "enum": ["info", "warning", "error"] },
+          "status": { "enum": ["ok", "unsupported", "warning", "error"] },
+          "message": { "type": "string", "minLength": 1 },
+          "source_id": { "type": "string", "minLength": 1 },
+          "source_path": { "type": "string", "minLength": 1 },
+          "source_type": { "type": "string", "minLength": 1 },
+          "parser": { "type": "string", "minLength": 1 },
+          "parser_version": { "type": "string", "minLength": 1 },
+          "parser_role": { "type": "string", "minLength": 1 },
+          "normalized_source_path": { "type": "string", "minLength": 1 },
+          "cloud_used": { "type": "boolean" },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "parser_quality_status": { "enum": ["content_ready", "metadata_only_or_weak"] },
+          "recommended_action_cn": { "type": "string", "minLength": 1 },
+          "source_refs": { "$ref": "#/$defs/stringArray" },
+          "lineage_refs": { "$ref": "#/$defs/stringArray" },
+          "parse_diagnostic_ids": { "$ref": "#/$defs/stringArray" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "reason": { "type": "string", "minLength": 1 }
+  },
+  "$defs": {
+    "status": { "enum": ["ok", "unsupported"] },
+    "profile": { "enum": ["semantic_capsule", "v0_1_compat"] },
+    "sourceMode": { "enum": ["source_bundled", "source_light", "unknown"] },
+    "stringArray": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": true
+}

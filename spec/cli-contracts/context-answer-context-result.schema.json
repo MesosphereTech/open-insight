@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/context-answer-context-result.v0.1.schema.json",
+  "title": "Open Insight CLI Answer Context Result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "status",
+    "profile",
+    "package_id",
+    "title",
+    "spec_version",
+    "source_mode",
+    "query",
+    "token_budget",
+    "max_follow_up_reads",
+    "recommended_mode",
+    "answer_handoff_status",
+    "compact_context",
+    "answer_handoff",
+    "resolved_fragments",
+    "unresolved_reads",
+    "context_window",
+    "allowed_reference_ids",
+    "external_llm_instruction_cn",
+    "answer_policy",
+    "safety",
+    "source_refs",
+    "lineage_refs",
+    "parse_diagnostic_ids",
+    "source_map_refs",
+    "diagnostics"
+  ],
+  "properties": {
+    "schema_version": { "const": "open-insight.answer-context.v0.1" },
+    "status": { "enum": ["ready", "needs_more_context", "degraded"] },
+    "profile": { "enum": ["semantic_capsule", "v0_1_compat"] },
+    "package_id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string" },
+    "spec_version": { "type": "string" },
+    "source_mode": { "type": "string" },
+    "query": { "type": "string", "minLength": 1 },
+    "token_budget": { "type": "integer", "minimum": 500, "maximum": 12000 },
+    "max_follow_up_reads": { "type": "integer", "minimum": 1, "maximum": 20 },
+    "recommended_mode": { "enum": ["quick_answer", "audited_answer", "increase_token_budget_or_recompile"] },
+    "answer_handoff_status": { "enum": ["quick_ready", "audit_required", "degraded"] },
+    "compact_context": { "type": "object", "required": ["schema_version"], "properties": { "schema_version": { "const": "open-insight.context-compact-retrieval.v0.1" } }, "additionalProperties": true },
+    "answer_handoff": { "type": "object", "required": ["schema_version"], "properties": { "schema_version": { "const": "open-insight.answer-handoff.v0.1" } }, "additionalProperties": true },
+    "resolved_fragments": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/resolvedFragment" }
+    },
+    "unresolved_reads": {
+      "type": "array",
+      "items": { "type": "object", "required": ["chunk_id"], "properties": { "chunk_id": { "type": "string", "minLength": 1 } }, "additionalProperties": true }
+    },
+    "context_window": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "read_strategy",
+        "estimated_tokens",
+        "compact_estimated_tokens",
+        "fragment_estimated_tokens",
+        "fragment_count",
+        "source_count",
+        "fragments"
+      ],
+      "properties": {
+        "schema_version": { "const": "open-insight.answer-context-window.v0.1" },
+        "read_strategy": { "const": "compact_plus_bounded_fragments" },
+        "estimated_tokens": { "type": "integer", "minimum": 0 },
+        "compact_estimated_tokens": { "type": "integer", "minimum": 0 },
+        "fragment_estimated_tokens": { "type": "integer", "minimum": 0 },
+        "fragment_count": { "type": "integer", "minimum": 0 },
+        "source_count": { "type": "integer", "minimum": 0 },
+        "fragments": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/contextWindowFragment" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "allowed_reference_ids": {
+      "type": "object",
+      "required": ["chunk_ids", "source_refs", "lineage_refs", "parse_diagnostic_ids", "source_map_refs"],
+      "properties": {
+        "chunk_ids": { "$ref": "#/$defs/stringArray" },
+        "source_refs": { "$ref": "#/$defs/stringArray" },
+        "lineage_refs": { "$ref": "#/$defs/stringArray" },
+        "parse_diagnostic_ids": { "$ref": "#/$defs/stringArray" },
+        "source_map_refs": { "$ref": "#/$defs/stringArray" }
+      },
+      "additionalProperties": false
+    },
+    "external_llm_instruction_cn": { "type": "string", "minLength": 1 },
+    "answer_policy": {
+      "type": "object",
+      "required": [
+        "answer_must_use_context",
+        "cite_sources",
+        "disclose_source_light",
+        "unresolved_fragments_require_uncertainty",
+        "output_boundary",
+        "base_package_mutation",
+        "model_invoked_by_open_insight"
+      ],
+      "properties": {
+        "answer_must_use_context": { "const": true },
+        "cite_sources": { "const": true },
+        "disclose_source_light": { "type": "boolean" },
+        "unresolved_fragments_require_uncertainty": { "const": true },
+        "output_boundary": { "const": "external_answer_or_user_material" },
+        "base_package_mutation": { "const": false },
+        "model_invoked_by_open_insight": { "const": false }
+      },
+      "additionalProperties": false
+    },
+    "safety": { "$ref": "#/$defs/safety" },
+    "source_refs": { "$ref": "#/$defs/stringArray" },
+    "lineage_refs": { "$ref": "#/$defs/stringArray" },
+    "parse_diagnostic_ids": { "$ref": "#/$defs/stringArray" },
+    "source_map_refs": { "$ref": "#/$defs/stringArray" },
+    "diagnostics": { "$ref": "#/$defs/stringArray" }
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "stringArray": { "type": "array", "items": { "type": "string" } },
+    "traceFields": {
+      "type": "object",
+      "required": ["source_refs", "lineage_refs", "parse_diagnostic_ids", "source_map_refs"],
+      "properties": {
+        "source_refs": { "$ref": "#/$defs/stringArray" },
+        "lineage_refs": { "$ref": "#/$defs/stringArray" },
+        "parse_diagnostic_ids": { "$ref": "#/$defs/stringArray" },
+        "source_map_refs": { "$ref": "#/$defs/stringArray" }
+      }
+    },
+    "contextWindowFragment": {
+      "allOf": [
+        { "$ref": "#/$defs/traceFields" },
+        {
+          "type": "object",
+          "required": ["target_id", "title", "text", "estimated_tokens"],
+          "properties": {
+            "target_id": { "type": "string", "minLength": 1 },
+            "title": { "type": "string" },
+            "text": { "type": "string" },
+            "estimated_tokens": { "type": "integer", "minimum": 0 }
+          }
+        }
+      ]
+    },
+    "resolvedFragment": {
+      "allOf": [
+        { "$ref": "#/$defs/traceFields" },
+        {
+          "type": "object",
+          "required": ["target_id", "title", "status", "reason_cn", "source_mode_disclosure_required"],
+          "properties": {
+            "target_id": { "type": "string", "minLength": 1 },
+            "title": { "type": "string" },
+            "status": { "enum": ["resolved", "unresolved"] },
+            "reason_cn": { "type": "string" },
+            "source_mode_disclosure_required": { "const": true },
+            "normalized_source_fragment": { "type": "object", "additionalProperties": true }
+          }
+        }
+      ]
+    },
+    "safety": {
+      "type": "object",
+      "required": ["model_invoked", "env_recorded", "api_key_recorded", "package_code_executed", "base_package_mutation"],
+      "properties": {
+        "model_invoked": { "const": false },
+        "env_recorded": { "const": false },
+        "api_key_recorded": { "const": false },
+        "package_code_executed": { "const": false },
+        "base_package_mutation": { "const": false }
+      },
+      "additionalProperties": false
+    }
+  }
+}

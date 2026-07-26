@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/inspect-summary.v0.1.schema.json",
+  "title": "Open Insight CLI Inspect Summary",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "package_id",
+    "title",
+    "spec_version",
+    "package_type",
+    "counts",
+    "files",
+    "validation",
+    "fallbacks"
+  ],
+  "properties": {
+    "schema_version": { "const": "open-insight.inspect-summary.v0.1" },
+    "package_id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "spec_version": { "type": "string", "minLength": 1 },
+    "package_type": { "type": "string", "minLength": 1 },
+    "counts": {
+      "type": "object",
+      "additionalProperties": { "type": "number" }
+    },
+    "files": {
+      "type": "object",
+      "required": ["total", "source_assets", "executable_like"],
+      "properties": {
+        "total": { "type": "number" },
+        "source_assets": { "type": "number" },
+        "executable_like": { "type": "number" }
+      },
+      "additionalProperties": true
+    },
+    "validation": {
+      "type": "object",
+      "required": ["status", "errors", "warnings", "issue_codes"],
+      "properties": {
+        "status": { "enum": ["valid", "valid_with_warnings", "invalid"] },
+        "errors": { "type": "number" },
+        "warnings": { "type": "number" },
+        "issue_codes": {
+          "type": "object",
+          "additionalProperties": { "type": "number" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "fallbacks": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    }
+  },
+  "additionalProperties": true
+}

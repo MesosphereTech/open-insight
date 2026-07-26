@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/context-chunk-search-result.v0.1.schema.json",
+  "title": "Open Insight CLI Context Chunk Search Result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "status",
+    "profile",
+    "package_id",
+    "query",
+    "limit",
+    "matches",
+    "source_refs",
+    "lineage_refs",
+    "parse_diagnostic_ids"
+  ],
+  "properties": {
+    "schema_version": { "const": "open-insight.context-chunk-search.v0.1" },
+    "status": { "$ref": "#/$defs/status" },
+    "profile": { "$ref": "#/$defs/profile" },
+    "package_id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string" },
+    "spec_version": { "type": "string" },
+    "source_mode": { "$ref": "#/$defs/sourceMode" },
+    "source_refs": { "$ref": "#/$defs/stringArray" },
+    "lineage_refs": { "$ref": "#/$defs/stringArray" },
+    "parse_diagnostic_ids": { "$ref": "#/$defs/stringArray" },
+    "query": { "type": "string", "minLength": 1 },
+    "document_id": { "type": "string" },
+    "limit": { "type": "integer", "minimum": 1 },
+    "matches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "chunk_id",
+          "kind",
+          "title",
+          "text",
+          "score",
+          "evidence_ids",
+          "source_refs",
+          "lineage_refs",
+          "parse_diagnostic_ids"
+        ],
+        "properties": {
+          "chunk_id": { "type": "string", "minLength": 1 },
+          "kind": { "type": "string", "minLength": 1 },
+          "title": { "type": "string" },
+          "text": { "type": "string" },
+          "score": { "type": "number" },
+          "retrieval_source": { "enum": ["query_index_sqlite", "query_index_jsonl", "runtime_fallback"] },
+          "index_path": { "type": "string", "minLength": 1 },
+          "source_id": { "type": "string", "minLength": 1 },
+          "normalized_source_path": { "type": "string", "minLength": 1 },
+          "evidence_ids": { "$ref": "#/$defs/stringArray" },
+          "source_refs": { "$ref": "#/$defs/stringArray" },
+          "lineage_refs": { "$ref": "#/$defs/stringArray" },
+          "parse_diagnostic_ids": { "$ref": "#/$defs/stringArray" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "reason": { "type": "string", "minLength": 1 }
+  },
+  "$defs": {
+    "status": { "enum": ["ok", "unsupported"] },
+    "profile": { "enum": ["semantic_capsule", "v0_1_compat"] },
+    "sourceMode": { "enum": ["source_bundled", "source_light", "unknown"] },
+    "stringArray": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": true
+}

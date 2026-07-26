@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/v0.1/manifest.schema.json",
+  "title": "Insight Manifest",
+  "type": "object",
+  "required": [
+    "spec_version",
+    "package_id",
+    "package_type",
+    "title",
+    "created_at",
+    "required_capabilities"
+  ],
+  "properties": {
+    "spec_version": { "type": "string" },
+    "package_id": { "type": "string", "minLength": 1 },
+    "package_type": { "const": "insight" },
+    "title": { "type": "string", "minLength": 1 },
+    "description": { "type": "string" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "required_capabilities": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "optional_capabilities": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "extensions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["namespace", "version", "required"],
+        "properties": {
+          "namespace": { "type": "string" },
+          "version": { "type": "string" },
+          "required": { "type": "boolean" },
+          "domain_id": { "type": "string" },
+          "title": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "fallbacks": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "request_context": {
+      "type": "object",
+      "required": ["parent_package_id", "source_request_id"],
+      "properties": {
+        "parent_package_id": { "type": "string", "minLength": 1 },
+        "parent_title": { "type": "string" },
+        "source_request_id": { "type": "string", "minLength": 1 },
+        "generated_from": { "type": "string" },
+        "affected_findings": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "response_context": {
+      "type": "object",
+      "required": ["parent_package_id", "request_package_id", "source_request_id", "response_id", "response_state"],
+      "properties": {
+        "parent_package_id": { "type": "string", "minLength": 1 },
+        "parent_title": { "type": "string" },
+        "request_package_id": { "type": "string", "minLength": 1 },
+        "source_request_id": { "type": "string", "minLength": 1 },
+        "response_id": { "type": "string", "minLength": 1 },
+        "response_state": { "type": "string", "minLength": 1 },
+        "generated_from": { "type": "string" },
+        "affected_findings": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

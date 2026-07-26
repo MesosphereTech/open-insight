@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/review-patch-result.v0.1.schema.json",
+  "title": "Open Insight CLI Review Patch Result",
+  "type": "object",
+  "required": ["schema_version", "status", "patch_id", "decision", "output_dir"],
+  "properties": {
+    "schema_version": { "const": "open-insight.review-patch.v0.1" },
+    "status": { "enum": ["reviewed", "blocked"] },
+    "decision": { "enum": ["approve", "reject"] },
+    "output_dir": { "type": "string", "minLength": 1 },
+    "source_package_id": { "type": "string", "minLength": 1 },
+    "reviewed_package_id": { "type": "string", "minLength": 1 },
+    "patch_id": { "type": "string", "minLength": 1 },
+    "review_state": { "enum": ["approved_pending_apply", "rejected"] },
+    "target_claim_id": { "type": "string", "minLength": 1 },
+    "target_claim_status": { "type": "string", "minLength": 1 },
+    "claim_status_changed": { "const": false },
+    "file_count": { "type": "integer", "minimum": 0 },
+    "validation_status": { "enum": ["valid", "valid_with_warnings", "invalid"] },
+    "validation": {
+      "type": "object",
+      "required": ["status", "issues"],
+      "properties": {
+        "status": { "enum": ["valid", "valid_with_warnings", "invalid"] },
+        "issues": { "type": "array" }
+      },
+      "additionalProperties": true
+    },
+    "reason": { "type": "string", "minLength": 1 }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": { "const": "reviewed" }
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "required": [
+          "source_package_id",
+          "reviewed_package_id",
+          "review_state",
+          "target_claim_id",
+          "target_claim_status",
+          "claim_status_changed",
+          "file_count",
+          "validation_status",
+          "validation"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": { "const": "blocked" }
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "required": ["reason"]
+      }
+    }
+  ],
+  "additionalProperties": true
+}

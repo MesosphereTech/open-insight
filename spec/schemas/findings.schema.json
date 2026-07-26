@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/v0.1/findings.schema.json",
+  "title": "Insight Claim JSONL Record",
+  "type": "object",
+  "required": ["claim_id", "status", "summary", "evidence_ids"],
+  "properties": {
+    "claim_id": { "type": "string" },
+    "status": { "type": "string" },
+    "summary": { "type": "string" },
+    "generation_status": { "type": "string" },
+    "review_status": { "type": "string" },
+    "review_state": { "type": "string" },
+    "confirmation_scope": { "type": "string" },
+    "review_note": { "type": "string" },
+    "review_patch_id": { "type": "string" },
+    "supporting_response_claim_ids": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "supporting_response_evidence_ids": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "review_status_changed_at": { "type": "string", "format": "date-time" },
+    "review_status_changed_by": { "type": "string" },
+    "edited_by": { "type": "string" },
+    "metric_ids": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "evidence_ids": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "created_by": { "type": "string" }
+  },
+  "additionalProperties": true
+}

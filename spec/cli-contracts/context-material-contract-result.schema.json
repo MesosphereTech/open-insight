@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/context-material-contract-result.v0.1.schema.json",
+  "title": "Open Insight CLI Context User Material Contract Result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "status",
+    "profile",
+    "package_id",
+    "title",
+    "spec_version",
+    "source_mode",
+    "source_refs",
+    "lineage_refs",
+    "parse_diagnostic_ids",
+    "allowed_outputs",
+    "required_citation_fields",
+    "required_sections",
+    "recommended_context_tools",
+    "output_boundary",
+    "base_package_mutation",
+    "model_required_by_open_insight",
+    "source_mode_disclosure_required",
+    "source_verification_required",
+    "preferred_chunk_access",
+    "evidence_boundary"
+  ],
+  "properties": {
+    "schema_version": { "const": "open-insight.user-material-contract.v0.1" },
+    "status": { "$ref": "#/$defs/status" },
+    "profile": { "$ref": "#/$defs/profile" },
+    "package_id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "spec_version": { "type": "string", "minLength": 1 },
+    "source_mode": { "$ref": "#/$defs/sourceMode" },
+    "source_refs": { "$ref": "#/$defs/stringArray" },
+    "lineage_refs": { "$ref": "#/$defs/stringArray" },
+    "parse_diagnostic_ids": { "$ref": "#/$defs/stringArray" },
+    "allowed_outputs": {
+      "type": "array",
+      "items": {
+        "enum": ["brief", "html", "word_outline", "ppt_outline", "qa", "email", "action_list", "web_copy", "analysis_note"]
+      },
+      "minItems": 1
+    },
+    "required_citation_fields": {
+      "type": "array",
+      "items": {
+        "enum": ["source_refs", "lineage_refs", "parse_diagnostic_ids", "source_map_refs"]
+      },
+      "minItems": 1
+    },
+    "required_sections": {
+      "type": "array",
+      "items": {
+        "enum": ["summary", "key_facts_or_numbers", "sources_and_evidence", "human_review_points", "unanswerable_or_missing_data"]
+      },
+      "minItems": 1
+    },
+    "recommended_context_tools": {
+      "type": "object",
+      "required": ["cli", "mcp"],
+      "properties": {
+        "cli": { "$ref": "#/$defs/stringArray" },
+        "mcp": { "$ref": "#/$defs/stringArray" }
+      },
+      "additionalProperties": false
+    },
+    "output_boundary": { "const": "external_file_or_overlay_or_derived_package" },
+    "base_package_mutation": { "const": false },
+    "model_required_by_open_insight": { "const": false },
+    "source_mode_disclosure_required": { "type": "boolean" },
+    "source_verification_required": { "type": "boolean" },
+    "preferred_chunk_access": { "enum": ["sqlite_fts", "direct_jsonl_index", "rebuild_sql", "runtime_fallback"] },
+    "evidence_boundary": {
+      "enum": [
+        "raw_and_normalized_sources",
+        "raw_sources_bundled",
+        "normalized_sources_without_raw",
+        "normalized_sources_available",
+        "unknown"
+      ]
+    }
+  },
+  "$defs": {
+    "status": { "enum": ["ok", "unsupported"] },
+    "profile": { "enum": ["semantic_capsule", "v0_1_compat"] },
+    "sourceMode": { "enum": ["source_bundled", "source_light", "unknown"] },
+    "stringArray": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": true
+}

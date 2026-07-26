@@ -1,0 +1,241 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/response-summary-result.v0.1.schema.json",
+  "title": "Open Insight CLI Response Summary Result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "status",
+    "parent_package_id",
+    "parent_title",
+    "response_package_id",
+    "response_title",
+    "response_id",
+    "response_state",
+    "source_request_id",
+    "parent_request_found",
+    "compatibility_issues",
+    "affected_findings",
+    "answerability_changes",
+    "supplement_quality_warnings",
+    "review_tasks",
+    "merge_plan",
+    "validation"
+  ],
+  "properties": {
+    "schema_version": { "const": "open-insight.response-summary.v0.1" },
+    "status": { "enum": ["ready", "blocked"] },
+    "parent_package_id": { "type": "string", "minLength": 1 },
+    "parent_title": { "type": "string" },
+    "response_package_id": { "type": "string", "minLength": 1 },
+    "response_title": { "type": "string" },
+    "response_id": { "type": "string", "minLength": 1 },
+    "response_state": { "type": "string", "minLength": 1 },
+    "source_request_id": { "type": "string", "minLength": 1 },
+    "parent_request_found": { "type": "boolean" },
+    "request_question": { "type": "string" },
+    "compatibility_issues": {
+      "type": "array",
+      "items": {
+        "oneOf": [{ "type": "string" }, { "$ref": "#/$defs/compatibilityIssue" }]
+      }
+    },
+    "affected_findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["claim_id", "found"],
+        "properties": {
+          "claim_id": { "type": "string", "minLength": 1 },
+          "found": { "type": "boolean" },
+          "status": { "type": "string" },
+          "summary": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "answerability_changes": { "$ref": "#/$defs/answerabilityChanges" },
+    "supplement_quality_warnings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/supplementQualityWarningSummary" }
+    },
+    "review_tasks": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/reviewTask" }
+    },
+    "merge_plan": { "$ref": "#/$defs/mergePlan" },
+    "validation": {
+      "type": "object",
+      "required": ["parent_status", "response_status"],
+      "properties": {
+        "parent_status": { "enum": ["valid", "valid_with_warnings", "invalid"] },
+        "response_status": { "enum": ["valid", "valid_with_warnings", "invalid"] }
+      },
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "compatibilityIssue": {
+      "type": "object",
+      "required": ["severity", "code", "path", "message"],
+      "properties": {
+        "severity": {
+          "type": "string",
+          "enum": ["warning", "error"]
+        },
+        "code": { "type": "string", "minLength": 1 },
+        "path": { "type": "string", "minLength": 1 },
+        "message": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": true
+    },
+    "idList": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "objectIds": {
+      "type": "object",
+      "required": ["datasets", "metrics", "claims", "evidence", "prepared_questions", "lineage_sources"],
+      "properties": {
+        "datasets": { "$ref": "#/$defs/idList" },
+        "metrics": { "$ref": "#/$defs/idList" },
+        "claims": { "$ref": "#/$defs/idList" },
+        "evidence": { "$ref": "#/$defs/idList" },
+        "prepared_questions": { "$ref": "#/$defs/idList" },
+        "lineage_sources": { "$ref": "#/$defs/idList" }
+      },
+      "additionalProperties": true
+    },
+    "mergePlan": {
+      "type": "object",
+      "required": ["mode", "parent_mutation", "additions", "duplicates"],
+      "properties": {
+        "mode": { "const": "explicit_non_destructive" },
+        "parent_mutation": { "const": false },
+        "additions": { "$ref": "#/$defs/objectIds" },
+        "duplicates": { "$ref": "#/$defs/objectIds" }
+      },
+      "additionalProperties": true
+    },
+    "supplementQualityWarningSummary": {
+      "type": "object",
+      "required": ["dataset_id", "quality_warnings"],
+      "properties": {
+        "dataset_id": { "type": "string", "minLength": 1 },
+        "path": { "type": "string", "minLength": 1 },
+        "quality_warnings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/supplementQualityWarning" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "supplementQualityWarning": {
+      "type": "object",
+      "required": ["code", "message"],
+      "properties": {
+        "code": { "type": "string", "minLength": 1 },
+        "message": { "type": "string", "minLength": 1 },
+        "requested_fields": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "reviewTask": {
+      "type": "object",
+      "required": ["task_id", "kind", "priority", "title", "action", "target_type", "target_id", "related_ids", "blocking_merge"],
+      "properties": {
+        "task_id": { "type": "string", "minLength": 1 },
+        "kind": {
+          "type": "string",
+          "enum": ["supplement_quality_review", "response_claim_review", "response_evidence_review", "affected_finding_review"]
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["high", "medium", "low"]
+        },
+        "title": { "type": "string", "minLength": 1 },
+        "action": { "type": "string", "minLength": 1 },
+        "target_type": {
+          "type": "string",
+          "enum": ["dataset", "claim", "evidence"]
+        },
+        "target_id": { "type": "string", "minLength": 1 },
+        "related_ids": { "$ref": "#/$defs/idList" },
+        "blocking_merge": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "answerabilityChanges": {
+      "type": "object",
+      "required": ["policy", "request_updates", "finding_updates"],
+      "properties": {
+        "policy": {
+          "type": "object",
+          "required": ["mode", "parent_mutation", "requires_review_for_status_change"],
+          "properties": {
+            "mode": { "const": "evidence_first_no_auto_promotion" },
+            "parent_mutation": { "const": false },
+            "requires_review_for_status_change": { "const": true }
+          },
+          "additionalProperties": true
+        },
+        "request_updates": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/answerabilityRequestUpdate" }
+        },
+        "finding_updates": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/answerabilityFindingUpdate" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "answerabilityRequestUpdate": {
+      "type": "object",
+      "properties": {
+        "request_id": { "type": "string" },
+        "previous_status": { "type": "string" },
+        "next_status": { "type": "string" },
+        "previous_answerability_status": {
+          "type": "string",
+          "enum": ["answered", "partial", "unanswerable", "needs_review"]
+        },
+        "next_answerability_status": {
+          "type": "string",
+          "enum": ["answered", "partial", "unanswerable", "needs_review"]
+        },
+        "status_change": { "type": "string" },
+        "source_response_id": { "type": "string" },
+        "added_claim_ids": { "$ref": "#/$defs/idList" },
+        "added_evidence_ids": { "$ref": "#/$defs/idList" },
+        "affected_findings": { "$ref": "#/$defs/idList" }
+      },
+      "additionalProperties": true
+    },
+    "answerabilityFindingUpdate": {
+      "type": "object",
+      "properties": {
+        "claim_id": { "type": "string" },
+        "previous_status": { "type": "string" },
+        "next_status": { "type": "string" },
+        "previous_answerability_status": {
+          "type": "string",
+          "enum": ["answered", "partial", "unanswerable", "needs_review"]
+        },
+        "next_answerability_status": {
+          "type": "string",
+          "enum": ["answered", "partial", "unanswerable", "needs_review"]
+        },
+        "status_change": { "type": "string" },
+        "reason": { "type": "string" },
+        "supporting_response_claim_ids": { "$ref": "#/$defs/idList" },
+        "supporting_response_evidence_ids": { "$ref": "#/$defs/idList" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

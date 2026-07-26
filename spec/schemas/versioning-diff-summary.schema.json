@@ -1,0 +1,243 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/v0.1/versioning-diff-summary.schema.json",
+  "title": "Insight Versioning Diff Summary",
+  "type": "object",
+  "properties": {
+    "merge_plan": {
+      "type": "object",
+      "required": ["mode", "parent_mutation", "additions", "duplicates"],
+      "properties": {
+        "mode": { "const": "explicit_non_destructive" },
+        "parent_mutation": { "const": false },
+        "additions": { "$ref": "#/$defs/mergeObjectIds" },
+        "duplicates": { "$ref": "#/$defs/mergeObjectIds" }
+      },
+      "additionalProperties": true
+    },
+    "affected_findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "claim_id": { "type": "string" },
+          "found": { "type": "boolean" },
+          "status": { "type": "string" },
+          "summary": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "answerability_changes": {
+      "type": "object",
+      "required": ["policy", "request_updates", "finding_updates"],
+      "properties": {
+        "policy": {
+          "type": "object",
+          "required": ["mode", "parent_mutation", "requires_review_for_status_change"],
+          "properties": {
+            "mode": { "const": "evidence_first_no_auto_promotion" },
+            "parent_mutation": { "const": false },
+            "requires_review_for_status_change": { "const": true }
+          },
+          "additionalProperties": true
+        },
+        "request_updates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "request_id",
+              "previous_status",
+              "next_status",
+              "status_change",
+              "source_response_id",
+              "added_claim_ids",
+              "added_evidence_ids",
+              "affected_findings"
+            ],
+            "properties": {
+              "request_id": { "type": "string", "minLength": 1 },
+              "previous_status": { "type": "string", "minLength": 1 },
+              "next_status": { "const": "response_received_needs_review" },
+              "previous_answerability_status": {
+                "type": "string",
+                "enum": ["answered", "partial", "unanswerable", "needs_review"]
+              },
+              "next_answerability_status": { "const": "needs_review" },
+              "status_change": { "const": "review_required" },
+              "source_response_id": { "type": "string", "minLength": 1 },
+              "added_claim_ids": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "added_evidence_ids": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "affected_findings": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "reviewer_note": { "type": "string" }
+            },
+            "additionalProperties": true
+          }
+        },
+        "finding_updates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "claim_id",
+              "previous_status",
+              "next_status",
+              "status_change",
+              "reason",
+              "supporting_response_claim_ids",
+              "supporting_response_evidence_ids"
+            ],
+            "properties": {
+              "claim_id": { "type": "string", "minLength": 1 },
+              "previous_status": { "type": "string", "minLength": 1 },
+              "next_status": { "type": "string", "minLength": 1 },
+              "previous_answerability_status": {
+                "type": "string",
+                "enum": ["answered", "partial", "unanswerable", "needs_review"]
+              },
+              "next_answerability_status": { "const": "needs_review" },
+              "status_change": { "const": "unchanged_requires_review" },
+              "reason": { "const": "merged_response_adds_review_material_only" },
+              "supporting_response_claim_ids": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "supporting_response_evidence_ids": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "reviewer_note": { "type": "string" }
+            },
+            "additionalProperties": true
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "supplement_quality_warnings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/supplementQualityWarningSummary" }
+    },
+    "review_tasks": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/reviewTask" }
+    },
+    "compatibility_issues": {
+      "type": "array",
+      "items": {
+        "oneOf": [{ "type": "string" }, { "$ref": "#/$defs/compatibilityIssue" }]
+      }
+    }
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "compatibilityIssue": {
+      "type": "object",
+      "required": ["severity", "code", "path", "message"],
+      "properties": {
+        "severity": {
+          "type": "string",
+          "enum": ["warning", "error"]
+        },
+        "code": { "type": "string", "minLength": 1 },
+        "path": { "type": "string", "minLength": 1 },
+        "message": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": true
+    },
+    "mergeObjectIds": {
+      "type": "object",
+      "properties": {
+        "datasets": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "metrics": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "claims": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "evidence": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "prepared_questions": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "lineage_sources": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "supplementQualityWarningSummary": {
+      "type": "object",
+      "required": ["dataset_id", "quality_warnings"],
+      "properties": {
+        "dataset_id": { "type": "string", "minLength": 1 },
+        "path": { "type": "string", "minLength": 1 },
+        "quality_warnings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/supplementQualityWarning" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "supplementQualityWarning": {
+      "type": "object",
+      "required": ["code", "message"],
+      "properties": {
+        "code": { "type": "string", "minLength": 1 },
+        "message": { "type": "string", "minLength": 1 },
+        "requested_fields": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "reviewTask": {
+      "type": "object",
+      "required": ["task_id", "kind", "priority", "title", "action", "target_type", "target_id", "related_ids", "blocking_merge"],
+      "properties": {
+        "task_id": { "type": "string", "minLength": 1 },
+        "kind": {
+          "type": "string",
+          "enum": ["supplement_quality_review", "response_claim_review", "response_evidence_review", "affected_finding_review"]
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["high", "medium", "low"]
+        },
+        "title": { "type": "string", "minLength": 1 },
+        "action": { "type": "string", "minLength": 1 },
+        "target_type": {
+          "type": "string",
+          "enum": ["dataset", "claim", "evidence"]
+        },
+        "target_id": { "type": "string", "minLength": 1 },
+        "related_ids": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "blocking_merge": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    }
+  }
+}

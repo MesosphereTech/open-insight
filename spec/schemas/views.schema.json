@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/v0.1/views.schema.json",
+  "title": "Insight Homepage View",
+  "type": "object",
+  "required": ["view_id", "title", "blocks"],
+  "properties": {
+    "view_id": { "type": "string" },
+    "title": { "type": "string" },
+    "audience": { "type": "string" },
+    "blocks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["block_id", "type", "title"],
+        "properties": {
+          "block_id": { "type": "string" },
+          "type": { "type": "string" },
+          "title": { "type": "string" },
+          "status": { "type": "string" },
+          "generation_status": { "type": "string" },
+          "review_status": { "type": "string" },
+          "metric_id": { "type": "string" },
+          "claim_id": { "type": "string" },
+          "evidence_ids": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

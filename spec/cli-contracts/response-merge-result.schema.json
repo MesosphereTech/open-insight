@@ -1,0 +1,214 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/response-merge-result.v0.1.schema.json",
+  "title": "Open Insight CLI Response Merge Result",
+  "type": "object",
+  "required": ["schema_version", "status", "output_dir"],
+  "properties": {
+    "schema_version": { "const": "open-insight.response-merge.v0.1" },
+    "status": { "enum": ["merged", "blocked"] },
+    "output_dir": { "type": "string", "minLength": 1 },
+    "parent_package_id": { "type": "string", "minLength": 1 },
+    "response_package_id": { "type": "string", "minLength": 1 },
+    "merged_package_id": { "type": "string", "minLength": 1 },
+    "response_id": { "type": "string", "minLength": 1 },
+    "source_request_id": { "type": "string", "minLength": 1 },
+    "file_count": { "type": "integer", "minimum": 0 },
+    "merge_plan": { "$ref": "#/$defs/mergePlan" },
+    "answerability_changes": { "$ref": "#/$defs/answerabilityChanges" },
+    "versioning": {
+      "type": "object",
+      "required": ["parents_path", "merge_log_path", "diff_summary_path", "review_patches_path"],
+      "properties": {
+        "parents_path": { "const": "versioning/parents.json" },
+        "merge_log_path": { "const": "versioning/merge_log.jsonl" },
+        "diff_summary_path": { "const": "versioning/diff_summary.json" },
+        "review_patches_path": { "const": "versioning/review_patches.jsonl" }
+      },
+      "additionalProperties": true
+    },
+    "validation_status": { "enum": ["valid", "valid_with_warnings", "invalid"] },
+    "validation": {
+      "type": "object",
+      "required": ["status", "issues"],
+      "properties": {
+        "status": { "enum": ["valid", "valid_with_warnings", "invalid"] },
+        "issues": { "type": "array" }
+      },
+      "additionalProperties": true
+    },
+    "summary": {
+      "type": "object",
+      "required": ["schema_version", "status", "validation", "compatibility_issues"],
+      "properties": {
+        "schema_version": { "const": "open-insight.response-summary.v0.1" },
+        "status": { "const": "blocked" },
+        "validation": {
+          "type": "object",
+          "required": ["parent_status", "response_status"],
+          "properties": {
+            "parent_status": { "enum": ["valid", "valid_with_warnings", "invalid"] },
+            "response_status": { "enum": ["valid", "valid_with_warnings", "invalid"] }
+          },
+          "additionalProperties": true
+        },
+        "compatibility_issues": {
+          "type": "array",
+          "items": {
+            "oneOf": [{ "type": "string" }, { "$ref": "#/$defs/compatibilityIssue" }]
+          }
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": { "const": "merged" }
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "required": [
+          "parent_package_id",
+          "response_package_id",
+          "merged_package_id",
+          "response_id",
+          "source_request_id",
+          "file_count",
+          "merge_plan",
+          "answerability_changes",
+          "versioning",
+          "validation_status",
+          "validation"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": { "const": "blocked" }
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "required": ["summary"]
+      }
+    }
+  ],
+  "$defs": {
+    "compatibilityIssue": {
+      "type": "object",
+      "required": ["severity", "code", "path", "message"],
+      "properties": {
+        "severity": {
+          "type": "string",
+          "enum": ["warning", "error"]
+        },
+        "code": { "type": "string", "minLength": 1 },
+        "path": { "type": "string", "minLength": 1 },
+        "message": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": true
+    },
+    "idList": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "objectIds": {
+      "type": "object",
+      "required": ["datasets", "metrics", "claims", "evidence", "prepared_questions", "lineage_sources"],
+      "properties": {
+        "datasets": { "$ref": "#/$defs/idList" },
+        "metrics": { "$ref": "#/$defs/idList" },
+        "claims": { "$ref": "#/$defs/idList" },
+        "evidence": { "$ref": "#/$defs/idList" },
+        "prepared_questions": { "$ref": "#/$defs/idList" },
+        "lineage_sources": { "$ref": "#/$defs/idList" }
+      },
+      "additionalProperties": true
+    },
+    "mergePlan": {
+      "type": "object",
+      "required": ["mode", "parent_mutation", "additions", "duplicates"],
+      "properties": {
+        "mode": { "const": "explicit_non_destructive" },
+        "parent_mutation": { "const": false },
+        "additions": { "$ref": "#/$defs/objectIds" },
+        "duplicates": { "$ref": "#/$defs/objectIds" }
+      },
+      "additionalProperties": true
+    },
+    "answerabilityChanges": {
+      "type": "object",
+      "required": ["policy", "request_updates", "finding_updates"],
+      "properties": {
+        "policy": {
+          "type": "object",
+          "required": ["mode", "parent_mutation", "requires_review_for_status_change"],
+          "properties": {
+            "mode": { "const": "evidence_first_no_auto_promotion" },
+            "parent_mutation": { "const": false },
+            "requires_review_for_status_change": { "const": true }
+          },
+          "additionalProperties": true
+        },
+        "request_updates": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/answerabilityRequestUpdate" }
+        },
+        "finding_updates": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/answerabilityFindingUpdate" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "answerabilityRequestUpdate": {
+      "type": "object",
+      "properties": {
+        "request_id": { "type": "string" },
+        "previous_status": { "type": "string" },
+        "next_status": { "type": "string" },
+        "previous_answerability_status": {
+          "type": "string",
+          "enum": ["answered", "partial", "unanswerable", "needs_review"]
+        },
+        "next_answerability_status": {
+          "type": "string",
+          "enum": ["answered", "partial", "unanswerable", "needs_review"]
+        },
+        "status_change": { "type": "string" },
+        "source_response_id": { "type": "string" },
+        "added_claim_ids": { "$ref": "#/$defs/idList" },
+        "added_evidence_ids": { "$ref": "#/$defs/idList" },
+        "affected_findings": { "$ref": "#/$defs/idList" }
+      },
+      "additionalProperties": true
+    },
+    "answerabilityFindingUpdate": {
+      "type": "object",
+      "properties": {
+        "claim_id": { "type": "string" },
+        "previous_status": { "type": "string" },
+        "next_status": { "type": "string" },
+        "previous_answerability_status": {
+          "type": "string",
+          "enum": ["answered", "partial", "unanswerable", "needs_review"]
+        },
+        "next_answerability_status": {
+          "type": "string",
+          "enum": ["answered", "partial", "unanswerable", "needs_review"]
+        },
+        "status_change": { "type": "string" },
+        "reason": { "type": "string" },
+        "supporting_response_claim_ids": { "$ref": "#/$defs/idList" },
+        "supporting_response_evidence_ids": { "$ref": "#/$defs/idList" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

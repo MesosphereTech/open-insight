@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/v0.1/semantic-entities.schema.json",
+  "title": "Insight Semantic Entities",
+  "type": "object",
+  "required": ["entities"],
+  "properties": {
+    "entities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["entity_id", "name"],
+        "properties": {
+          "entity_id": { "type": "string" },
+          "name": { "type": "string" },
+          "primary_key": { "type": "string" },
+          "dataset_id": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

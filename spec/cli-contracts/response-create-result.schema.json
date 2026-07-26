@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/response-create-result.v0.1.schema.json",
+  "title": "Open Insight CLI Response Create Result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "status",
+    "output_dir",
+    "parent_package_id",
+    "request_package_id",
+    "request_id",
+    "response_id",
+    "file_count",
+    "copied_context",
+    "response_additions",
+    "validation_status",
+    "validation"
+  ],
+  "properties": {
+    "schema_version": { "const": "open-insight.response-create.v0.1" },
+    "status": { "const": "created" },
+    "output_dir": { "type": "string", "minLength": 1 },
+    "parent_package_id": { "type": "string", "minLength": 1 },
+    "request_package_id": { "type": "string", "minLength": 1 },
+    "request_id": { "type": "string", "minLength": 1 },
+    "response_id": { "type": "string", "minLength": 1 },
+    "file_count": { "type": "integer", "minimum": 0 },
+    "copied_context": { "$ref": "#/$defs/copiedCounts" },
+    "response_additions": { "$ref": "#/$defs/additionCounts" },
+    "supplement_files": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/supplementFile" }
+    },
+    "validation_status": { "enum": ["valid", "valid_with_warnings", "invalid"] },
+    "validation": {
+      "type": "object",
+      "required": ["status", "issues"],
+      "properties": {
+        "status": { "enum": ["valid", "valid_with_warnings", "invalid"] },
+        "issues": { "type": "array" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "copiedCounts": {
+      "type": "object",
+      "required": ["claims", "evidence", "prepared_questions", "datasets", "metrics", "lineage_sources"],
+      "properties": {
+        "claims": { "type": "integer", "minimum": 0 },
+        "evidence": { "type": "integer", "minimum": 0 },
+        "prepared_questions": { "type": "integer", "minimum": 0 },
+        "datasets": { "type": "integer", "minimum": 0 },
+        "metrics": { "type": "integer", "minimum": 0 },
+        "lineage_sources": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": true
+    },
+    "additionCounts": {
+      "type": "object",
+      "required": ["claims", "evidence", "prepared_questions", "datasets", "lineage_sources"],
+      "properties": {
+        "claims": { "type": "integer", "minimum": 0 },
+        "evidence": { "type": "integer", "minimum": 0 },
+        "prepared_questions": { "type": "integer", "minimum": 0 },
+        "datasets": { "type": "integer", "minimum": 0 },
+        "lineage_sources": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": true
+    },
+    "supplementFile": {
+      "type": "object",
+      "required": ["original_name", "path", "dataset_id", "source_id", "format", "size_bytes", "column_count"],
+      "properties": {
+        "original_name": { "type": "string", "minLength": 1 },
+        "path": { "type": "string", "minLength": 1 },
+        "dataset_id": { "type": "string", "minLength": 1 },
+        "source_id": { "type": "string", "minLength": 1 },
+        "format": { "type": "string", "minLength": 1 },
+        "size_bytes": { "type": "integer", "minimum": 0 },
+        "column_count": { "type": "integer", "minimum": 0 },
+        "row_count": { "type": "integer", "minimum": 0 },
+        "quality_warnings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/supplementQualityWarning" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "supplementQualityWarning": {
+      "type": "object",
+      "required": ["code", "message"],
+      "properties": {
+        "code": { "type": "string", "minLength": 1 },
+        "message": { "type": "string", "minLength": 1 },
+        "requested_fields": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

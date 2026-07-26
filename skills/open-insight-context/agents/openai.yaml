@@ -1,0 +1,4 @@
+interface:
+  display_name: "Open Insight 上下文库"
+  short_description: "把本地多文件编译为可追源的单文件 .insight"
+  default_prompt: "Use $open-insight-context to compile this local folder into one .insight file and expose read-only CLI/MCP access."

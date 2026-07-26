@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/v0.1/overlay-note.schema.json",
+  "title": "Insight Overlay Note JSONL Record",
+  "type": "object",
+  "required": [
+    "note_id",
+    "note_type",
+    "visibility",
+    "target_type",
+    "target_id",
+    "body",
+    "base_package_mutation",
+    "created_at",
+    "created_by"
+  ],
+  "properties": {
+    "note_id": { "type": "string", "minLength": 1 },
+    "note_type": {
+      "type": "string",
+      "enum": ["private_note", "question_note", "decision_note"]
+    },
+    "visibility": { "const": "private" },
+    "target_type": {
+      "type": "string",
+      "enum": ["package", "claim", "evidence", "view_block", "question"]
+    },
+    "target_id": { "type": "string", "minLength": 1 },
+    "body": { "type": "string", "minLength": 1 },
+    "base_package_mutation": { "const": false },
+    "created_at": { "type": "string", "format": "date-time" },
+    "created_by": { "type": "string", "minLength": 1 },
+    "source": { "type": "string" }
+  },
+  "additionalProperties": true
+}

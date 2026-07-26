@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/v0.1/versioning.schema.json",
+  "title": "Insight Versioning Metadata",
+  "type": "object",
+  "required": ["parents", "merged_from", "merge_policy"],
+  "properties": {
+    "parents": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["role", "package_id"],
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": ["base_parent", "response", "derived_parent"]
+          },
+          "package_id": { "type": "string", "minLength": 1 },
+          "title": { "type": "string" },
+          "response_id": { "type": "string" },
+          "source_request_id": { "type": "string" },
+          "request_package_id": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "merged_from": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["response_id", "source_request_id", "response_package_id", "merged_at"],
+        "properties": {
+          "response_id": { "type": "string", "minLength": 1 },
+          "source_request_id": { "type": "string", "minLength": 1 },
+          "request_package_id": { "type": "string" },
+          "response_package_id": { "type": "string", "minLength": 1 },
+          "affected_findings": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "merged_at": { "type": "string", "format": "date-time" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "merge_policy": {
+      "type": "object",
+      "required": ["mode", "parent_mutation"],
+      "properties": {
+        "mode": { "const": "explicit_non_destructive" },
+        "parent_mutation": { "const": false }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

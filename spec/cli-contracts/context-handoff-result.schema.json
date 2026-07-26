@@ -1,0 +1,794 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/context-handoff-result.v0.1.schema.json",
+  "title": "Open Insight CLI Context Handoff Result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "status",
+    "profile",
+    "package_id",
+    "title",
+    "spec_version",
+    "source_mode",
+    "query",
+    "token_budget",
+    "read_order",
+    "cli",
+    "mcp",
+    "compact_context",
+    "token_eval",
+    "token_benchmark",
+    "answer_handoff",
+    "consumer_routes",
+    "material_generation_readiness",
+    "material_generation_recipes",
+    "material_contract",
+    "output_policy",
+    "user_material_prompt",
+    "safety",
+    "source_refs",
+    "lineage_refs",
+    "parse_diagnostic_ids",
+    "source_map_refs",
+    "diagnostics"
+  ],
+  "properties": {
+    "schema_version": { "const": "open-insight.context-handoff.v0.1" },
+    "status": { "enum": ["ready", "degraded"] },
+    "profile": { "$ref": "#/$defs/profile" },
+    "package_id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string" },
+    "spec_version": { "type": "string" },
+    "source_mode": { "$ref": "#/$defs/sourceMode" },
+    "query": { "type": "string", "minLength": 1 },
+    "token_budget": { "type": "integer", "minimum": 500, "maximum": 12000 },
+    "read_order": { "$ref": "#/$defs/stringArray" },
+    "cli": {
+      "type": "object",
+      "required": [
+        "summary_command",
+        "compact_context_command",
+        "token_eval_command",
+        "material_contract_command",
+        "resolve_source_command"
+      ],
+      "properties": {
+        "summary_command": { "type": "string" },
+        "compact_context_command": { "type": "string" },
+        "token_eval_command": { "type": "string" },
+        "material_contract_command": { "type": "string" },
+        "resolve_source_command": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "mcp": {
+      "type": "object",
+      "required": ["required_tools"],
+      "properties": {
+        "required_tools": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "arguments"],
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "arguments": { "type": "object" }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "compact_context": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "status",
+        "query",
+        "token_budget",
+        "estimated_tokens",
+        "facts",
+        "tables",
+        "page_cues",
+        "next_fragment_reads",
+        "coverage_hints",
+        "source_refs"
+      ],
+      "properties": {
+        "schema_version": { "const": "open-insight.context-compact-retrieval.v0.1" },
+        "page_cues": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/pageCue" }
+        },
+        "next_fragment_reads": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/fragmentRead" }
+        },
+        "coverage_hints": { "$ref": "#/$defs/coverageHints" }
+      },
+      "additionalProperties": true
+    },
+    "token_eval": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "status",
+        "query",
+        "estimated",
+        "token_count_is_estimated",
+        "direct_full_text_basis",
+        "baseline_disclosure_cn",
+        "savings_vs_direct",
+        "recommended_mode"
+      ],
+      "properties": {
+        "schema_version": { "const": "open-insight.context-token-eval.v0.1" },
+        "token_count_is_estimated": { "const": true },
+        "direct_full_text_basis": { "$ref": "#/$defs/directFullTextBasis" },
+        "baseline_disclosure_cn": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": true
+    },
+    "token_benchmark": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "status",
+        "measurement_mode",
+        "token_count_is_estimated",
+        "direct_full_text_basis",
+        "baseline_disclosure_cn",
+        "direct_full_text_estimated_tokens",
+        "insight_full_normalized_estimated_tokens",
+        "insight_compact_estimated_tokens",
+        "savings_vs_direct",
+        "savings_vs_normalized",
+        "noise_reduction_rate",
+        "table_context_coverage_rate",
+        "recommended_mode",
+        "user_facing_summary_cn",
+        "external_llm_instruction_cn"
+      ],
+      "properties": {
+        "schema_version": { "const": "open-insight.token-benchmark-summary.v0.1" },
+        "status": { "enum": ["pass", "degraded"] },
+        "measurement_mode": { "const": "deterministic_estimate" },
+        "noise_measurement_mode": { "enum": ["query_index_chunks", "token_delta_fallback"] },
+        "token_count_is_estimated": { "const": true },
+        "direct_full_text_basis": { "$ref": "#/$defs/directFullTextBasis" },
+        "baseline_disclosure_cn": { "type": "string", "minLength": 1 },
+        "baseline_quality": {
+          "enum": ["decoded_text", "mixed", "binary_size_heuristic_only", "large_text_size_heuristic_only", "empty"]
+        },
+        "recommended_baseline_action_cn": { "type": "string", "minLength": 1 },
+        "estimation_methods": {
+          "type": "object",
+          "required": [
+            "decoded_text_file_count",
+            "binary_size_heuristic_file_count",
+            "large_text_size_heuristic_file_count"
+          ],
+          "properties": {
+            "decoded_text_file_count": { "type": "integer", "minimum": 0 },
+            "binary_size_heuristic_file_count": { "type": "integer", "minimum": 0 },
+            "large_text_size_heuristic_file_count": { "type": "integer", "minimum": 0 }
+          },
+          "additionalProperties": false
+        },
+        "direct_full_text_estimated_tokens": { "type": "integer", "minimum": 0 },
+        "insight_full_normalized_estimated_tokens": { "type": "integer", "minimum": 0 },
+        "insight_compact_estimated_tokens": { "type": "integer", "minimum": 0 },
+        "savings_vs_direct": { "type": "number", "minimum": 0, "maximum": 1 },
+        "savings_vs_normalized": { "type": "number", "minimum": 0, "maximum": 1 },
+        "noise_reduction_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "source_ref_coverage_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "parse_diagnostic_coverage_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "numeric_preservation_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "table_context_coverage_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "recommended_mode": { "enum": ["compact_retrieval", "full_normalized"] },
+        "user_facing_summary_cn": { "type": "string", "minLength": 1 },
+        "external_llm_instruction_cn": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "answer_handoff": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "status",
+        "question",
+        "recommended_mode",
+        "query_difficulty",
+        "parser_quality",
+        "answer_modes",
+        "external_llm_instruction_cn",
+        "safety",
+        "diagnostics"
+      ],
+      "properties": {
+        "schema_version": { "const": "open-insight.answer-handoff.v0.1" },
+        "status": { "enum": ["quick_ready", "audit_required", "degraded"] },
+        "question": { "type": "string", "minLength": 1 },
+        "recommended_mode": {
+          "enum": ["quick_answer", "audited_answer", "increase_token_budget_or_recompile"]
+        },
+        "query_difficulty": {
+          "type": "object",
+          "required": [
+            "scope",
+            "reason_cn",
+            "broad_query_detected",
+            "multi_source_context",
+            "compact_truncated",
+            "fallback_used",
+            "source_coverage_rate"
+          ],
+          "properties": {
+            "scope": { "enum": ["single_source", "multi_source", "broad_or_comparative", "unknown"] },
+            "reason_cn": { "type": "string", "minLength": 1 },
+            "broad_query_detected": { "type": "boolean" },
+            "multi_source_context": { "type": "boolean" },
+            "compact_truncated": { "type": "boolean" },
+            "fallback_used": { "type": "boolean" },
+            "source_coverage_rate": { "type": "number", "minimum": 0, "maximum": 1 }
+          },
+          "additionalProperties": false
+        },
+        "parser_quality": {
+          "type": "object",
+          "required": ["status", "markitdown_recommended", "diagnostics", "disclosure_cn"],
+          "properties": {
+            "status": { "enum": ["content_ready", "metadata_only_or_weak", "unknown"] },
+            "markitdown_recommended": { "type": "boolean" },
+            "diagnostics": { "$ref": "#/$defs/stringArray" },
+            "disclosure_cn": { "type": "string", "minLength": 1 }
+          },
+          "additionalProperties": false
+        },
+        "answer_modes": {
+          "type": "object",
+          "required": ["quick_answer", "audited_answer"],
+          "properties": {
+            "quick_answer": {
+              "allOf": [
+                { "$ref": "#/$defs/answerMode" },
+                {
+                  "type": "object",
+                  "required": ["use_compact_context", "max_expected_scope_cn"],
+                  "properties": {
+                    "use_compact_context": { "const": true },
+                    "max_expected_scope_cn": { "type": "string", "minLength": 1 }
+                  }
+                }
+              ]
+            },
+            "audited_answer": {
+              "allOf": [
+                { "$ref": "#/$defs/answerMode" },
+                {
+                  "type": "object",
+                  "required": [
+                    "required_follow_up_reads",
+                    "min_required_fragment_reads",
+                    "resolve_source_cli_commands",
+                    "resolve_source_mcp_calls"
+                  ],
+                  "properties": {
+                    "required_follow_up_reads": {
+                      "type": "array",
+                      "items": { "$ref": "#/$defs/fragmentRead" }
+                    },
+                    "min_required_fragment_reads": { "type": "integer", "minimum": 0 },
+                    "resolve_source_cli_commands": {
+                      "type": "array",
+                      "items": { "type": "string", "pattern": "context resolve-source" }
+                    },
+                    "resolve_source_mcp_calls": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": ["name", "arguments"],
+                        "properties": {
+                          "name": { "const": "open_insight_resolve_source" },
+                          "arguments": {
+                            "type": "object",
+                            "required": ["target_id"],
+                            "properties": {
+                              "target_id": { "type": "string", "minLength": 1 }
+                            },
+                            "additionalProperties": false
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "external_llm_instruction_cn": { "type": "string", "minLength": 1 },
+        "safety": { "$ref": "#/$defs/readOnlySafety" },
+        "diagnostics": { "$ref": "#/$defs/stringArray" }
+      },
+      "additionalProperties": false
+    },
+    "consumer_routes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "route_id",
+          "user_intent_cn",
+          "recommended_context_mode",
+          "token_policy_cn",
+          "first_read",
+          "fragment_read_plan",
+          "required_refs",
+          "output_boundary",
+          "base_package_mutation"
+        ],
+        "properties": {
+          "route_id": {
+            "enum": ["question_answering", "analysis", "html_restore", "word_outline", "ppt_outline", "audit_trace"]
+          },
+          "user_intent_cn": { "type": "string", "minLength": 1 },
+          "recommended_context_mode": {
+            "enum": ["compact_retrieval", "full_normalized_with_compact_index", "audit_trace"]
+          },
+          "token_policy_cn": { "type": "string", "minLength": 1 },
+          "first_read": { "$ref": "#/$defs/stringArray" },
+          "fragment_read_plan": { "$ref": "#/$defs/fragmentReadPlan" },
+          "required_refs": { "$ref": "#/$defs/stringArray" },
+          "output_boundary": { "const": "external_file_or_overlay_or_derived_package" },
+          "base_package_mutation": { "const": false }
+        },
+        "additionalProperties": false
+      }
+    },
+    "material_generation_readiness": {
+      "type": "object",
+      "required": ["schema_version", "status", "summary", "routes", "safety"],
+      "properties": {
+        "schema_version": { "const": "open-insight.material-generation-readiness.v0.1" },
+        "status": { "enum": ["ready", "degraded"] },
+        "summary": {
+          "type": "object",
+          "required": ["route_count", "ready_count", "needs_fragment_reads_count", "degraded_count"],
+          "properties": {
+            "route_count": { "type": "integer", "minimum": 0 },
+            "ready_count": { "type": "integer", "minimum": 0 },
+            "needs_fragment_reads_count": { "type": "integer", "minimum": 0 },
+            "degraded_count": { "type": "integer", "minimum": 0 }
+          },
+          "additionalProperties": false
+        },
+        "routes": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/materialGenerationReadinessRoute" }
+        },
+        "safety": { "$ref": "#/$defs/readOnlySafety" }
+      },
+      "additionalProperties": false
+    },
+    "material_generation_recipes": {
+      "type": "object",
+      "required": ["schema_version", "status", "recipe_count", "routes", "safety"],
+      "properties": {
+        "schema_version": { "const": "open-insight.material-generation-recipes.v0.1" },
+        "status": { "enum": ["ready", "degraded"] },
+        "recipe_count": { "type": "integer", "minimum": 0 },
+        "routes": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/materialGenerationRecipeRoute" }
+        },
+        "safety": { "$ref": "#/$defs/readOnlySafety" }
+      },
+      "additionalProperties": false
+    },
+    "material_contract": {
+      "type": "object",
+      "required": ["schema_version", "status", "allowed_outputs", "required_citation_fields", "output_boundary"],
+      "properties": {
+        "schema_version": { "const": "open-insight.user-material-contract.v0.1" }
+      },
+      "additionalProperties": true
+    },
+    "output_policy": {
+      "type": "object",
+      "required": ["allowed_outputs", "output_boundary", "base_package_mutation", "model_required_by_open_insight"],
+      "properties": {
+        "allowed_outputs": { "$ref": "#/$defs/stringArray" },
+        "output_boundary": { "const": "external_file_or_overlay_or_derived_package" },
+        "base_package_mutation": { "const": false },
+        "model_required_by_open_insight": { "const": false }
+      },
+      "additionalProperties": false
+    },
+    "user_material_prompt": {
+      "type": "object",
+      "required": ["role", "instruction", "required_citation_fields", "forbidden"],
+      "properties": {
+        "role": { "type": "string" },
+        "instruction": { "type": "string" },
+        "required_citation_fields": { "$ref": "#/$defs/stringArray" },
+        "forbidden": { "$ref": "#/$defs/stringArray" }
+      },
+      "additionalProperties": false
+    },
+    "safety": {
+      "type": "object",
+      "required": ["model_invoked", "env_recorded", "api_key_recorded", "package_code_executed", "base_package_mutation"],
+      "properties": {
+        "model_invoked": { "const": false },
+        "env_recorded": { "const": false },
+        "api_key_recorded": { "const": false },
+        "package_code_executed": { "const": false },
+        "base_package_mutation": { "const": false }
+      },
+      "additionalProperties": false
+    },
+    "source_refs": { "$ref": "#/$defs/stringArray" },
+    "lineage_refs": { "$ref": "#/$defs/stringArray" },
+    "parse_diagnostic_ids": { "$ref": "#/$defs/stringArray" },
+    "source_map_refs": { "$ref": "#/$defs/stringArray" },
+    "diagnostics": { "$ref": "#/$defs/stringArray" }
+  },
+  "$defs": {
+    "profile": { "enum": ["semantic_capsule", "v0_1_compat"] },
+    "sourceMode": { "enum": ["source_bundled", "source_light", "unknown"] },
+    "directFullTextBasis": { "enum": ["normalized_source_surrogate", "external_baseline_files"] },
+    "stringArray": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "readOnlySafety": {
+      "type": "object",
+      "required": ["model_invoked", "env_recorded", "api_key_recorded", "package_code_executed", "base_package_mutation"],
+      "properties": {
+        "model_invoked": { "const": false },
+        "env_recorded": { "const": false },
+        "api_key_recorded": { "const": false },
+        "package_code_executed": { "const": false },
+        "base_package_mutation": { "const": false }
+      },
+      "additionalProperties": false
+    },
+    "materialGenerationReadinessRoute": {
+      "type": "object",
+      "required": [
+        "route_id",
+        "user_intent_cn",
+        "readiness",
+        "readiness_reason_cn",
+        "recommended_context_mode",
+        "primary_cli_command",
+        "primary_mcp_tool",
+        "primary_mcp_arguments",
+        "follow_up_cli_command_template",
+        "follow_up_mcp_tool",
+        "required_refs",
+        "required_refs_present",
+        "missing_refs",
+        "token_strategy",
+        "output_boundary",
+        "base_package_mutation",
+        "model_required_by_open_insight",
+        "user_action_cn"
+      ],
+      "properties": {
+        "route_id": {
+          "enum": ["question_answering", "analysis", "html_restore", "word_outline", "ppt_outline", "audit_trace"]
+        },
+        "user_intent_cn": { "type": "string", "minLength": 1 },
+        "readiness": { "enum": ["ready", "needs_fragment_reads", "degraded"] },
+        "readiness_reason_cn": { "type": "string", "minLength": 1 },
+        "recommended_context_mode": {
+          "enum": ["compact_retrieval", "full_normalized_with_compact_index", "audit_trace"]
+        },
+        "primary_cli_command": { "type": "string", "minLength": 1 },
+        "primary_mcp_tool": { "enum": ["open_insight_search_chunks", "open_insight_context_handoff"] },
+        "primary_mcp_arguments": { "type": "object" },
+        "follow_up_cli_command_template": { "type": "string", "pattern": "context resolve-source" },
+        "follow_up_mcp_tool": { "const": "open_insight_resolve_source" },
+        "required_refs": { "$ref": "#/$defs/stringArray" },
+        "required_refs_present": {
+          "type": "object",
+          "required": ["source_refs", "lineage_refs", "parse_diagnostic_ids", "source_map_refs", "page_cues"],
+          "properties": {
+            "source_refs": { "type": "boolean" },
+            "lineage_refs": { "type": "boolean" },
+            "parse_diagnostic_ids": { "type": "boolean" },
+            "source_map_refs": { "type": "boolean" },
+            "page_cues": { "type": "boolean" }
+          },
+          "additionalProperties": false
+        },
+        "missing_refs": { "$ref": "#/$defs/stringArray" },
+        "token_strategy": {
+          "type": "object",
+          "required": [
+            "recommended_context_mode",
+            "token_count_is_estimated",
+            "estimated_compact_tokens",
+            "token_budget",
+            "savings_vs_direct",
+            "savings_vs_normalized",
+            "recommended_mode"
+          ],
+          "properties": {
+            "recommended_context_mode": {
+              "enum": ["compact_retrieval", "full_normalized_with_compact_index", "audit_trace"]
+            },
+            "token_count_is_estimated": { "const": true },
+            "estimated_compact_tokens": { "type": "integer", "minimum": 0 },
+            "token_budget": { "type": "integer", "minimum": 500, "maximum": 12000 },
+            "savings_vs_direct": { "type": "number", "minimum": 0, "maximum": 1 },
+            "savings_vs_normalized": { "type": "number", "minimum": 0, "maximum": 1 },
+            "recommended_mode": { "enum": ["compact_retrieval", "full_normalized"] }
+          },
+          "additionalProperties": false
+        },
+        "output_boundary": { "const": "external_file_or_overlay_or_derived_package" },
+        "base_package_mutation": { "const": false },
+        "model_required_by_open_insight": { "const": false },
+        "user_action_cn": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "materialGenerationRecipeRoute": {
+      "type": "object",
+      "required": [
+        "route_id",
+        "output_kind",
+        "user_goal_cn",
+        "readiness",
+        "recommended_context_mode",
+        "primary_cli_command",
+        "primary_mcp_tool",
+        "read_sequence",
+        "prompt_skeleton_cn",
+        "required_inputs",
+        "follow_up_read_plan",
+        "required_citation_fields",
+        "forbidden",
+        "output_contract",
+        "validation_checklist_cn"
+      ],
+      "properties": {
+        "route_id": {
+          "enum": ["question_answering", "analysis", "html_restore", "word_outline", "ppt_outline", "audit_trace"]
+        },
+        "output_kind": {
+          "enum": ["qa", "analysis", "html", "word_outline", "ppt_outline", "audit_trace"]
+        },
+        "user_goal_cn": { "type": "string", "minLength": 1 },
+        "readiness": { "enum": ["ready", "needs_fragment_reads", "degraded"] },
+        "recommended_context_mode": {
+          "enum": ["compact_retrieval", "full_normalized_with_compact_index", "audit_trace"]
+        },
+        "primary_cli_command": { "type": "string", "minLength": 1 },
+        "primary_mcp_tool": { "enum": ["open_insight_search_chunks", "open_insight_context_handoff"] },
+        "read_sequence": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "prompt_skeleton_cn": { "type": "string", "minLength": 1 },
+        "required_inputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "follow_up_read_plan": {
+          "type": "object",
+          "required": ["cli_command_template", "mcp_tool", "expected_fragment_field", "required_when_cn"],
+          "properties": {
+            "cli_command_template": { "type": "string", "pattern": "context resolve-source" },
+            "mcp_tool": { "const": "open_insight_resolve_source" },
+            "expected_fragment_field": { "const": "normalized_source_fragment" },
+            "required_when_cn": { "type": "string", "minLength": 1 }
+          },
+          "additionalProperties": false
+        },
+        "required_citation_fields": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "enum": ["source_refs", "lineage_refs", "parse_diagnostic_ids", "source_map_refs", "page_cues"]
+          },
+          "contains": { "const": "source_refs" }
+        },
+        "forbidden": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "output_contract": {
+          "type": "object",
+          "required": ["output_boundary", "base_package_mutation", "model_required_by_open_insight", "allowed_destination"],
+          "properties": {
+            "output_boundary": { "const": "external_file_or_overlay_or_derived_package" },
+            "base_package_mutation": { "const": false },
+            "model_required_by_open_insight": { "const": false },
+            "allowed_destination": { "const": "external_file" }
+          },
+          "additionalProperties": false
+        },
+        "validation_checklist_cn": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      },
+      "additionalProperties": false
+    },
+    "answerMode": {
+      "type": "object",
+      "required": ["readiness", "reason_cn", "required_inputs", "prompt_cn", "validation_checklist_cn", "forbidden"],
+      "properties": {
+        "readiness": { "enum": ["ready", "needs_fragment_reads", "degraded"] },
+        "reason_cn": { "type": "string", "minLength": 1 },
+        "required_inputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "prompt_cn": { "type": "string", "minLength": 1 },
+        "validation_checklist_cn": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "forbidden": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "pageCue": {
+      "type": "object",
+      "required": [
+        "chunk_id",
+        "title",
+        "location_label",
+        "source_refs",
+        "lineage_refs",
+        "parse_diagnostic_ids",
+        "source_map_refs"
+      ],
+      "properties": {
+        "chunk_id": { "type": "string", "minLength": 1 },
+        "title": { "type": "string" },
+        "location_label": { "type": "string", "minLength": 1 },
+        "page_number": { "type": "integer", "minimum": 1 },
+        "line_numbers": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 1 }
+        },
+        "source_refs": { "$ref": "#/$defs/stringArray" },
+        "lineage_refs": { "$ref": "#/$defs/stringArray" },
+        "parse_diagnostic_ids": { "$ref": "#/$defs/stringArray" },
+        "source_map_refs": { "$ref": "#/$defs/stringArray" }
+      },
+      "additionalProperties": true
+    },
+    "coverageHints": {
+      "type": "object",
+      "required": [
+        "query_scope",
+        "covered_heading_paths",
+        "covered_source_refs",
+        "total_candidate_matches",
+        "included_chunk_count",
+        "truncated_by_token_budget",
+        "omitted_candidate_count",
+        "omitted_estimated_tokens",
+        "recommended_next_action",
+        "disclosure_cn"
+      ],
+      "properties": {
+        "query_scope": { "const": "query_scoped_compact_retrieval" },
+        "covered_heading_paths": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/stringArray" }
+        },
+        "covered_source_refs": { "$ref": "#/$defs/stringArray" },
+        "total_candidate_matches": { "type": "integer", "minimum": 0 },
+        "included_chunk_count": { "type": "integer", "minimum": 0 },
+        "truncated_by_token_budget": { "type": "boolean" },
+        "omitted_candidate_count": { "type": "integer", "minimum": 0 },
+        "omitted_estimated_tokens": { "type": "integer", "minimum": 0 },
+        "recommended_next_action": {
+          "enum": ["use_compact_context", "increase_token_budget", "read_normalized_source_fragment"]
+        },
+        "disclosure_cn": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": true
+    },
+    "fragmentRead": {
+      "type": "object",
+      "required": [
+        "chunk_id",
+        "title",
+        "reason_cn",
+        "cli_command",
+        "mcp_tool",
+        "mcp_arguments",
+        "expected_fragment_field",
+        "source_mode_disclosure_required",
+        "source_refs",
+        "lineage_refs",
+        "parse_diagnostic_ids",
+        "source_map_refs"
+      ],
+      "properties": {
+        "chunk_id": { "type": "string", "minLength": 1 },
+        "title": { "type": "string" },
+        "reason_cn": { "type": "string", "minLength": 1 },
+        "cli_command": { "type": "string", "pattern": "context resolve-source" },
+        "mcp_tool": { "const": "open_insight_resolve_source" },
+        "mcp_arguments": {
+          "type": "object",
+          "required": ["target_id"],
+          "properties": {
+            "target_id": { "type": "string", "minLength": 1 }
+          },
+          "additionalProperties": false
+        },
+        "expected_fragment_field": { "const": "normalized_source_fragment" },
+        "source_mode_disclosure_required": { "const": true },
+        "source_refs": { "$ref": "#/$defs/stringArray" },
+        "lineage_refs": { "$ref": "#/$defs/stringArray" },
+        "parse_diagnostic_ids": { "$ref": "#/$defs/stringArray" },
+        "source_map_refs": { "$ref": "#/$defs/stringArray" }
+      },
+      "additionalProperties": true
+    },
+    "fragmentReadPlan": {
+      "type": "object",
+      "required": [
+        "mode",
+        "when_cn",
+        "cli_command_template",
+        "mcp_tool",
+        "chunk_id_sources",
+        "expected_fragment_field",
+        "required_fields",
+        "source_mode_disclosure_required",
+        "max_fragment_policy_cn"
+      ],
+      "properties": {
+        "mode": { "const": "on_demand_resolve_source" },
+        "when_cn": { "type": "string", "minLength": 1 },
+        "cli_command_template": { "type": "string", "pattern": "context resolve-source" },
+        "mcp_tool": { "const": "open_insight_resolve_source" },
+        "chunk_id_sources": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "expected_fragment_field": { "const": "normalized_source_fragment" },
+        "required_fields": {
+          "type": "array",
+          "items": {
+            "enum": ["source_refs", "lineage_refs", "parse_diagnostic_ids", "source_map_refs"]
+          },
+          "contains": { "const": "source_refs" }
+        },
+        "source_mode_disclosure_required": { "const": true },
+        "max_fragment_policy_cn": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": true
+}

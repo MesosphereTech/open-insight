@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/compile-draft-result.v0.1.schema.json",
+  "title": "Open Insight CLI Compile Draft Result",
+  "type": "object",
+  "required": ["schema_version", "status"],
+  "properties": {
+    "schema_version": { "const": "open-insight.compile-draft.v0.1" },
+    "status": { "enum": ["compiled", "blocked"] },
+    "output_dir": { "type": "string", "minLength": 1 },
+    "package_id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "domain_pack": { "type": "string", "minLength": 1 },
+    "source_mode": { "enum": ["source_bundled", "source_light"] },
+    "parser_backend": { "enum": ["auto", "builtin", "markitdown"] },
+    "parser_timeout_ms": { "type": "integer", "minimum": 5000 },
+    "ocr_mode": { "enum": ["off", "llm"] },
+    "resource_limits": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "max_source_bytes",
+        "max_total_source_bytes",
+        "max_normalized_bytes",
+        "max_total_normalized_bytes",
+        "source_hash_strategy",
+        "package_write_strategy"
+      ],
+      "properties": {
+        "schema_version": { "const": "open-insight.compile-resource-limits.v0.1" },
+        "max_source_bytes": { "type": "integer", "minimum": 1 },
+        "max_total_source_bytes": { "type": "integer", "minimum": 1 },
+        "max_normalized_bytes": { "type": "integer", "minimum": 1 },
+        "max_total_normalized_bytes": { "type": "integer", "minimum": 1 },
+        "source_hash_strategy": { "const": "streaming_sha256" },
+        "package_write_strategy": { "const": "expanded_directory" }
+      },
+      "additionalProperties": false
+    },
+    "source_analysis_cache": {
+      "type": "object",
+      "required": ["schema_version", "enabled", "hits", "misses", "writes", "read_errors"],
+      "properties": {
+        "schema_version": { "const": "open-insight.source-analysis-cache.v0.1" },
+        "enabled": { "type": "boolean" },
+        "cache_dir": { "type": "string", "minLength": 1 },
+        "hits": { "type": "integer", "minimum": 0 },
+        "misses": { "type": "integer", "minimum": 0 },
+        "writes": { "type": "integer", "minimum": 0 },
+        "read_errors": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "source_files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["input_path", "package_path", "name", "type", "size_bytes", "bundled", "evidence_boundary"],
+        "properties": {
+          "input_path": { "type": "string", "minLength": 1 },
+          "package_path": { "type": "string", "minLength": 1 },
+          "name": { "type": "string", "minLength": 1 },
+          "type": { "type": "string", "minLength": 1 },
+          "size_bytes": { "type": "integer", "minimum": 0 },
+          "bundled": { "type": "boolean" },
+          "evidence_boundary": { "enum": ["raw_source_bundled", "raw_source_external"] },
+          "parser": { "type": "string", "minLength": 1 },
+          "parser_version": { "type": "string", "minLength": 1 },
+          "status": { "type": "string", "minLength": 1 },
+          "parser_role": { "type": "string", "minLength": 1 },
+          "cloud_used": { "type": "boolean" },
+          "row_count": { "type": "integer", "minimum": 0 },
+          "spreadsheet_formula_status": { "enum": ["ok", "none", "partial", "unsupported"] },
+          "spreadsheet_formula_count": { "type": "integer", "minimum": 0 },
+          "spreadsheet_formula_truncated": { "type": "boolean" },
+          "columns": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name"],
+              "properties": {
+                "name": { "type": "string", "minLength": 1 },
+                "type": { "type": "string", "minLength": 1 }
+              },
+              "additionalProperties": true
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "file_count": { "type": "integer", "minimum": 0 },
+    "warnings": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "plan_summary": {
+      "type": "object",
+      "required": [
+        "template_sections",
+        "questions",
+        "metric_suggestions",
+        "view_suggestions",
+        "domain_view_suggestions",
+        "data_gaps"
+      ],
+      "properties": {
+        "template_sections": { "type": "integer", "minimum": 0 },
+        "questions": { "type": "integer", "minimum": 0 },
+        "metric_suggestions": { "type": "integer", "minimum": 0 },
+        "view_suggestions": { "type": "integer", "minimum": 0 },
+        "domain_view_suggestions": { "type": "integer", "minimum": 0 },
+        "data_gaps": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": true
+    },
+    "validation_status": { "enum": ["valid", "valid_with_warnings", "invalid"] },
+    "validation": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "reason": { "type": "string", "minLength": 1 }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": { "const": "compiled" }
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "required": [
+          "output_dir",
+          "package_id",
+          "title",
+          "source_mode",
+          "parser_backend",
+          "parser_timeout_ms",
+          "source_files",
+          "file_count",
+          "warnings",
+          "plan_summary",
+          "validation_status",
+          "validation"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": { "const": "blocked" }
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "required": ["reason"]
+      }
+    }
+  ],
+  "additionalProperties": true
+}

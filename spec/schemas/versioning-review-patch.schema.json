@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/v0.1/versioning-review-patch.schema.json",
+  "title": "Insight Versioning Review Patch JSONL Record",
+  "type": "object",
+  "required": [
+    "patch_id",
+    "patch_type",
+    "review_state",
+    "target_claim_id",
+    "previous_status",
+    "next_status",
+    "status_change",
+    "base_package_mutation",
+    "supporting_response_claim_ids",
+    "supporting_response_evidence_ids",
+    "reviewer_note",
+    "created_at"
+  ],
+  "properties": {
+    "patch_id": { "type": "string", "minLength": 1 },
+    "patch_type": { "const": "claim_status_review" },
+    "review_state": {
+      "type": "string",
+      "enum": ["proposed", "approved_pending_apply", "rejected", "applied"]
+    },
+    "target_claim_id": { "type": "string", "minLength": 1 },
+    "previous_status": { "type": "string", "minLength": 1 },
+    "next_status": { "type": "string", "minLength": 1 },
+    "status_change": {
+      "type": "string",
+      "enum": [
+        "review_required_before_apply",
+        "review_approved_status_update",
+        "review_rejected_keep_status",
+        "review_applied_status_update"
+      ]
+    },
+    "base_package_mutation": { "const": false },
+    "source_response_id": { "type": "string" },
+    "source_request_id": { "type": "string" },
+    "supporting_response_claim_ids": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "supporting_response_evidence_ids": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "reviewer_note": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "created_by": { "type": "string" },
+    "review_decision": {
+      "type": "string",
+      "enum": ["approve", "reject"]
+    },
+    "reviewed_at": { "type": "string", "format": "date-time" },
+    "reviewed_by": { "type": "string" },
+    "applied_at": { "type": "string", "format": "date-time" },
+    "applied_by": { "type": "string" }
+  },
+  "additionalProperties": true
+}

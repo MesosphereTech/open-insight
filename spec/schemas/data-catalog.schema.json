@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/v0.1/data-catalog.schema.json",
+  "title": "Insight Data Catalog",
+  "type": "object",
+  "required": ["datasets"],
+  "properties": {
+    "datasets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["dataset_id", "path", "format", "columns"],
+        "properties": {
+          "dataset_id": { "type": "string" },
+          "path": { "type": "string" },
+          "format": { "type": "string" },
+          "description": { "type": "string" },
+          "grain": { "type": "string" },
+          "quality_warnings": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/qualityWarning" }
+          },
+          "columns": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name", "type"],
+              "properties": {
+                "name": { "type": "string" },
+                "type": { "type": "string" },
+                "description": { "type": "string" }
+              },
+              "additionalProperties": true
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "$defs": {
+    "qualityWarning": {
+      "type": "object",
+      "required": ["code", "message"],
+      "properties": {
+        "code": { "type": "string", "minLength": 1 },
+        "message": { "type": "string", "minLength": 1 },
+        "requested_fields": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

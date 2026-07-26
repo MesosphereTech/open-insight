@@ -1,0 +1,33 @@
+{
+  "name": "@open-insight/compiler",
+  "version": "0.0.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./draft": {
+      "types": "./dist/draft.d.ts",
+      "import": "./dist/draft.js",
+      "default": "./dist/draft.js"
+    },
+    "./source-analysis": {
+      "types": "./dist/sourceAnalysis.d.ts",
+      "import": "./dist/sourceAnalysis.js",
+      "default": "./dist/sourceAnalysis.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@open-insight/core": "file:../insight-core",
+    "@open-insight/domain-packs": "file:../insight-domain-packs",
+    "fflate": "^0.8.2"
+  }
+}

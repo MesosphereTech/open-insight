@@ -1,0 +1,20 @@
+{
+  "name": "@open-insight/cli",
+  "version": "0.0.0",
+  "type": "module",
+  "bin": {
+    "insight": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "@open-insight/compiler": "file:../../packages/insight-compiler",
+    "@open-insight/core": "file:../../packages/insight-core",
+    "@open-insight/domain-packs": "file:../../packages/insight-domain-packs",
+    "@open-insight/runtime": "file:../../packages/insight-runtime",
+    "@open-insight/validator": "file:../../packages/insight-validator",
+    "sql.js": "^1.14.1"
+  }
+}

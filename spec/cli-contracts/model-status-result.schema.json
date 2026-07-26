@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/model-status-result.v0.1.schema.json",
+  "title": "Open Insight CLI Model Status Result",
+  "type": "object",
+  "required": ["schema_version", "available", "source", "missing", "message"],
+  "properties": {
+    "schema_version": { "const": "open-insight.model-status.v0.1" },
+    "available": { "type": "boolean" },
+    "source": { "type": "string", "minLength": 1 },
+    "missing": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "message": { "type": "string" },
+    "config": {
+      "type": "object",
+      "required": ["baseUrl", "model", "name"],
+      "properties": {
+        "baseUrl": { "type": "string", "minLength": 1 },
+        "model": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": true
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "available": { "const": true }
+        },
+        "required": ["available"]
+      },
+      "then": {
+        "required": ["config"]
+      }
+    }
+  ],
+  "additionalProperties": true
+}

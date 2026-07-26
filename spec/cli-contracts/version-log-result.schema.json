@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-insight.dev/schemas/cli/version-log-result.v0.1.schema.json",
+  "title": "Open Insight CLI Version Log Result",
+  "type": "object",
+  "required": ["schema_version", "status", "package_id", "title", "events", "safety"],
+  "properties": {
+    "schema_version": { "const": "open-insight.version-log.v0.1" },
+    "status": { "const": "ok" },
+    "package_id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["event_id", "event_type"],
+        "properties": {
+          "event_id": { "type": "string", "minLength": 1 },
+          "event_type": { "type": "string", "minLength": 1 },
+          "merged_at": { "type": "string", "minLength": 1 },
+          "parent_package_id": { "type": "string", "minLength": 1 },
+          "response_package_id": { "type": "string", "minLength": 1 },
+          "merged_package_id": { "type": "string", "minLength": 1 },
+          "response_id": { "type": "string", "minLength": 1 },
+          "source_request_id": { "type": "string", "minLength": 1 },
+          "parent_mutation": { "type": "boolean" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "safety": {
+      "type": "object",
+      "required": ["base_package_mutation", "model_invoked", "package_code_execution"],
+      "properties": {
+        "base_package_mutation": { "const": false },
+        "model_invoked": { "const": false },
+        "package_code_execution": { "const": false }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
