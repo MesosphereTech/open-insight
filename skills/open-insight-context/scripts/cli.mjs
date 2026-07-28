@@ -1,45 +1,11 @@
 #!/usr/bin/env node
 import { spawnSync } from "node:child_process";
-import { access, realpath } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { createModelFreeChildEnv } from "./child-env.mjs";
-import { defaultCoreInstallRoot, normalizeCoreRef } from "./core-release.mjs";
+import { ensureCoreRoot } from "./core-runtime.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
-
-async function exists(filePath) {
-  try {
-    await access(filePath);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-async function findCoreRoot() {
-  const realScriptDir = await realpath(scriptDir).catch(() => scriptDir);
-  const requestedCoreRef = normalizeCoreRef();
-  const candidates = [
-    process.env.OPEN_INSIGHT_CORE_HOME,
-    process.cwd(),
-    path.resolve(scriptDir, "../../.."),
-    path.resolve(realScriptDir, "../../.."),
-    defaultCoreInstallRoot(requestedCoreRef)
-  ].filter(Boolean);
-
-  for (const candidate of candidates) {
-    const root = path.resolve(candidate);
-    if (
-      (await exists(path.join(root, "package.json"))) &&
-      (await exists(path.join(root, "apps", "cli", "dist", "index.js"))) &&
-      (await exists(path.join(root, "spec", "schemas")))
-    ) {
-      return root;
-    }
-  }
-  return undefined;
-}
 
 function assertReadOnlyCommand(args) {
   const command = args[0];
@@ -79,13 +45,13 @@ function normalizeUserPaths(inputArgs, invocationRoot) {
 
 async function main() {
   const invocationRoot = process.cwd();
-  const coreRoot = await findCoreRoot();
-  if (!coreRoot) {
-    throw new Error("未找到已构建的 Open Insight Core。请先运行本 Skill 的 bootstrap.mjs。");
-  }
-
   const userArgs = process.argv.slice(2);
   assertReadOnlyCommand(userArgs);
+  const coreRoot = await ensureCoreRoot({
+    scriptDir,
+    invocationRoot,
+    requiredPaths: ["apps/cli/dist/index.js", "spec/schemas"]
+  });
   const args = normalizeUserPaths(userArgs, invocationRoot);
   const result = spawnSync(process.execPath, [path.join(coreRoot, "apps", "cli", "dist", "index.js"), ...args], {
     cwd: coreRoot,

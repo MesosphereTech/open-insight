@@ -8,29 +8,28 @@
 
 本 Skill 不负责替用户回答固定问题，也不把报告、HTML 或 PPT 写回 base package。
 
-## 第一步：准备本地 Core
+## 第一步：一行安装，然后直接使用
 
 安装时必须保留整个 `open-insight-context` 目录；只有 `SKILL.md` 而没有相邻的 `scripts/` 目录不能完成 bootstrap、编译或读取。本文件所在目录记为 `<skill-root>`。
 
-Alpha 固定目录地址为 `https://github.com/MesosphereTech/open-insight/tree/v0.1.0-alpha.1/skills/open-insight-context`。应通过客户端的 Agent Skill 安装器安装整个目录，或完整下载该目录；不能只保存 GitHub 页面上的单个 Markdown 文件，也不应从移动的 `main` 作为 Alpha 安装来源。
+普通用户只运行这一条安装命令：
 
-Codex 用户可以直接要求：`请安装这个 Skill：https://github.com/MesosphereTech/open-insight/tree/v0.1.0-alpha.1/skills/open-insight-context`。安装成功后应在下一次对话中使用本 Skill；其他支持 Agent Skills 的客户端也应接收同一个固定目录地址。
+```bash
+npx -y skills@1.5.9 add "https://github.com/MesosphereTech/open-insight/tree/v0.1.0-alpha.2/skills/open-insight-context" --global
+```
 
-首次运行需要本机已有 Node.js 20.19+（20.x）或 22.12+、npm 10+、Git，并能访问 Core 仓库。Core 默认固定到 `v0.1.0-alpha.1`，安装在 `~/.open-insight/core/v0.1.0-alpha.1`；安装过程会核对 tag 对应的实际 commit，再运行 `npm install` 与 Core build，但不安装或调用任何模型。
+安装器会询问把 Skill 交给哪个受支持的 AI 客户端。当前仓库在最终验收期间仍是 private，因此测试者的本机需要已有 GitHub 访问授权；公开后，同一条固定 tag 命令必须能匿名安装。
 
-只做检查：
+首次运行需要本机已有 Node.js 20.19+（20.x）或 22.12+、npm 10+、Git。安装 Skill 后，普通用户不需要再手工运行 bootstrap：Agent 直接调用 `compile-folder.mjs` 或 `cli.mjs`，wrapper 会在第一次使用时自动下载固定 Core `v0.1.0-alpha.2`，安装到 `~/.open-insight/core/v0.1.0-alpha.2`，校验 tag 对应的实际 commit，再安装依赖并构建 CLI/MCP。首次准备进度只写入 `stderr`，不会污染 `--format json` 的机器输出，也不会安装或调用任何模型。
+
+以下命令只用于排障或管理员显式管理 Core，不属于普通用户主流程：
 
 ```bash
 node "<skill-root>/scripts/bootstrap.mjs" --check-only
-```
-
-允许安装本地 Core：
-
-```bash
 node "<skill-root>/scripts/bootstrap.mjs"
 ```
 
-wrapper 先以中文阶段进度检查 Node.js、npm、Git 和 Core；`system_checks` 会记录工具版本与状态，缺少依赖时返回 `prerequisite_failed`，并在任何 clone 或 install 前给出中文修复动作。进度从 `阶段 1/5` 到 `阶段 5/5` 写入 `stderr`，安装报告仍写入 JSON / Markdown 文件。随后依次查找 `OPEN_INSIGHT_CORE_HOME`、当前目录、Skill 所在仓库和当前 ref 的版本化安装目录。找不到时，它只克隆固定 tag `v0.1.0-alpha.1`；`OPEN_INSIGHT_CORE_REPOSITORY` 可显式覆盖安装源，`OPEN_INSIGHT_CORE_REF` 可显式覆盖测试 tag/branch。报告只显示 `<configured-repository>`，不记录凭据 URL，并记录 `requested_core_ref`、`resolved_core_commit` 与 `core_ref_verified`。固定 ref 不匹配时返回 `version_mismatch`，不会把移动分支伪装成 Alpha。显式本地开发 Core 会标记为 `local_override`，不能作为发布版本验证。
+wrapper 先以中文阶段进度检查 Node.js、npm、Git 和 Core；`system_checks` 会记录工具版本与状态，缺少依赖时返回 `prerequisite_failed`，并在任何 clone 或 install 前给出中文修复动作。进度从 `阶段 1/5` 到 `阶段 5/5` 写入 `stderr`，安装报告仍写入 JSON / Markdown 文件。随后依次查找 `OPEN_INSIGHT_CORE_HOME`、当前目录、Skill 所在仓库和当前 ref 的版本化安装目录。找不到时，它只克隆固定 tag `v0.1.0-alpha.2`；`OPEN_INSIGHT_CORE_REPOSITORY` 可显式覆盖安装源，`OPEN_INSIGHT_CORE_REF` 可显式覆盖测试 tag/branch。报告只显示 `<configured-repository>`，不记录凭据 URL，并记录 `requested_core_ref`、`resolved_core_commit` 与 `core_ref_verified`。固定 ref 不匹配时返回 `version_mismatch`，不会把移动分支伪装成 Alpha。显式本地开发 Core 会标记为 `local_override`，不能作为发布版本验证。只有管理员设置 `OPEN_INSIGHT_AUTO_BOOTSTRAP=0` 时，自动准备才会关闭；Core 缺失时必须诚实报错，不能静默换用其他版本。
 
 Core bootstrap 不调用模型、不安装 Gemini/Claude/Codex、不读取模型 key。MarkItDown 是可选 parser，不是 Skill bootstrap 的隐式安装项。需要 Office 与文本型 PDF 转置时，先安装 `pip install "markitdown[all]>=0.1.6,<0.2"`；Open Insight 使用本地文件专用转换、显式关闭插件，不调用 Azure 或模型 OCR。
 

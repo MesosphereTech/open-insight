@@ -1,4 +1,4 @@
-# Open Insight v0.1.0-alpha.1 Candidate Notes
+# Open Insight v0.1.0-alpha.2 Candidate Notes
 
 Status: **private release candidate**. This document does not announce a
 public release.
@@ -13,9 +13,19 @@ The Alpha is a local context toolchain. It does not bundle a model, upload
 source files, execute package content, or write generated answers back into the
 base package.
 
+Install the fixed candidate Skill with one command:
+
+```bash
+npx -y skills@1.5.9 add "https://github.com/MesosphereTech/open-insight/tree/v0.1.0-alpha.2/skills/open-insight-context" --global
+```
+
+The first compile or read prepares the pinned Core automatically. Manual
+bootstrap remains available for troubleshooting, not as a normal user step.
+
 ## Candidate contents
 
-- a Skill-first bootstrap path pinned to an immutable Core reference;
+- a one-command Skill install whose first compile or read automatically
+  prepares and verifies an immutable Core reference;
 - one-file compilation with `source_bundled` and `source_light` modes;
 - local MarkItDown integration for supported Office files and text PDFs;
 - normalized content, query chunks, reading order, parse diagnostics, source
@@ -84,7 +94,7 @@ contract check.
 1. Keep the development repository private and export the reviewed public Core
    allowlist into a clean repository.
 2. Verify anonymous Skill installation from the public repository and fixed
-   `v0.1.0-alpha.1` tag.
+   `v0.1.0-alpha.2` tag.
 3. Re-run the public Core build, contracts, Skill acceptance, parser
    acceptance, secret scan, and release-reference checks in the clean export.
 4. Upload the reviewed social preview and complete MP4 as launch assets.

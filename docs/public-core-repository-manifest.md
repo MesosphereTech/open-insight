@@ -1,12 +1,14 @@
 # Public Core Repository Manifest
 
-Last updated: 2026-07-24
+Last updated: 2026-07-28
 
 ## 1. Purpose
 
-The current development repository stays private. The GitHub Alpha repository
-is created from a reviewed **allowlist**, with a clean Git history and its own
-public tree SHA. The private candidate commit remains the implementation
+`MesosphereTech/open-insight-development` is the permanent private development
+repository. `MesosphereTech/open-insight` is the clean Core repository created
+from a reviewed **allowlist** with independent Git history. The Core repository
+also remains private during final acceptance and becomes public only after
+explicit approval. The private candidate commit remains the implementation
 baseline; the export manifest records which files were selected and why.
 
 The public Core is the canonical upstream for the `.insight` package and its
@@ -136,7 +138,7 @@ npm run verify:core-public
 npm run cli-contracts:check
 npm run alpha:skill-acceptance
 npm run alpha:parser-acceptance
-npm run alpha:release-ref -- --tag v0.1.0-alpha.1 --verify-remote
+npm run alpha:release-ref -- --tag v0.1.0-alpha.2 --verify-remote
 ```
 
 The exact public script set may become smaller than the private monorepo set,
@@ -156,9 +158,9 @@ Core fixes land in public first. The private commercial repository consumes a
 versioned Core release and may carry unreleased integration changes on private
 branches. Core security fixes must not depend on private product code.
 
-## 8. Current private review status
+## 8. Current private repository status
 
-The private repository provides:
+The private development repository provides:
 
 ```bash
 npm run alpha:public-export -- --output output/public-core-export
@@ -180,3 +182,24 @@ tests, two public CLI contract tests, secret scanning, and the English
 synthetic demo. Earlier standalone Skill and MarkItDown parser acceptance
 remains valid for the private candidate; this local evidence does not replace
 the final anonymous clone and fixed-tag test.
+
+On 2026-07-27 the existing development repository was renamed to
+`MesosphereTech/open-insight-development`. A new private
+`MesosphereTech/open-insight` repository was created from the reviewed export.
+Its bilingual `README.md` and `README.zh-CN.md`, `main`, and immutable
+`v0.1.0-alpha.1` tag are present; the tag resolves to
+`66916abb9c8544fe59c518c3518019982995df69`. An authenticated repository-outside
+Skill install used the default repository and tag, verified the commit, and
+compiled nine public synthetic inputs into one valid `.insight`. A fresh clone
+of the remote tag passed 61 Core tests, eight Skill tests, two CLI contract
+tests, secret scanning, dependency audit with zero reported vulnerabilities,
+and the four-question CLI/MCP parity demo. The remaining release check is the
+same installation without credentials after the Core repository becomes
+public; the development repository must remain private.
+
+The next immutable candidate is `v0.1.0-alpha.2`. It adds a one-command Skill
+installation path and makes the first compile or read prepare the pinned Core
+automatically. The standalone first-use test is now part of the public
+allowlist and must verify commit pinning, clean JSON stdout, model-environment
+isolation, and reuse of the installed Core. Historical `v0.1.0-alpha.1`
+remains immutable.

@@ -50,10 +50,21 @@ Good trigger examples:
 - Never mark AI output as `verified`.
 - Treat SQLite/FTS as a rebuildable index, not the only source of truth.
 
-## 1. Bootstrap the pinned Core
+## 1. Install once, then use it
 
 The complete Skill directory is required. A standalone `SKILL.md` without the
 adjacent `scripts/` directory cannot bootstrap, compile, or read packages.
+
+Install the fixed Alpha Skill with one command:
+
+```bash
+npx -y skills@1.5.9 add "https://github.com/MesosphereTech/open-insight/tree/v0.1.0-alpha.2/skills/open-insight-context" --global
+```
+
+The installer asks which supported AI client should receive the Skill. The
+repository is private during final acceptance, so the current test requires a
+GitHub-authorized machine. After public release, the same fixed-tag command
+must work without repository credentials.
 
 Requirements:
 
@@ -61,21 +72,23 @@ Requirements:
 - npm 10+
 - Git
 
-Check without installing:
+After Skill installation, do not ask an ordinary user to run bootstrap.
+Invoke `compile-folder.mjs` or `cli.mjs` for the requested task. On first use,
+the wrapper automatically downloads the immutable Core ref to
+`~/.open-insight/core/<version>`, verifies the resolved commit, installs its
+dependencies, and builds CLI/MCP. First-use progress goes to stderr; JSON stdout remains
+machine-readable throughout setup. It does not install or call an AI model.
+
+Manual checks are only for troubleshooting:
 
 ```bash
 node "<skill-root>/scripts/bootstrap.mjs" --check-only
-```
-
-Install the pinned Alpha Core:
-
-```bash
 node "<skill-root>/scripts/bootstrap.mjs"
 ```
 
-The bootstrap installs the immutable Core ref under
-`~/.open-insight/core/<version>`, verifies the resolved commit, installs
-dependencies, and builds CLI/MCP. It does not install or call an AI model.
+Set `OPEN_INSIGHT_AUTO_BOOTSTRAP=0` only when an administrator intentionally
+manages Core installation. A missing Core then fails with a repair instruction
+instead of silently using another version.
 
 For Office documents and text-based PDF, install the optional local parser:
 

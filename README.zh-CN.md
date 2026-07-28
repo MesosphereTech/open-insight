@@ -86,9 +86,17 @@ token 节省都必须与非空检索、来源覆盖、数字保真和诊断覆�
 
 ## 从 Skill 开始
 
-普通用户不需要先理解 monorepo。安装完整
-[`open-insight-context`](skills/open-insight-context/SKILL.md) Skill 目录后，
-Agent 会准备固定版本的本地 Core。
+普通用户不需要先理解 monorepo，也不需要手工运行 bootstrap。只运行一条
+命令安装完整 [`open-insight-context`](skills/open-insight-context/SKILL.md)
+Skill：
+
+```bash
+npx -y skills@1.5.9 add "https://github.com/MesosphereTech/open-insight/tree/v0.1.0-alpha.2/skills/open-insight-context" --global
+```
+
+安装器会询问把 Skill 交给哪个受支持的 AI 客户端。当前 private 验收阶段需要
+本机已有该仓库的 GitHub 访问权限；仓库公开后，同一条固定 tag 命令应可匿名
+安装。
 
 要求：
 
@@ -96,11 +104,8 @@ Agent 会准备固定版本的本地 Core。
 - npm 10+
 - Git
 
-```bash
-node "<skill-root>/scripts/bootstrap.mjs"
-```
-
-然后把本地文件或文件夹编译成一个真实的 `.insight` 文件：
+安装完成后，直接让 AI 把本地文件或文件夹编译成一个真实的 `.insight`
+文件：
 
 ```bash
 node "<skill-root>/scripts/compile-folder.mjs" \
@@ -111,6 +116,10 @@ node "<skill-root>/scripts/compile-folder.mjs" \
   --parser auto \
   --progress
 ```
+
+第一次编译或读取时，Skill 会在后台自动下载、校验并准备固定版本 Core。
+安装进度只写入 `stderr`，不会污染 JSON 机器输出。手工运行
+`bootstrap.mjs` 只用于排障，不属于普通用户流程。
 
 最终结果是一个 `.insight` 文件，不是 `.zip` 后缀，也不是名为
 `*.insight` 的目录。
@@ -163,7 +172,7 @@ CLI 和 MCP 复用同一 Runtime。它们不会调用模型、执行包内代码
 
 ## 当前状态
 
-这是 `v0.1.0-alpha.1` 私有发布候选的公开 Core 快照准备稿，不是稳定版本。
+这是 `v0.1.0-alpha.2` 私有发布候选的公开 Core 快照准备稿，不是稳定版本。
 当前能力和限制见
 [`docs/core-oss-alpha-readiness.md`](docs/core-oss-alpha-readiness.md)，
 文件格式与产品契约见 [`docs/core-oss-prd.md`](docs/core-oss-prd.md)。

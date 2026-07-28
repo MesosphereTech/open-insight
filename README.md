@@ -118,14 +118,21 @@ See the [Core product contract](docs/core-oss-prd.md) and
 
 ### 1. Install the Open Insight Context Skill
 
-Install the complete `open-insight-context` Skill in your AI coding environment. The Skill bootstraps a pinned local Core version, so first-time users do not need to understand the repository layout.
+Install the complete `open-insight-context` Skill with one command:
+
+```bash
+npx -y skills@1.5.9 add "https://github.com/MesosphereTech/open-insight/tree/v0.1.0-alpha.2/skills/open-insight-context" --global
+```
+
+Choose your supported AI client when prompted. During private acceptance this
+requires GitHub access to the repository. After public release, the same
+fixed-tag command works without repository credentials.
 
 ### 2. Compile a folder into one file
 
 Ask your AI agent to use the installed Skill, or run its wrappers directly:
 
 ```bash
-node "<skill-root>/scripts/bootstrap.mjs"
 node "<skill-root>/scripts/compile-folder.mjs" \
   --source-dir ./materials \
   --output-dir ./output \
@@ -134,6 +141,11 @@ node "<skill-root>/scripts/compile-folder.mjs" \
   --parser auto \
   --progress
 ```
+
+There is no separate setup command in the normal workflow. The first compile
+or read automatically prepares and verifies the pinned local Core. Preparation
+progress stays on stderr, while JSON stdout remains clean. Manual
+`bootstrap.mjs` is available only for troubleshooting.
 
 The `source_bundled` mode preserves original files inside one `.insight`
 output. Validate and inspect it before use:

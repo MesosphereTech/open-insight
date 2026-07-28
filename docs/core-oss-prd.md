@@ -267,12 +267,11 @@ Core OSS 的默认体验是 Skill-first：用户或 Agent 先通过 Context Skil
 
 ### 3.1 Skill-first
 
-Skill 负责把本地材料编译、读取边界和消费者行为说明交给 Agent。它不隐式安装模型、不读取模型 key、不调用模型，也不把来源文件上传到外部服务。
+Skill 负责把本地材料编译、读取边界和消费者行为说明交给 Agent。普通用户入口必须保持为“一条固定 tag 命令安装完整 Skill，然后直接编译或读取”；不能要求用户先克隆开发仓库、理解 monorepo，或把手工 bootstrap 当作主流程。
 
-当用户显式设置 `OPEN_INSIGHT_CORE_HOME` 时，该路径是唯一 Core 查找
-位置；路径尚未安装时必须返回 `needs_install`，不能静默复用其他全局
-或相邻 Core。这样固定版本校验、自动化测试和多项目隔离不会被机器上
-已有的旧安装污染。
+第一次调用编译或只读 CLI wrapper 时，如果固定版本 Core 尚未存在，Skill 必须自动下载固定 tag、校验实际 commit、安装依赖并构建 CLI/MCP；准备进度写入 `stderr`，不能污染 JSON stdout。显式 `bootstrap.mjs` 只作为排障或管理员管理入口。自动准备不隐式安装模型、不读取模型 key、不调用模型，也不把来源文件上传到外部服务。
+
+当用户显式设置 `OPEN_INSIGHT_CORE_HOME` 时，该路径是唯一 Core 查找和安装位置，不能静默复用其他全局或相邻 Core。设置 `OPEN_INSIGHT_AUTO_BOOTSTRAP=0` 时，缺少 Core 必须诚实阻断并提供修复动作。这样固定版本校验、自动化测试和多项目隔离不会被机器上的旧安装污染。
 
 文件夹编译支持 `source_bundled`、`source_light` 和 `both` 模式，并可选择 `auto`、`builtin` 或 `markitdown` 解析器。MarkItDown 是推荐的本地增强解析方向：安装后，`auto` 对 DOCX、XLSX、PPTX 和非图片化 PDF 使用本地 `convert_local()`，默认关闭插件、记录 parser version 和 `cloud_used=false`；文本、Markdown、HTML、CSV/TSV 继续由内置本地解析覆盖。MarkItDown 是可选依赖，不能作为 Skill bootstrap 的隐式安装或 Alpha 的必备前提。
 
