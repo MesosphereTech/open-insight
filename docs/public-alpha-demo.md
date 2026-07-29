@@ -11,9 +11,11 @@ Chinese guide remains available as `skills/open-insight-context/SKILL.zh-CN.md`.
 
 ```bash
 npm ci
-pip install "markitdown[all]>=0.1.6,<0.2"
 npm run demo:public-alpha
 ```
+
+The demo uses the same Skill-managed parser runtime as an ordinary user.
+Python 3.10+ is required, but a separate MarkItDown `pip install` is not.
 
 The demo creates:
 

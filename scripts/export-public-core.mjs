@@ -50,6 +50,7 @@ const exactPaths = new Set([
   "tests/core-oss-context-skill-docs.test.ts",
   "tests/core-oss-skill-folder-compile.test.ts",
   "tests/core-oss-skill-standalone-install.test.ts",
+  "tests/open-insight-installer.test.ts",
   "tests/public-cli-contracts.test.ts",
   "tests/public-core-readme-docs.test.ts",
   "apps/cli/src/localEnv.test.ts",
@@ -71,6 +72,7 @@ const historicalProductDocs = new Set([
 
 const allowedPrefixes = [
   "apps/cli/",
+  "distribution/open-insight/",
   "packages/insight-compiler/",
   "packages/insight-core/",
   "packages/insight-domain-packs/",
@@ -194,7 +196,7 @@ function publicPackageJson(sourcePackage) {
         "tsc -b packages/insight-core packages/insight-validator packages/insight-runtime packages/insight-domain-packs packages/insight-compiler apps/cli",
       "test:core-public": "vitest run --config vitest.public-core.config.ts --no-file-parallelism",
       "test:skill-public":
-        "vitest run tests/core-oss-context-skill-docs.test.ts tests/core-oss-skill-folder-compile.test.ts tests/core-oss-skill-standalone-install.test.ts --no-file-parallelism",
+        "vitest run tests/open-insight-installer.test.ts tests/core-oss-context-skill-docs.test.ts tests/core-oss-skill-folder-compile.test.ts tests/core-oss-skill-standalone-install.test.ts --no-file-parallelism",
       "verify:core-public": "node scripts/verify-public-core.mjs",
       "demo:public-alpha": "node scripts/demo-public-alpha.mjs",
       "alpha:skill-acceptance": "node scripts/run-alpha-skill-acceptance.mjs",

@@ -10,7 +10,7 @@ const repoRoot = path.resolve(scriptDir, "..");
 const planOnly = process.argv.includes("--plan-only");
 const formatIndex = process.argv.indexOf("--format");
 const jsonOutput = formatIndex >= 0 && process.argv[formatIndex + 1] === "json";
-const candidateTag = "v0.1.0-alpha.2";
+const candidateTag = "v0.1.0-alpha.3";
 const gitCommand = process.platform === "win32" ? "git.exe" : "git";
 const npmCommand = process.platform === "win32" ? "npm.cmd" : "npm";
 const npmCliPath = [

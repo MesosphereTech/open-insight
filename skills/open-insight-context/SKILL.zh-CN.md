@@ -15,12 +15,14 @@
 普通用户只运行这一条安装命令：
 
 ```bash
-npx -y skills@1.5.9 add "https://github.com/MesosphereTech/open-insight/tree/v0.1.0-alpha.2/skills/open-insight-context" --global
+npx @mesospheretech/open-insight
 ```
 
-安装器会询问把 Skill 交给哪个受支持的 AI 客户端。当前仓库在最终验收期间仍是 private，因此测试者的本机需要已有 GitHub 访问授权；公开后，同一条固定 tag 命令必须能匿名安装。
+等价短命令为 `npx open-insight-cli`。
 
-首次运行需要本机已有 Node.js 20.19+（20.x）或 22.12+、npm 10+、Git。安装 Skill 后，普通用户不需要再手工运行 bootstrap：Agent 直接调用 `compile-folder.mjs` 或 `cli.mjs`，wrapper 会在第一次使用时自动下载固定 Core `v0.1.0-alpha.2`，安装到 `~/.open-insight/core/v0.1.0-alpha.2`，校验 tag 对应的实际 commit，再安装依赖并构建 CLI/MCP。首次准备进度只写入 `stderr`，不会污染 `--format json` 的机器输出，也不会安装或调用任何模型。
+品牌安装器在内部固定通用 Skill 安装器和不可变的 `v0.1.0-alpha.3` Skill 来源，普通用户不需要复制 GitHub 长路径。安装器会询问把 Skill 交给哪个受支持的 AI 客户端。当前 npm 包和 Core 仓库在最终验收期间仍是 private 候选；正式发布后，这条命令必须能在没有仓库凭据的环境中安装。
+
+首次运行需要本机已有 Node.js 20.19+（20.x）或 22.12+、npm 10+、Git 和 Python 3.10+。安装 Skill 后，普通用户不需要再手工运行 bootstrap：Agent 直接调用 `compile-folder.mjs` 或 `cli.mjs`，wrapper 会在第一次使用时自动下载固定 Core `v0.1.0-alpha.3`，安装到 `~/.open-insight/core/v0.1.0-alpha.3`，校验 tag 对应的实际 commit，再安装依赖并构建 CLI/MCP。首次准备进度只写入 `stderr`，不会污染 `--format json` 的机器输出，也不会安装或调用任何模型。
 
 以下命令只用于排障或管理员显式管理 Core，不属于普通用户主流程：
 
@@ -29,9 +31,9 @@ node "<skill-root>/scripts/bootstrap.mjs" --check-only
 node "<skill-root>/scripts/bootstrap.mjs"
 ```
 
-wrapper 先以中文阶段进度检查 Node.js、npm、Git 和 Core；`system_checks` 会记录工具版本与状态，缺少依赖时返回 `prerequisite_failed`，并在任何 clone 或 install 前给出中文修复动作。进度从 `阶段 1/5` 到 `阶段 5/5` 写入 `stderr`，安装报告仍写入 JSON / Markdown 文件。随后依次查找 `OPEN_INSIGHT_CORE_HOME`、当前目录、Skill 所在仓库和当前 ref 的版本化安装目录。找不到时，它只克隆固定 tag `v0.1.0-alpha.2`；`OPEN_INSIGHT_CORE_REPOSITORY` 可显式覆盖安装源，`OPEN_INSIGHT_CORE_REF` 可显式覆盖测试 tag/branch。报告只显示 `<configured-repository>`，不记录凭据 URL，并记录 `requested_core_ref`、`resolved_core_commit` 与 `core_ref_verified`。固定 ref 不匹配时返回 `version_mismatch`，不会把移动分支伪装成 Alpha。显式本地开发 Core 会标记为 `local_override`，不能作为发布版本验证。只有管理员设置 `OPEN_INSIGHT_AUTO_BOOTSTRAP=0` 时，自动准备才会关闭；Core 缺失时必须诚实报错，不能静默换用其他版本。
+wrapper 先以中文阶段进度检查 Node.js、npm、Git 和 Core；`system_checks` 会记录工具版本与状态，缺少依赖时返回 `prerequisite_failed`，并在任何 clone 或 install 前给出中文修复动作。进度从 `阶段 1/5` 到 `阶段 5/5` 写入 `stderr`，安装报告仍写入 JSON / Markdown 文件。随后依次查找 `OPEN_INSIGHT_CORE_HOME`、当前目录、Skill 所在仓库和当前 ref 的版本化安装目录。找不到时，它只克隆固定 tag `v0.1.0-alpha.3`；`OPEN_INSIGHT_CORE_REPOSITORY` 可显式覆盖安装源，`OPEN_INSIGHT_CORE_REF` 可显式覆盖测试 tag/branch。报告只显示 `<configured-repository>`，不记录凭据 URL，并记录 `requested_core_ref`、`resolved_core_commit` 与 `core_ref_verified`。固定 ref 不匹配时返回 `version_mismatch`，不会把移动分支伪装成 Alpha。显式本地开发 Core 会标记为 `local_override`，不能作为发布版本验证。只有管理员设置 `OPEN_INSIGHT_AUTO_BOOTSTRAP=0` 时，自动准备才会关闭；Core 缺失时必须诚实报错，不能静默换用其他版本。
 
-Core bootstrap 不调用模型、不安装 Gemini/Claude/Codex、不读取模型 key。MarkItDown 是可选 parser，不是 Skill bootstrap 的隐式安装项。需要 Office 与文本型 PDF 转置时，先安装 `pip install "markitdown[all]>=0.1.6,<0.2"`；Open Insight 使用本地文件专用转换、显式关闭插件，不调用 Azure 或模型 OCR。
+Core bootstrap 不调用模型、不安装 Gemini/Claude/Codex、不读取模型 key。默认 `--parser auto` 遇到 PDF、DOCX、XLSX 或 PPTX 时，Skill 会在 `~/.open-insight/parsers/` 自动创建隔离 Python 环境并安装固定版本 MarkItDown；普通用户不需要手工运行 `pip install`。纯文本、Markdown、HTML、CSV/TSV 不触发 parser 安装。本机需要已有 Python 3.10+；缺少 Python 时会给出明确修复说明，不把解析失败伪装成成功。管理员可用 `OPEN_INSIGHT_AUTO_INSTALL_PARSER=0` 关闭自动准备，或用 `OPEN_INSIGHT_PYTHON` 指向自行维护的固定环境；Open Insight 只校验该环境，不修改它。
 
 ## 编译文件夹
 
@@ -49,14 +51,13 @@ node "<skill-root>/scripts/compile-folder.mjs" \
 
 这些相对路径以用户运行命令时所在目录为基准，不以 Core 仓库为基准。因此用户不需要进入 `~/.open-insight/core`。
 
-安装 MarkItDown 后，默认 `--parser auto` 对 PDF、DOCX、XLSX 和 PPTX 使用本地 MarkItDown；TXT、Markdown、HTML、CSV/TSV 等简单格式继续优先使用内置本地解析。MarkItDown 不可用或正文抽取失败时，Open Insight 会保留来源、指纹和降级 diagnostics，不会把 metadata-only 内容伪装成完整正文。默认 `--ocr off`，不会启用插件、调用模型或上传扫描件。
+默认 `--parser auto` 对 PDF、DOCX、XLSX 和 PPTX 自动准备并使用本地 MarkItDown；TXT、Markdown、HTML、CSV/TSV 等简单格式继续优先使用内置本地解析。MarkItDown 不可用或正文抽取失败时，Open Insight 会保留来源、指纹和降级 diagnostics，不会把 metadata-only 内容伪装成完整正文。默认 `--ocr off`，不会启用插件、调用模型或上传扫描件。
 
 ### 扫描件模型 OCR（实验性、显式启用）
 
-图片型 PDF 可以显式使用 MarkItDown 官方 `markitdown-ocr` 插件。它是视觉模型 OCR，不是普通 PDF 的内存优化，也不是纯本地传统 OCR。只有用户主动安装插件、配置专用 OCR endpoint 并传入 `--ocr llm` 时才会运行：
+图片型 PDF 可以显式使用 MarkItDown 官方 `markitdown-ocr` 插件。它是视觉模型 OCR，不是普通 PDF 的内存优化，也不是纯本地传统 OCR。用户传入 `--ocr llm` 后，Skill 可以在隔离 runtime 内自动安装固定版本插件；但 endpoint、模型、密钥和数据外发授权永远不会自动猜测或开启。只有用户配置专用 OCR endpoint、明确选择 `--ocr llm` 并接受数据边界时才会运行：
 
 ```powershell
-pip install "markitdown-ocr>=0.1,<0.2" openai
 $env:OPEN_INSIGHT_OCR_API_KEY="<private-key>"
 $env:OPEN_INSIGHT_OCR_MODEL="<vision-model>"
 $env:OPEN_INSIGHT_OCR_BASE_URL="<OpenAI-compatible-endpoint>"

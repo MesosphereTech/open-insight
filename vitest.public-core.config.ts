@@ -18,7 +18,8 @@ export default defineConfig({
       "tests/public-cli-contracts.test.ts",
       "tests/core-oss-context-skill-docs.test.ts",
       "tests/core-oss-skill-folder-compile.test.ts",
-      "tests/core-oss-skill-standalone-install.test.ts"
+      "tests/core-oss-skill-standalone-install.test.ts",
+      "tests/open-insight-installer.test.ts"
     ],
     exclude: ["node_modules/**", "dist/**", "output/**", "tmp/**", "unpacked/**"],
     environment: "node",

@@ -91,12 +91,16 @@ token 节省都必须与非空检索、来源覆盖、数字保真和诊断覆�
 Skill：
 
 ```bash
-npx -y skills@1.5.9 add "https://github.com/MesosphereTech/open-insight/tree/v0.1.0-alpha.2/skills/open-insight-context" --global
+npx @mesospheretech/open-insight
 ```
 
-安装器会询问把 Skill 交给哪个受支持的 AI 客户端。当前 private 验收阶段需要
-本机已有该仓库的 GitHub 访问权限；仓库公开后，同一条固定 tag 命令应可匿名
-安装。
+短命令 `npx open-insight-cli` 等价可用；两个包使用同一套固定版本安装器。
+
+品牌安装器在内部固定通用 Skill 安装器和不可变的
+`v0.1.0-alpha.3` Skill 来源，普通用户不需要看到 GitHub 长路径。安装器会
+询问把 Skill 交给哪个受支持的 AI 客户端。`open-insight-cli` npm 安装器
+已经公开，Core 仓库仍处于 private 验收；当前安装需要 GitHub 授权，Core
+仓库公开后同一条命令才可供匿名用户直接运行。
 
 要求：
 
@@ -172,7 +176,7 @@ CLI 和 MCP 复用同一 Runtime。它们不会调用模型、执行包内代码
 
 ## 当前状态
 
-这是 `v0.1.0-alpha.2` 私有发布候选的公开 Core 快照准备稿，不是稳定版本。
+这是 `v0.1.0-alpha.3` 私有发布候选的公开 Core 快照准备稿，不是稳定版本。
 当前能力和限制见
 [`docs/core-oss-alpha-readiness.md`](docs/core-oss-alpha-readiness.md)，
 文件格式与产品契约见 [`docs/core-oss-prd.md`](docs/core-oss-prd.md)。

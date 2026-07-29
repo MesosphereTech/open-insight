@@ -50,7 +50,7 @@ describe("standalone Context Skill install", () => {
     runGit(["add", "release-marker.txt"]);
     runGit(["commit", "-m", "next fixture core"]);
     const overrideCommit = runGit(["rev-parse", "HEAD"]);
-    runGit(["tag", "v0.1.0-alpha.3"]);
+    runGit(["tag", "v0.1.0-alpha.4"]);
 
     try {
       const env = {
@@ -133,12 +133,12 @@ describe("standalone Context Skill install", () => {
       const mismatch = spawnSync(process.execPath, [wrapper, "--check-only"], {
         cwd: consumerRoot,
         encoding: "utf8",
-        env: { ...env, OPEN_INSIGHT_CORE_REF: "v0.1.0-alpha.3" }
+        env: { ...env, OPEN_INSIGHT_CORE_REF: "v0.1.0-alpha.4" }
       });
       expect(mismatch.status, `${mismatch.stdout}\n${mismatch.stderr}`).toBe(0);
       expect(JSON.parse(await readFile(reportPath, "utf8"))).toMatchObject({
         status: "version_mismatch",
-        requested_core_ref: "v0.1.0-alpha.3",
+        requested_core_ref: "v0.1.0-alpha.4",
         core_ref_policy: "pinned",
         core_ref_status: "mismatch",
         core_ref_verified: false,
@@ -156,7 +156,7 @@ describe("standalone Context Skill install", () => {
         env: {
           ...env,
           OPEN_INSIGHT_CORE_HOME: overrideInstallRoot,
-          OPEN_INSIGHT_CORE_REF: "v0.1.0-alpha.3"
+          OPEN_INSIGHT_CORE_REF: "v0.1.0-alpha.4"
         }
       });
       expect(override.status, `${override.stdout}\n${override.stderr}`).toBe(0);
@@ -165,7 +165,7 @@ describe("standalone Context Skill install", () => {
       ).toMatchObject({
         status: "ready",
         core_commit: overrideCommit,
-        requested_core_ref: "v0.1.0-alpha.3",
+        requested_core_ref: "v0.1.0-alpha.4",
         core_ref_source: "environment_override",
         core_ref_verified: true
       });

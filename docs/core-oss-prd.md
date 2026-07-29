@@ -267,15 +267,17 @@ Core OSS 的默认体验是 Skill-first：用户或 Agent 先通过 Context Skil
 
 ### 3.1 Skill-first
 
-Skill 负责把本地材料编译、读取边界和消费者行为说明交给 Agent。普通用户入口必须保持为“一条固定 tag 命令安装完整 Skill，然后直接编译或读取”；不能要求用户先克隆开发仓库、理解 monorepo，或把手工 bootstrap 当作主流程。
+Skill 负责把本地材料编译、读取边界和消费者行为说明交给 Agent。普通用户入口必须保持为品牌化的一行命令 `npx @mesospheretech/open-insight`；短命令 `npx open-insight-cli` 作为等价入口保留。两个 npm 包必须复用同一安装器实现，然后直接编译或读取；不能要求用户先克隆开发仓库、理解 monorepo、复制 GitHub tree 长路径，或把手工 bootstrap 当作主流程。品牌安装包内部可以复用固定版本的通用 Skill 安装器，但必须固定不可变 Skill tag、隐藏实现细节、隔离模型与 OCR 密钥，并保持可审计的 dry-run 安装计划。
 
 第一次调用编译或只读 CLI wrapper 时，如果固定版本 Core 尚未存在，Skill 必须自动下载固定 tag、校验实际 commit、安装依赖并构建 CLI/MCP；准备进度写入 `stderr`，不能污染 JSON stdout。显式 `bootstrap.mjs` 只作为排障或管理员管理入口。自动准备不隐式安装模型、不读取模型 key、不调用模型，也不把来源文件上传到外部服务。
 
 当用户显式设置 `OPEN_INSIGHT_CORE_HOME` 时，该路径是唯一 Core 查找和安装位置，不能静默复用其他全局或相邻 Core。设置 `OPEN_INSIGHT_AUTO_BOOTSTRAP=0` 时，缺少 Core 必须诚实阻断并提供修复动作。这样固定版本校验、自动化测试和多项目隔离不会被机器上的旧安装污染。
 
-文件夹编译支持 `source_bundled`、`source_light` 和 `both` 模式，并可选择 `auto`、`builtin` 或 `markitdown` 解析器。MarkItDown 是推荐的本地增强解析方向：安装后，`auto` 对 DOCX、XLSX、PPTX 和非图片化 PDF 使用本地 `convert_local()`，默认关闭插件、记录 parser version 和 `cloud_used=false`；文本、Markdown、HTML、CSV/TSV 继续由内置本地解析覆盖。MarkItDown 是可选依赖，不能作为 Skill bootstrap 的隐式安装或 Alpha 的必备前提。
+文件夹编译支持 `source_bundled`、`source_light` 和 `both` 模式，并可选择 `auto`、`builtin` 或 `markitdown` 解析器。MarkItDown 是默认本地增强解析器：`auto` 对 DOCX、XLSX、PPTX 和非图片化 PDF 使用本地 `convert_local()`，默认关闭插件、记录 parser version 和 `cloud_used=false`；文本、Markdown、HTML、CSV/TSV 继续由内置本地解析覆盖。MarkItDown 位于 Skill 管理的隔离 runtime，不进入用户全局 Python，也不在 CLI/MCP 只读阶段安装。
 
-图片与图片型 PDF 的 OCR / 视觉解析是独立的实验性增强路径，不等同于大文件内存优化。默认 `--ocr off`；只有用户主动安装官方 `markitdown-ocr` 插件、配置专用 `OPEN_INSIGHT_OCR_*` 环境变量并传入 `--ocr llm` 时，Core 才允许启用视觉模型 OCR。若 endpoint 不是本机地址，页面图像可能发送到外部服务，必须在运行前由用户确认数据权限。所有模型 OCR 结果都必须记录 `cloud_used`、parser/plugin/model identity、warning 和人工复核边界；未检测到 OCR 输出标记时不能伪装成完整正文。该实验路径不属于 Alpha 的默认能力声明，也不会改变 `.insight v0.1` conformance。
+Office 与文本型 PDF 的 MarkItDown 解析属于 Alpha 默认本地能力。Skill 首次遇到 PDF、DOCX、XLSX 或 PPTX 时，必须在 `~/.open-insight/parsers/` 自动准备固定版本的隔离 parser runtime，不能再要求普通用户手工执行 `pip install`；纯文本来源不得无故触发该安装。Python 3.10+ 仍是明确前置条件，缺失时必须给出可执行诊断。管理员可以关闭自动准备，或通过 `OPEN_INSIGHT_PYTHON` 指向自行维护且可校验的环境。
+
+图片与图片型 PDF 的 OCR / 视觉解析是独立的实验性增强路径，不等同于大文件内存优化。默认 `--ocr off`；只有用户配置专用 `OPEN_INSIGHT_OCR_*` 环境变量并传入 `--ocr llm` 时，Core 才允许启用视觉模型 OCR。Skill 可以在该显式动作之后自动把固定版本 `markitdown-ocr` 安装到隔离 runtime，但不得自动选择 Azure、模型、endpoint、密钥或替用户接受数据外发。若 endpoint 不是本机地址，页面图像可能发送到外部服务，必须在运行前由用户确认数据权限。所有模型 OCR 结果都必须记录 `cloud_used`、parser/plugin/model identity、warning 和人工复核边界；未检测到 OCR 输出标记时不能伪装成完整正文。该实验路径不属于 Alpha 的默认能力声明，也不会改变 `.insight v0.1` conformance。
 
 ### 3.2 CLI 与 MCP
 

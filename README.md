@@ -121,12 +121,18 @@ See the [Core product contract](docs/core-oss-prd.md) and
 Install the complete `open-insight-context` Skill with one command:
 
 ```bash
-npx -y skills@1.5.9 add "https://github.com/MesosphereTech/open-insight/tree/v0.1.0-alpha.2/skills/open-insight-context" --global
+npx @mesospheretech/open-insight
 ```
 
-Choose your supported AI client when prompted. During private acceptance this
-requires GitHub access to the repository. After public release, the same
-fixed-tag command works without repository credentials.
+The shorter equivalent command is `npx open-insight-cli`. Both packages use the
+same pinned installer implementation.
+
+The branded installer pins both the generic Skill installer and the immutable
+`v0.1.0-alpha.3` Skill source, so users do not need a GitHub tree URL. Choose
+your supported AI client when prompted. The `open-insight-cli` npm launcher is
+public, while the Core repository remains private during owner acceptance.
+Installation currently requires authorized GitHub access; the same command
+becomes anonymous once the Core repository is public.
 
 ### 2. Compile a folder into one file
 
@@ -244,8 +250,10 @@ Omits original source binaries while retaining normalized content, fingerprints,
 
 ## Parsing and OCR
 
-MarkItDown is the recommended optional local parser backend for supported
-Office documents and text-based PDFs. Its parser name, version, status,
+MarkItDown is the default local parser backend for supported Office documents
+and text-based PDFs. On first use, the Skill automatically installs the pinned
+version into an isolated runtime under `~/.open-insight/parsers/`; users do not
+run `pip install`. Python 3.10+ is required. Its parser name, version, status,
 warnings, and source mapping are recorded in package diagnostics.
 
 Scanned or image-only PDFs are not silently treated as text. OCR is an explicit

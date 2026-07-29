@@ -10,11 +10,15 @@
 - MarkItDown 本地 parser 路径、normalized source、parse diagnostics 和 source map。
 - SQLite/FTS 可重建 query index、内容寻址、阅读顺序和 compact retrieval。
 - CLI context、只读 MCP server、standalone Skill 和 SDK/runtime 访问层。
+- 品牌化 `open-insight` npm bootstrap 候选，公开入口收敛为
+  `npx open-insight`，内部固定通用 Skill 安装器与不可变 Core Skill 来源。
 - Proof Gold、CLI/MCP parity、token/质量评测与安全降级门禁。
 
 ### Changed
 
 - GitHub 开源主入口调整为 Core OSS：Skill -> Compiler -> `.insight` -> CLI/MCP -> external LLM。
+- Skill 首次编译或读取会自动准备并校验固定 Core；手工 bootstrap 仅用于
+  排障，安装链路不转发模型、OCR 或浏览器密钥。
 - `compile-pack` 机器结果升级为 `open-insight.compile-pack.v0.2`，默认使用隐私安全的公开路径定位符。
 - MarkItDown 本地适配对 PDF、DOCX、XLSX、PPTX 使用默认 `auto` 路径，并改为插件关闭的 `convert_local()`；parser version 进入 diagnostics 和 source analysis cache key，大 Markdown 不再通过固定 20MB stdout 缓冲区传递。
 

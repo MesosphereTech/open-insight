@@ -51,7 +51,11 @@ function run(command, args, options = {}) {
     cwd: options.cwd ?? repoRoot,
     encoding: "utf8",
     input: options.input,
-    env: { ...process.env, FORCE_COLOR: "0", NO_COLOR: "1" }
+    env: {
+      ...(options.env ?? process.env),
+      FORCE_COLOR: "0",
+      NO_COLOR: "1"
+    }
   });
   if (result.error) throw result.error;
   if (result.status !== 0) {
@@ -202,7 +206,7 @@ async function main() {
   run(npmCommand, ["run", "build:core"]);
 
   const compileResult = run(process.execPath, [
-    path.join(repoRoot, "scripts", "compile-context-folder.mjs"),
+    path.join(repoRoot, "skills", "open-insight-context", "scripts", "compile-folder.mjs"),
     "--source-dir",
     materialsDir,
     "--output-dir",
@@ -216,7 +220,14 @@ async function main() {
     "--progress",
     "--format",
     "json"
-  ]);
+  ], {
+    env: {
+      ...process.env,
+      OPEN_INSIGHT_CORE_HOME: repoRoot,
+      FORCE_COLOR: "0",
+      NO_COLOR: "1"
+    }
+  });
   const compile = JSON.parse(compileResult.stdout.trim());
   const summary = runCliJson(["context", "summary", packagePath, "--format", "json"]);
   const sources = runCliJson(["context", "list-sources", packagePath, "--format", "json"]);

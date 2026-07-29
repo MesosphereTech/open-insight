@@ -58,13 +58,17 @@ adjacent `scripts/` directory cannot bootstrap, compile, or read packages.
 Install the fixed Alpha Skill with one command:
 
 ```bash
-npx -y skills@1.5.9 add "https://github.com/MesosphereTech/open-insight/tree/v0.1.0-alpha.2/skills/open-insight-context" --global
+npx @mesospheretech/open-insight
 ```
 
-The installer asks which supported AI client should receive the Skill. The
-repository is private during final acceptance, so the current test requires a
-GitHub-authorized machine. After public release, the same fixed-tag command
-must work without repository credentials.
+The equivalent short command is `npx open-insight-cli`.
+
+The branded installer pins the generic Skill installer and immutable
+`v0.1.0-alpha.3` Skill source internally. The user does not need to copy a
+GitHub tree URL. The installer asks which supported AI client should receive
+the Skill. The npm package and Core repository remain private candidates until
+release approval; after publication, this command must work without repository
+credentials.
 
 Requirements:
 
@@ -90,14 +94,19 @@ Set `OPEN_INSIGHT_AUTO_BOOTSTRAP=0` only when an administrator intentionally
 manages Core installation. A missing Core then fails with a repair instruction
 instead of silently using another version.
 
-For Office documents and text-based PDF, install the optional local parser:
+When `--parser auto` encounters PDF, DOCX, XLSX, or PPTX, the Skill
+automatically creates an isolated parser runtime under
+`~/.open-insight/parsers/` and installs the pinned MarkItDown version there.
+The user does not run `pip install`. Simple text, Markdown, HTML, and CSV
+sources do not trigger this setup. Python 3.10+ must be available; a missing
+Python runtime produces a repair instruction instead of a partial success.
 
-```bash
-pip install "markitdown[all]>=0.1.6,<0.2"
-```
+Set `OPEN_INSIGHT_AUTO_INSTALL_PARSER=0` only when an administrator manages
+the parser runtime. `OPEN_INSIGHT_PYTHON` may point to an already managed
+Python environment; Open Insight verifies it but never modifies it.
 
-Open Insight uses MarkItDown locally with plugins disabled. Azure conversion
-and model OCR are not enabled by default.
+Open Insight uses MarkItDown locally with plugins disabled by default. Azure
+conversion and model OCR are never selected automatically.
 
 ## 2. Compile one folder into one file
 
@@ -235,9 +244,11 @@ need memory proportional to that source. Resource-limit failures must stop
 honestly; do not truncate silently.
 
 Scanning and image-only PDF require a separate, explicit experimental OCR
-path. Do not enable it unless the user installs `markitdown-ocr`, configures
-the dedicated `OPEN_INSIGHT_OCR_*` environment variables, selects
-`--parser markitdown --ocr llm`, and accepts the data-transfer boundary.
+path. The Skill may automatically install the pinned `markitdown-ocr` plugin
+inside its isolated parser runtime, but only after the user selects
+`--parser markitdown --ocr llm`. It never invents an endpoint, model, key, or
+data-transfer consent. The user must configure the dedicated
+`OPEN_INSIGHT_OCR_*` variables and accept the boundary before execution.
 Model OCR remains normalized, review-required content and must record parser,
 plugin, model, cloud use, confidence, and warnings.
 

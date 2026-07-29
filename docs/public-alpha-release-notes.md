@@ -1,4 +1,4 @@
-# Open Insight v0.1.0-alpha.2 Candidate Notes
+# Open Insight v0.1.0-alpha.3 Candidate Notes
 
 Status: **private release candidate**. This document does not announce a
 public release.
@@ -16,18 +16,26 @@ base package.
 Install the fixed candidate Skill with one command:
 
 ```bash
-npx -y skills@1.5.9 add "https://github.com/MesosphereTech/open-insight/tree/v0.1.0-alpha.2/skills/open-insight-context" --global
+npx @mesospheretech/open-insight
 ```
 
-The first compile or read prepares the pinned Core automatically. Manual
-bootstrap remains available for troubleshooting, not as a normal user step.
+The branded installer pins the generic Skill installer and fixed-tag Skill
+source internally. The first compile or read prepares the pinned Core
+automatically. Manual bootstrap remains available for troubleshooting, not as
+a normal user step. `@mesospheretech/open-insight@0.1.0-alpha.3` and its
+equivalent short package `open-insight-cli@0.1.0-alpha.3` are private release
+candidates for the public npm registry. The previous `alpha.2` packages remain
+available until this candidate passes the full acceptance path.
+The pinned Core repository remains private during owner
+acceptance, so installation still requires authorized GitHub access.
 
 ## Candidate contents
 
 - a one-command Skill install whose first compile or read automatically
   prepares and verifies an immutable Core reference;
 - one-file compilation with `source_bundled` and `source_light` modes;
-- local MarkItDown integration for supported Office files and text PDFs;
+- automatic isolated MarkItDown 0.1.6 setup for supported Office files and
+  text PDFs, without a separate user `pip install`;
 - normalized content, query chunks, reading order, parse diagnostics, source
   maps, digests, and a rebuildable query index;
 - additive XLSX formula evidence without formula execution or recalculation;
@@ -91,12 +99,15 @@ contract check.
 
 ## Remaining release blockers
 
-1. Keep the development repository private and export the reviewed public Core
-   allowlist into a clean repository.
-2. Verify anonymous Skill installation from the public repository and fixed
-   `v0.1.0-alpha.2` tag.
-3. Re-run the public Core build, contracts, Skill acceptance, parser
-   acceptance, secret scan, and release-reference checks in the clean export.
-4. Upload the reviewed social preview and complete MP4 as launch assets.
-5. Publish only after the release audit contains no private paths, credentials,
+1. Keep the development repository private; change only the reviewed Core
+   repository to public after final owner approval.
+2. Verify `npx @mesospheretech/open-insight` without development-repository
+   access after the Core repository becomes public.
+3. Verify anonymous Skill installation from the public repository and fixed
+   `v0.1.0-alpha.3` tag.
+4. Re-run the remote release-reference check and public Core gates after the
+   visibility change. The private authorized candidate already passed the Core,
+   Skill, CLI contract, secret, and CLI/MCP parity gates.
+5. Upload the reviewed social preview and complete MP4 as launch assets.
+6. Publish only after the release audit contains no private paths, credentials,
    customer materials, or commercial product code.

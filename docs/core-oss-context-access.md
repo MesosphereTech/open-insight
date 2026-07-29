@@ -38,9 +38,9 @@ node "<skill-root>/scripts/cli.mjs" context summary ./output/my-context.source-b
 node "<skill-root>/scripts/cli.mjs" mcp serve ./output/my-context.source-bundled.insight --transport stdio
 ```
 
-普通 PDF、Office 文件默认使用 `--ocr off`，保持本地、插件关闭。扫描/图片型 PDF 的实验性模型 OCR 必须由用户显式安装 `markitdown-ocr`、配置专用 `OPEN_INSIGHT_OCR_*` 并在编译时传入 `--parser markitdown --ocr llm`；它可能把页面图像发送给配置的 endpoint。OCR 不属于 CLI/MCP 只读访问过程，CLI/MCP 读取已生成的 `.insight` 时仍不调用模型、不读取 OCR key。
+普通 PDF、Office 文件默认使用 `--ocr off`，保持本地、插件关闭。Skill 在首次遇到 PDF、DOCX、XLSX 或 PPTX 时，会在 `~/.open-insight/parsers/` 自动准备固定版本的隔离 MarkItDown runtime；普通用户不需要手工 `pip install`。扫描/图片型 PDF 的实验性模型 OCR 仍必须由用户配置专用 `OPEN_INSIGHT_OCR_*` 并在编译时传入 `--parser markitdown --ocr llm`；Skill 只在这个显式动作之后自动补齐隔离的 `markitdown-ocr` 插件。它不会自动选择 Azure、模型或 endpoint，外部地址可能接收页面图像。OCR 不属于 CLI/MCP 只读访问过程，CLI/MCP 读取已生成的 `.insight` 时仍不调用模型、不读取 OCR key。
 
-相对路径以用户运行命令时所在目录为基准。`cli.mjs` 只开放读取、校验和 MCP 服务，不开放写入 base package 的命令。首次编译或读取发现 Core 缺失时，wrapper 会自动调用相邻的 bootstrap，准备固定 tag `v0.1.0-alpha.2`、校验实际 commit 并使用版本化安装目录；普通用户不需要单独执行准备命令。安装进度只写 `stderr`，不污染 JSON stdout。显式 `bootstrap.mjs` 只用于排障，`OPEN_INSIGHT_CORE_REF` 只用于测试其他 tag/branch，不能把移动 `main` 当作正式 Alpha。
+相对路径以用户运行命令时所在目录为基准。`cli.mjs` 只开放读取、校验和 MCP 服务，不开放写入 base package 的命令。首次编译或读取发现 Core 缺失时，wrapper 会自动调用相邻的 bootstrap，准备固定 tag `v0.1.0-alpha.3`、校验实际 commit 并使用版本化安装目录；普通用户不需要单独执行准备命令。安装进度只写 `stderr`，不污染 JSON stdout。显式 `bootstrap.mjs` 只用于排障，`OPEN_INSIGHT_CORE_REF` 只用于测试其他 tag/branch，不能把移动 `main` 当作正式 Alpha。
 
 Skill 编译报告的 `access_handoff.packages[]` 会给出可直接用于本机 Agent 的 `cli_summary`、`cli_search_template` 和 `mcp_stdio.command/args`。其中包含本机绝对路径，因此标记为 `local_only=true`、`publish_safe=false`，只用于本机配置，不进入 `.insight` base package。
 

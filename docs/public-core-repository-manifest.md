@@ -41,6 +41,9 @@ required by their verified build graph:
 - `apps/cli`
 - MCP source in `apps/cli/src/mcpServer.ts` and its verified Runtime dependencies
 - `skills/open-insight-context`
+- `distribution/open-insight`, the small branded npm bootstrap package behind
+  the public `npx open-insight-cli` command and its thin
+  `@mesospheretech/open-insight` scoped alias
 
 `packages/insight-domain-packs` is currently a direct Compiler/CLI dependency,
 so it remains in the first public dependency closure. It is not part of the
@@ -138,7 +141,7 @@ npm run verify:core-public
 npm run cli-contracts:check
 npm run alpha:skill-acceptance
 npm run alpha:parser-acceptance
-npm run alpha:release-ref -- --tag v0.1.0-alpha.2 --verify-remote
+npm run alpha:release-ref -- --tag v0.1.0-alpha.3 --verify-remote
 ```
 
 The exact public script set may become smaller than the private monorepo set,
@@ -197,9 +200,41 @@ and the four-question CLI/MCP parity demo. The remaining release check is the
 same installation without credentials after the Core repository becomes
 public; the development repository must remain private.
 
-The next immutable candidate is `v0.1.0-alpha.2`. It adds a one-command Skill
+The previous private immutable candidate is `v0.1.0-alpha.2`, resolving to
+`703c3ca07af049bee3e973a00fee76af9ecaf1a0`. It added a one-command Skill
 installation path and makes the first compile or read prepare the pinned Core
-automatically. The standalone first-use test is now part of the public
-allowlist and must verify commit pinning, clean JSON stdout, model-environment
-isolation, and reuse of the installed Core. Historical `v0.1.0-alpha.1`
-remains immutable.
+automatically. Repository-outside authorized acceptance verified commit
+pinning, clean JSON stdout, model-environment isolation, package compilation,
+and reuse of the installed Core. Historical `v0.1.0-alpha.1` remains
+immutable. The current `v0.1.0-alpha.3` candidate adds automatic isolated
+MarkItDown setup and remains pending a fixed clean-Core commit and authorized
+repository-outside acceptance. Anonymous installation remains blocked until
+the Core repository is made public.
+
+The development branch now also carries the published `open-insight-cli` npm
+bootstrap package and the thin published
+`@mesospheretech/open-insight@0.1.0-alpha.2` scoped alias. The `alpha.3`
+packages are the next private candidates and must not replace `latest` before
+their fixed Core tag passes acceptance. The recommended
+public command is `npx @mesospheretech/open-insight`; `npx open-insight-cli`
+remains equivalent. The underlying installer pins `skills@1.5.9` and the
+immutable Alpha Skill source instead of exposing a generic installer plus a
+GitHub tree URL. A packed tarball passed repository-outside installation,
+first-use Core preparation, one-file compilation, and traceable context access.
+Both npm packages are published with the `latest` tag. Authorized
+repository-outside registry installs passed, including a scoped-command install
+from a path containing Chinese characters and spaces. Anonymous installation
+remains blocked until the Core repository becomes public. The
+updated allowlist dry-run selects 162 files; the increase is limited to the
+branded installer package, its license, and its focused test.
+
+The previously recorded clean export contains 163 files after adding the generated
+manifest, with aggregate digest
+`b2e3f3997ef6197a05e467d6ca35bf7f753b43b5bbcc76698363476f43786eae`.
+A clean install used 66 dependencies with zero reported vulnerabilities and
+passed 72 Core tests, 19 Skill/installer tests, two CLI contract tests, secret
+scanning, and the all-English public demo. The exported installer packs into
+six files and a 4,635-byte npm tarball. That export predates the scoped alias
+files and must be regenerated before the Core repository changes visibility.
+Both npm installer names are now published; the Core repository visibility has
+not changed.

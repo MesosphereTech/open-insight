@@ -1,0 +1,40 @@
+{
+  "name": "open-insight-cli",
+  "version": "0.1.0-alpha.3",
+  "description": "Install the Open Insight Context Skill: One File, Any AI.",
+  "type": "module",
+  "bin": {
+    "open-insight": "bin/open-insight.mjs"
+  },
+  "files": [
+    "bin",
+    "src",
+    "LICENSE",
+    "README.md",
+    "README.zh-CN.md"
+  ],
+  "scripts": {
+    "test:plan": "node bin/open-insight.mjs --dry-run --format json --project --agent codex --yes"
+  },
+  "dependencies": {
+    "skills": "1.5.9"
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MesosphereTech/open-insight.git",
+    "directory": "distribution/open-insight"
+  },
+  "homepage": "https://github.com/MesosphereTech/open-insight#readme",
+  "keywords": [
+    "ai",
+    "agent",
+    "context",
+    "mcp",
+    "skill",
+    "documents"
+  ]
+}

@@ -8,10 +8,13 @@
 
 仓库交付边界已经落地：`MesosphereTech/open-insight-development` 是永久私有
 开发仓库；新的 `MesosphereTech/open-insight` 是中英文双语的干净 Core
-仓库，目前也保持 private 供最终测试。干净仓库的 `v0.1.0-alpha.1` 固定到
-`66916abb9c8544fe59c3518019982995df69`。授权用户已经从仓库外通过默认
-Skill 地址和固定 tag 完成 bootstrap、单文件编译与 CLI/MCP 验收；公开发布
-仍需在切换 Core 仓库可见性后补做无凭据匿名安装。开发仓库不进入该公开动作。
+仓库，目前也保持 private 供最终测试。历史 `v0.1.0-alpha.1` 固定到
+`66916abb9c8544fe59c3518019982995df69`；当前私有候选
+`v0.1.0-alpha.2` 固定到 `703c3ca07af049bee3e973a00fee76af9ecaf1a0`；
+当前开发候选已切换到 `v0.1.0-alpha.3`，待干净 Core 导出后记录固定 commit。
+授权用户已经从仓库外通过一行安装、首次调用自动准备固定 Core、单文件编译
+与 CLI 只读读取验收；公开发布仍需在切换 Core 仓库可见性后补做无凭据匿名
+安装。开发仓库不进入该公开动作。
 
 ## 2. 已实现并可声明的能力
 
@@ -38,10 +41,13 @@ Skill 地址和固定 tag 完成 bootstrap、单文件编译与 CLI/MCP 验收�
 - 已支持以 `source_bundled`、`source_light` 或 `both` 编译文件夹材料。
 - 已支持 `auto`、`builtin` 与 `markitdown` 本地解析选择。安装 MarkItDown 后，`auto` 对 PDF、DOCX、XLSX、PPTX 使用本地 `convert_local()`，显式禁用插件并记录 parser version；MarkItDown 仍是可选增强解析器，不是 bootstrap 的隐式安装项。
 - 已为大文件编译增加 fail-closed 资源边界：来源内容哈希使用 `streaming_sha256`，最终单文件 `.insight` 使用 `streaming_zip`；单来源、来源总量、单来源 normalized 内容与 normalized 总量都有显式可调上限。超限时只返回中文阻断诊断，不截断正文、不生成残缺包。
-- 已增加实验性的显式模型 OCR 接口：默认 `ocr_mode=off`；只有 `--parser markitdown --ocr llm`、官方 `markitdown-ocr` 插件和专用 `OPEN_INSIGHT_OCR_*` 配置同时存在时才运行。模型 OCR 结果固定为 warning 和人工复核边界，记录 `cloud_used`；没有 OCR 标记时不能宣称扫描正文完整。2026-07-23 在 commit `0d2ba68` 上使用隔离安装的 `markitdown-ocr 0.1.0`、一页图片型 PDF 和本机模拟 OpenAI-compatible 视觉 endpoint 完成了真实插件接线验收：OCR 标记、normalized 正文、复合 parser identity、单文件打包和 `base_package_mutation=false` 均通过，且未外发资料。该验收不评价真实视觉模型 OCR 准确率；真实扫描件、真实 endpoint 和不同版式的识别质量仍待专项测试，因此不属于 Alpha 默认能力声明。
+- 已增加隔离 parser runtime 自动准备：默认 `--parser auto` 遇到 PDF、DOCX、XLSX 或 PPTX 时，在 `~/.open-insight/parsers/` 创建固定 MarkItDown 0.1.6 环境并传递专用 `OPEN_INSIGHT_PYTHON`，普通用户不再手工 `pip install`；简单文本不触发安装。管理员可显式关闭自动准备或指定自管 Python，Core 不修改用户环境。
+- 已增加实验性的显式模型 OCR 接口：默认 `ocr_mode=off`；只有 `--parser markitdown --ocr llm` 和专用 `OPEN_INSIGHT_OCR_*` 配置同时存在时才运行。Skill 可在该显式动作后自动安装固定 `markitdown-ocr 0.1.0`，但不自动选择 Azure、模型、endpoint、密钥或数据外发授权。模型 OCR 结果固定为 warning 和人工复核边界，记录 `cloud_used`；没有 OCR 标记时不能宣称扫描正文完整。2026-07-23 在 commit `0d2ba68` 上使用隔离安装的 `markitdown-ocr 0.1.0`、一页图片型 PDF 和本机模拟 OpenAI-compatible 视觉 endpoint 完成了真实插件接线验收：OCR 标记、normalized 正文、复合 parser identity、单文件打包和 `base_package_mutation=false` 均通过，且未外发资料。该验收不评价真实视觉模型 OCR 准确率；真实扫描件、真实 endpoint 和不同版式的识别质量仍待专项测试，因此不属于 Alpha 默认能力声明。
 - 已实现 bootstrap 的本地依赖、构建、CLI 与 MCP 就绪检查；该检查不调用模型、不转发模型环境变量、不上传来源文件、不执行包内代码，也不写回 base package。
 - 已把普通用户主路径收敛为“一条固定 tag 命令安装完整 Skill，然后直接编译或读取”。首次调用 `compile-folder.mjs` 或只读 `cli.mjs` 时自动准备固定 Core，安装进度只写 `stderr`，JSON stdout 保持纯净；手工 bootstrap 只用于排障。`OPEN_INSIGHT_CORE_HOME` 是唯一显式安装位置，`OPEN_INSIGHT_AUTO_BOOTSTRAP=0` 可由管理员关闭自动准备。
-- Skill bootstrap 默认固定 `v0.1.0-alpha.2`，使用版本化安装目录并校验实际 commit；ref 不一致时返回 `version_mismatch`，不会把移动分支伪装成 Alpha。`OPEN_INSIGHT_CORE_REF` 只作为显式测试覆盖入口。
+- Skill bootstrap 默认固定 `v0.1.0-alpha.3`，使用版本化安装目录并校验实际 commit；ref 不一致时返回 `version_mismatch`，不会把移动分支伪装成 Alpha。`OPEN_INSIGHT_CORE_REF` 只作为显式测试覆盖入口。
+- 已发布品牌化 npm bootstrap `open-insight-cli@0.1.0-alpha.2` 及其官方 scoped 别名 `@mesospheretech/open-insight@0.1.0-alpha.2`；推荐公开命令为 `npx @mesospheretech/open-insight`，短命令 `npx open-insight-cli` 等价可用，两个包的 `latest` 均指向该已验收版本。scoped 包只固定依赖同版本底层安装器，不复制实现；底层安装器固定 `skills@1.5.9` 与 `v0.1.0-alpha.2` Skill 来源，只转发受支持的安装参数，并从子进程环境移除模型、OCR 和浏览器密钥。2026-07-28 两条命令均从公共 registry 在仓库外完成授权安装，scoped 命令还在含中文和空格的隔离目录核对了完整 `SKILL.md` 与 6 个脚本。此前 packed tarball 的两次验收约 18-26 秒，首次 Core 准备加编译在不同网络/缓存状态下约 34-183 秒，均生成约 29 KB 的单文件 `.insight`。Core commit 校验、2 个来源、2 条 diagnostics、SQLite/FTS、日期与负责人检索均通过。无 scope 名称 `open-insight` 因 npm 防混淆规则被拒绝，因此保留 `open-insight-cli` 并增加官方 scoped 品牌入口；Core 仓库仍为 private，不能描述为匿名安装已经开放。
+- `open-insight-cli@0.1.0-alpha.3` 与 `@mesospheretech/open-insight@0.1.0-alpha.3` 已进入私有候选，固定新的 Skill/Core ref，并增加隔离 MarkItDown 自动准备；发布前 `latest` 继续保留在已验收的 `alpha.2`。
 
 ### Proof
 
@@ -57,15 +63,25 @@ Skill 地址和固定 tag 完成 bootstrap、单文件编译与 CLI/MCP 验收�
 
 真实材料尚缺的工作是人工确认 Gold Answer 和独立 reviewer attestation，不是继续扩建 Proof 代码。开发优先级回到普通用户首次使用路径：`一行安装 Skill -> 首次调用自动准备固定 Core -> 编译文件夹为单个 .insight -> CLI/MCP 只读访问 -> 外部 LLM 问答、分析或生成材料`。
 
-代码中的 Skill 与 Core 安装来源已经统一固定为 `v0.1.0-alpha.2`。该 tag
-属于本轮一行安装候选，必须在新的干净私有 Core 仓库建立后完成授权用户的
-仓库外安装测试；历史 `v0.1.0-alpha.1` 保持不可变。
-`npm run alpha:release-ref -- --tag v0.1.0-alpha.2` 只核对待发布 tag 文本；
+代码中的 Skill 与 Core 安装来源已经统一固定为 `v0.1.0-alpha.3`。该 tag
+将在新的干净私有 Core 仓库建立后完成授权用户的仓库外安装测试：安装
+完整 Skill 后未手工运行 bootstrap，首次编译自动准备并校验 Core，生成单一
+`.insight`；随后 CLI 返回纯 JSON、可用查询索引、来源引用和解析诊断。历史
+`v0.1.0-alpha.1` 保持不可变。
+`npm run alpha:release-ref -- --tag v0.1.0-alpha.3` 只核对待发布 tag 文本；
 公开发布门禁必须追加 `--verify-remote`，禁用凭据交互并确认该 tag 可从
 匿名可下载的公开来源读取。当前私有 Core 仓库、本地 fake remote 或授权
 checkout 测试都不能替代匿名公开分发验收。
 
 首次运行 wrapper 已显式检查 Node.js 20.19+（20.x）或 22.12+、npm 10+、Git 和 Core 状态，并以 `system_checks` 写入安装报告。缺少依赖时返回 `prerequisite_failed`，在 clone / install 前给出中文修复动作；正常路径以 `阶段 1/5` 到 `阶段 5/5` 写入中文进度。检查和子进程环境不会转发模型 key。
+
+品牌安装入口加入 allowlist 后，当前提交的实际干净导出包含 163 个文件（其中
+1 个为生成 manifest），aggregate digest 为
+`b2e3f3997ef6197a05e467d6ca35bf7f753b43b5bbcc76698363476f43786eae`。
+独立导出环境完成 72 项 Core tests、19 项 Skill/installer tests、2 项 CLI
+contract tests、0 vulnerability 依赖审计、密钥扫描和全英文公开 demo。
+这些是 private 候选证据；npm publication 已完成，授权 registry 安装已通过。
+由于 Core 仓库仍为 private，无凭据匿名安装仍未执行。
 
 ## 3. 可用的本地验证命令
 
@@ -80,7 +96,7 @@ npm run alpha:check
 npm run alpha:public-audit
 npm run alpha:skill-acceptance
 npm run alpha:parser-acceptance
-npm run alpha:release-ref -- --tag v0.1.0-alpha.2 --verify-remote
+npm run alpha:release-ref -- --tag v0.1.0-alpha.3 --verify-remote
 npm run verify
 ```
 
@@ -94,8 +110,8 @@ npm run verify
 - `npm run alpha:public-audit`：检查当前快照密钥、完整 Git 历史中的高置信密钥/私有测试定位、本机路径、大型历史 blob、high/critical 依赖漏洞、社区文件、候选 tag 和 `origin/main` 祖先关系。报告只输出计数和状态，不输出命中的密钥或私有路径正文。当前开发仓库继续保持 private；若完整历史存在私有定位或已删除大 blob，发布策略必须是导出候选 tree 到清洁历史的公开发行仓库，而不是直接切换现有仓库可见性。
 - `npm run alpha:skill-acceptance`：仓库外完整首次使用彩排；要求工作区干净，从当前 commit 制作临时固定 tag，在含中文和空格的独立目录完成 Skill 安装、单文件 `.insight` 编译、校验、CLI answer-context 和 MCP 完整结果等价检查。它不调用模型、不读取私有材料，默认清理临时安装；该真实路径是提交后的独立发布检查，不由 `test:skill` 的轻量计划测试替代，也不能替代匿名公开下载。
 - `npm run alpha:parser-acceptance`：仓库外 MarkItDown 真实解析验收；使用脚本生成的公开 DOCX、带公式 XLSX 和文本型 PDF，通过默认 `auto` 编译一个 `source_bundled .insight`，并逐来源核对 raw 字节、normalized 正文、parser version、diagnostics、source map、raw metadata digest、normalized content digest 和 query index。合成工作簿固定包含 `Sales!B4 =SUM(B2:B3)` 与文件自带缓存值 `2100000`；验收还会核对 `source/spreadsheet_formulas.jsonl`、normalized 公式附录、独立公式 digest、SQLite `context_spreadsheet_formulas` 记录、CLI 公式检索和完整 refs。它同时用极小单文件上限验证 parser 前 fail-closed、无残留包，并核对 `streaming_sha256` / `streaming_zip` 披露。它不启用插件、云端转换、公式重算或模型 OCR。2026-07-23 在 commit `1b2742e` 上的隔离彩排已通过：MarkItDown 0.1.6，3 个来源、6 条 digest 和 SQLite/FTS index 完整，实际编译约 5.0 秒，超限路径约 149 毫秒内阻断。2026-07-24 的真实 XLSX 公式回归进一步确认：工作簿中的 `C12 =SUM(C6:C11)` 与缓存值 `864` 可从单文件 `.insight` 经 CLI/MCP 检索并带回完整 refs；公开合成验收用于持续锁住同一能力，该结果只证明公式证据保留，不代表 Core 重新执行了公式。
-- `npm run alpha:release-ref -- --tag v0.1.0-alpha.2`：只确认准备发布的 Git tag 文本与 Skill 默认 Core ref 完全一致。
-- `npm run alpha:release-ref -- --tag v0.1.0-alpha.2 --verify-remote`：进一步确认固定 tag 存在且可匿名读取；报告必须为 `remote_status=verified`、`remote_tag_verified=true`、`anonymous_access_verified=true`。它不创建 tag，也不能替代完整的仓库外安装 smoke。
+- `npm run alpha:release-ref -- --tag v0.1.0-alpha.3`：只确认准备发布的 Git tag 文本与 Skill 默认 Core ref 完全一致。
+- `npm run alpha:release-ref -- --tag v0.1.0-alpha.3 --verify-remote`：进一步确认固定 tag 存在且可匿名读取；报告必须为 `remote_status=verified`、`remote_tag_verified=true`、`anonymous_access_verified=true`。它不创建 tag，也不能替代完整的仓库外安装 smoke。
 - `npm run verify`：完整仓库验收入口，覆盖 build、全量测试、lint、schema 自检、密钥扫描、中文默认文案扫描和 conformance。
 
 私有开发仓库中的非 Core 应用可按其自身影响面运行额外测试，但这些测试不属于当前精简 Core Alpha 主门禁，也不应被描述为 Core OSS 的先决交付。

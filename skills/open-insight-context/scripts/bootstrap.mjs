@@ -536,7 +536,7 @@ async function main() {
           `运行 \`node "${compileWrapperPath}" --source-dir <材料目录> --output-dir output --base-name source-context --parser auto\` 生成默认 source_bundled 单文件 .insight；需要轻量包时显式加 \`--mode source_light\`。`,
           `运行 \`node "${cliWrapperPath}" context summary <package.insight> --format json\`，或用同一 wrapper 启动只读 MCP。`,
           "随后让外部 LLM 读取本 Skill，通过 MCP / CLI 查询 `.insight`，再生成用户材料。",
-          "如果需要 PDF/PPTX/DOCX/XLSX 转 Markdown，请在 Core 环境安装 `pip install \"markitdown[all]>=0.1.6,<0.2\"`；默认 `--parser auto` 会在本机可用时调用 MarkItDown。图片文件与扫描 PDF 的 OCR 仍属于后续专项。"
+          "遇到 PDF/PPTX/DOCX/XLSX 时，`compile-folder.mjs --parser auto` 会自动在 `~/.open-insight/parsers/` 准备固定版本 MarkItDown；普通用户不需要手工 pip install。本机需要 Python 3.10+。扫描 PDF 的模型 OCR 仍须显式配置 `OPEN_INSIGHT_OCR_*` 并使用 `--ocr llm`。"
         ]
       : [
           "Core 已找到，但 bootstrap 未通过。请查看 Core 仓库中的 `output/open-insight-skill-bootstrap.json`。",

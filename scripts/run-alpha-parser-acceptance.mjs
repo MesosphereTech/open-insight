@@ -7,6 +7,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { strFromU8, strToU8, unzipSync, zipSync } from "fflate";
 import { createModelFreeChildEnv } from "../skills/open-insight-context/scripts/child-env.mjs";
+import { OPEN_INSIGHT_MARKITDOWN_VERSION } from "../skills/open-insight-context/scripts/parser-runtime.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..");
@@ -19,7 +20,7 @@ const npmCommand = process.platform === "win32" ? "npm.cmd" : "npm";
 const npmCliPath = process.env.npm_execpath;
 const plannedSteps = [
   "snapshot_current_commit",
-  "verify_markitdown_runtime",
+  "verify_python_runtime",
   "build_core",
   "generate_public_parser_fixtures",
   "compile_source_bundled_insight",
@@ -116,26 +117,31 @@ function parseJsonl(value, label) {
   }
 }
 
-function parseMarkitdownVersion(value) {
-  return String(value ?? "").match(/(?:markitdown\s+)?(\d+\.\d+\.\d+(?:[A-Za-z0-9.+-]*))/iu)?.[1];
-}
-
-function checkMarkitdownRuntime(cwd) {
+function checkPythonRuntime(cwd) {
   const pythonCandidates = [process.env.OPEN_INSIGHT_PYTHON, "python", "python3", "py"].filter(
     (candidate, index, values) => typeof candidate === "string" && candidate.trim().length > 0 && values.indexOf(candidate) === index
   );
   let lastResult;
 
   for (const candidate of pythonCandidates) {
-    const result = run(candidate, ["-m", "markitdown", "--version"], { cwd, timeoutMs: 30_000 });
+    const result = run(candidate, ["-c", "import sys; print('.'.join(map(str, sys.version_info[:3])))"], {
+      cwd,
+      timeoutMs: 30_000
+    });
     lastResult = result;
-    if (result.ok && parseMarkitdownVersion(result.stdout)) {
+    const [major, minor] = result.stdout.trim().split(".").map((value) => Number.parseInt(value, 10));
+    if (result.ok && (major > 3 || (major === 3 && minor >= 10))) {
       return result;
     }
   }
 
-  const cliResult = run("markitdown", ["--version"], { cwd, timeoutMs: 30_000 });
-  return cliResult.ok ? cliResult : lastResult ?? cliResult;
+  return lastResult ?? {
+    ok: false,
+    exit_code: 1,
+    duration_ms: 0,
+    stdout: "",
+    stderr: "Python 3.10+ not found"
+  };
 }
 
 async function exists(filePath) {
@@ -392,13 +398,13 @@ async function main() {
       throw new Error("临时快照与当前 commit 不一致。");
     }
 
-    process.stderr.write("[alpha-parser-acceptance] 2/7 检查本地 MarkItDown。\n");
+    process.stderr.write("[alpha-parser-acceptance] 2/7 检查 Python 3.10+；MarkItDown 由 Skill 自动准备。\n");
     await mkdir(consumerRoot, { recursive: true });
-    const markitdown = checkMarkitdownRuntime(consumerRoot);
-    steps.push(publicStep("verify_markitdown_runtime", markitdown));
-    const markitdownVersion = markitdown.ok ? parseMarkitdownVersion(markitdown.stdout) : undefined;
-    if (!markitdownVersion) {
-      throw new Error('本机缺少可用 MarkItDown；请安装 pip install "markitdown[all]"。');
+    const python = checkPythonRuntime(consumerRoot);
+    steps.push(publicStep("verify_python_runtime", python));
+    const markitdownVersion = OPEN_INSIGHT_MARKITDOWN_VERSION;
+    if (!python.ok) {
+      throw new Error("本机缺少 Python 3.10+；安装 Python 后重试，MarkItDown 将由 Skill 自动准备。");
     }
 
     process.stderr.write("[alpha-parser-acceptance] 3/7 安装依赖并构建 Core。\n");
@@ -436,13 +442,15 @@ async function main() {
     process.stderr.write("[alpha-parser-acceptance] 5/7 使用默认 auto 编译单文件 .insight。\n");
     const env = createModelFreeChildEnv({
       OPEN_INSIGHT_SKILL_INVOCATION_ROOT: consumerRoot,
+      OPEN_INSIGHT_CORE_HOME: releaseSource,
+      OPEN_INSIGHT_PARSER_HOME: path.join(tempRoot, "managed-parser-runtime"),
       FORCE_COLOR: "0",
       NO_COLOR: "1"
     });
     const compile = run(
       process.execPath,
       [
-        path.join(releaseSource, "scripts", "compile-context-folder.mjs"),
+        path.join(releaseSource, "skills", "open-insight-context", "scripts", "compile-folder.mjs"),
         "--source-dir",
         materialsDir,
         "--output-dir",

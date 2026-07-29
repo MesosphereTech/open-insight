@@ -1,0 +1,39 @@
+{
+  "name": "@mesospheretech/open-insight",
+  "version": "0.1.0-alpha.3",
+  "description": "Official Open Insight installer: One File, Any AI.",
+  "type": "module",
+  "bin": {
+    "open-insight": "bin/open-insight.mjs"
+  },
+  "files": [
+    "bin",
+    "LICENSE",
+    "README.md",
+    "README.zh-CN.md"
+  ],
+  "dependencies": {
+    "open-insight-cli": "0.1.0-alpha.3"
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MesosphereTech/open-insight.git",
+    "directory": "distribution/open-insight/scoped"
+  },
+  "homepage": "https://github.com/MesosphereTech/open-insight#readme",
+  "keywords": [
+    "ai",
+    "agent",
+    "context",
+    "mcp",
+    "skill",
+    "documents"
+  ]
+}
