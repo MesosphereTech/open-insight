@@ -1,11 +1,11 @@
 blank_issues_enabled: false
 contact_links:
-  - name: 贡献指南
+  - name: Contributing guide
     url: https://github.com/MesosphereTech/open-insight/blob/main/CONTRIBUTING.md
-    about: 提交 Issue 或 PR 前请先了解 Core OSS Alpha 范围和验证要求。
-  - name: 安全策略
+    about: Review the Core OSS Alpha scope and validation requirements before opening an Issue or pull request.
+  - name: Security policy
     url: https://github.com/MesosphereTech/open-insight/blob/main/SECURITY.md
-    about: 阅读支持范围、私密报告方式和当前安全边界。
-  - name: 私密安全报告
+    about: Read the supported scope, private reporting process, and current security boundaries.
+  - name: Private security report
     url: https://github.com/MesosphereTech/open-insight/security/advisories/new
-    about: 安全漏洞、密钥或隐私问题请勿创建公开 Issue。
+    about: Do not open a public Issue for vulnerabilities, exposed credentials, or privacy incidents.

@@ -2,25 +2,25 @@
   "schema_version": "open-insight.public-core-export.v0.1",
   "status": "exported_private_review",
   "export_tool_version": "0.1.0",
-  "private_candidate_commit": "73965a646d6b8db324e6d1b9e78c8a5b905fa4d0",
-  "private_candidate_tree_sha": "686027fd67e48709743d8a7be73e3b743f879dec",
+  "private_candidate_commit": "87f3753c32595b039d474783dfe1082006f16c6a",
+  "private_candidate_tree_sha": "2510b3796683e361223239c6d03304191b4f3fa1",
   "exported_file_count": 169,
   "files": [
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
-      "sha256": "28ed93adf96d3d7ebd7d4ae773303e5ff1c873889fea5ebb366e7167b9969577"
+      "sha256": "19abf792da730e201f6892f42aa81fd4b7a5a422257fd7f13ffd41d67074577d"
     },
     {
       "path": ".github/ISSUE_TEMPLATE/config.yml",
-      "sha256": "96765e07393f96573ffa0b73ecfcf198586c64f3dc13f26b48230cd60e07aa83"
+      "sha256": "716415a771d0f00fbb9f517306daea4fee792ffd9996203278719ef63b283d5e"
     },
     {
       "path": ".github/ISSUE_TEMPLATE/feature_request.yml",
-      "sha256": "9d6294598e675019fa2a9cf81797f91ca614bd8d896755cdb5886f192060ec98"
+      "sha256": "30963a88a0c3f60754731934bab1b4f3b74a186985912bc3a62f66fc44fef24a"
     },
     {
       "path": ".github/PULL_REQUEST_TEMPLATE.md",
-      "sha256": "f32791609147215340e6958e331a2405c13472c115dbf391cf46111f8ca56515"
+      "sha256": "bf7f5c351a0e06cd75081bf5c44c0f1fe381ba808897eef4ea37b6ca18f188c8"
     },
     {
       "path": ".gitignore",
@@ -32,15 +32,15 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "1cbe400fe7d17660cb5123151b79a4fdddb9c261b62bc6a8a1c059b0c856ea06"
+      "sha256": "20db7082c03cf2c490e448d19d1ac4e76c4bf8798b64f6e67d357d3407dcd768"
     },
     {
       "path": "CODE_OF_CONDUCT.md",
-      "sha256": "cdf5e76cfa08a4b1e76ce109728359cad090bcde6bf19f89b423e8c593694a86"
+      "sha256": "22f66d7c9eceff4e5bf94bf9d811001f393c5426bd65dc6847737a385b285059"
     },
     {
       "path": "CONTRIBUTING.md",
-      "sha256": "3a756a070d8f2ad2c40b6d7e025098cad5bbd0a6aa356725481cad05ed597254"
+      "sha256": "42558c016f483b99c3a79279e92005f68668e3e059d60172e81e4bcb03eda0c5"
     },
     {
       "path": "LICENSE",
@@ -48,7 +48,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "827b9e45007ae36db1a89dc49b6b48df0923725d68f455005a0c2395dd3c7a7e"
+      "sha256": "0095007283a7329c5ba648776152648ef4fe8014d47298f3f932f1b67cae10d4"
     },
     {
       "path": "README.zh-CN.md",
@@ -56,7 +56,7 @@
     },
     {
       "path": "SECURITY.md",
-      "sha256": "fd8395ed09bd32afb0078dc68bb446c2e822c70686a9508ce59a01f7606817ef"
+      "sha256": "b9c2bd91e3dfe18e9161446b2c36c8dc0162c7b410e2086c5c26700d0bb7b478"
     },
     {
       "path": "apps/cli/package.json",
@@ -172,7 +172,7 @@
     },
     {
       "path": "docs/core-oss-alpha-readiness.md",
-      "sha256": "8be34abc7a6d33e5543be8b6ac85b24023c82d1918c8dcd358e3dade84510b7e"
+      "sha256": "5923ef4b2c944c0dd3a5f70d98a02649d64058c782ec2231297774c35bbc6624"
     },
     {
       "path": "docs/core-oss-context-access.md",
@@ -192,11 +192,11 @@
     },
     {
       "path": "docs/public-alpha-release-notes.md",
-      "sha256": "bdcfbd95df2f9ca038e6a3ef01689d7b6d8643bd733ea9a040ca9d3f03d6fba1"
+      "sha256": "d85a6257e0aefaba8b68d95d41a48f8f8dc7c025cbfcfb19bf79d5dfc0e73e75"
     },
     {
       "path": "docs/public-core-repository-manifest.md",
-      "sha256": "abac47d3298de6cacba5099ddfd5f98ba323942abf404d985b136c729658b432"
+      "sha256": "11ccc6f60baa2c4c0fa1d3a9f01ee4c01f55b4506135aa25e3f74e8db0136020"
     },
     {
       "path": "docs/public/assets/open-insight-alpha-contact-sheet.jpg",
@@ -212,11 +212,11 @@
     },
     {
       "path": "package-lock.json",
-      "sha256": "ea9fef579e7bcd0d201479b467689968861bf37328760a9f9f213957f35ba9d6"
+      "sha256": "9961705d7c7764cc1cf61bdfa957a1360011a4d2ba9eab36a3cbc7634c520922"
     },
     {
       "path": "package.json",
-      "sha256": "1d86f393ca89552a1b8696f47a1a581a66096f1e7b43c316ecf3a11491a729b8"
+      "sha256": "b2bc541578bc0edf4b3b9c89c45db1f29ba63ea0c1086c5c86ef112527a066ff"
     },
     {
       "path": "packages/insight-compiler/package.json",
@@ -320,7 +320,7 @@
     },
     {
       "path": "scripts/export-public-core.mjs",
-      "sha256": "d957458add3d8520981167fd9bf988849b460c61b36095415aca80376340f638"
+      "sha256": "eceae3b2a3c62553a2042e12e9901859357b8998471664149bb44e840c06106c"
     },
     {
       "path": "scripts/public-alpha-fixtures.mjs",
@@ -672,7 +672,7 @@
     },
     {
       "path": "tests/public-core-readme-docs.test.ts",
-      "sha256": "2022d20683bdc29a86ca781a10350dd675cf5922bece2ab47eaf1d335a5b0d81"
+      "sha256": "070f235f6c313f1854f9ebb0e57887ef5f355582a97828ef1c363c93f638a526"
     },
     {
       "path": "tsconfig.base.json",
@@ -683,7 +683,7 @@
       "sha256": "909bb74282772b1c2a6bd14d2efdc003df810d9664ebd08445fdc9572e3bdabf"
     }
   ],
-  "aggregate_manifest_digest": "d9ae46d0cfffda3fa68e5d744b420108ab7e75b256d626c6f5b69b550628b418",
+  "aggregate_manifest_digest": "4169db5af5b365333af0d9a489ed4b5014ab1c03e162f58fa96e60f62b404c72",
   "excluded_path_categories": {
     "outside_public_dependency_closure": 16,
     "private_ci": 5,

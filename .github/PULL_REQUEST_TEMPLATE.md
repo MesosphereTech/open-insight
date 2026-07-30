@@ -1,30 +1,36 @@
-## 目的
+## Purpose
 
-<!-- 说明这个 PR 解决的具体问题，以及为什么属于当前 Core OSS Alpha 路线。 -->
+<!-- Describe the concrete problem and why it belongs in the current Core OSS Alpha path. -->
 
-## 改动
+## Changes
 
-- 
+-
 
-## 边界与兼容性
+## Boundaries and compatibility
 
-- [ ] 未静默改变既有 `.insight` 或 CLI/MCP 机器契约语义；如有变化，已升级 schema version。
-- [ ] 已说明 source、lineage、parse diagnostics、digest 或 conformance 的影响。
-- [ ] 不执行包内代码，不读取浏览器模型 key，不外发来源数据。
-- [ ] AI/generated/overlay 结果不会自动 `verified`，不会写回 base package。
-- [ ] 未引入真实客户材料、个人信息、绝对本机路径、`.env`、API key 或生成产物。
+- [ ] Existing `.insight` or CLI/MCP machine-contract semantics were not
+      changed silently. Any semantic change uses a new schema version.
+- [ ] Source, lineage, parse-diagnostic, digest, or conformance impact is
+      documented.
+- [ ] This change does not execute package code, read browser model keys, or
+      send source data to an external service by default.
+- [ ] AI, generated, or overlay results cannot become automatically
+      `verified` and cannot write back to the base package.
+- [ ] This change contains no customer material, personal data, local absolute
+      paths, `.env` content, API keys, or generated output artifacts.
 
-## 验证
+## Validation
 
 ```text
-列出实际运行的命令和结果，不要只写“测试通过”。
+List the commands you ran and summarize the results. Do not write only "tests passed."
 ```
 
 - [ ] `npm run scan:secrets`
-- [ ] 已运行与改动范围匹配的最小测试。
-- [ ] 公共入口改动已运行 `npm run verify`。
-- [ ] CLI / SDK 改动已运行 `npm run cli-contracts:check` 和 `npm run sdk:ci`。
+- [ ] Tests matching the change scope were run.
+- [ ] Public-entry changes were checked with `npm run verify`.
+- [ ] CLI or SDK changes were checked with `npm run cli-contracts:check` and
+      `npm run sdk:ci`.
 
-## 未完成项
+## Remaining work
 
-<!-- 明确保留的限制、后续 PR 和人工确认项。 -->
+<!-- Record retained limitations, follow-up pull requests, and manual checks. -->

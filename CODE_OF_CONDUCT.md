@@ -1,24 +1,35 @@
-# 社区行为准则
+# Community Code of Conduct
 
-Open Insight 社区致力于提供开放、专业、尊重事实和证据的协作环境。
+The Open Insight community is committed to an open, professional, and
+evidence-oriented collaboration environment.
 
-## 期望行为
+## Expected behavior
 
-- 尊重不同背景、经验、语言和观点。
-- 对代码、协议和证据提出具体、可验证的意见，不攻击个人。
-- 清楚区分事实、推断、实验结果和产品设想。
-- 保护参与者、用户和测试材料的隐私。
-- 接受维护者为安全、范围、兼容性和发布质量做出的合理决定。
+- Respect different backgrounds, experience levels, languages, and viewpoints.
+- Give specific, verifiable feedback about code, protocols, and evidence
+  without attacking people.
+- Clearly distinguish facts, inferences, experiment results, and product ideas.
+- Protect the privacy of contributors, users, and test material.
+- Respect maintainers' reasonable decisions about safety, scope,
+  compatibility, and release quality.
 
-## 不可接受行为
+## Unacceptable behavior
 
-- 骚扰、侮辱、歧视、威胁或持续打断协作。
-- 未经许可公开他人的身份、联系方式、客户资料、密钥或私有文件。
-- 伪造测试结果、证据链或安全结论。
-- 利用社区渠道传播恶意文件、凭据或攻击代码。
+- Harassment, insults, discrimination, threats, or persistent disruption.
+- Publishing another person's identity, contact details, customer material,
+  credentials, or private files without permission.
+- Fabricating test results, evidence links, or security conclusions.
+- Using community channels to distribute malicious files, credentials, or
+  attack code.
 
-## 执行
+## Enforcement
 
-非敏感问题可以通过仓库 Issue 联系维护者；涉及个人隐私、安全或需要保密的行为问题，请使用 GitHub 私密漏洞报告渠道并注明“社区行为问题”。维护者可以编辑或删除不当内容、限制参与、关闭讨论或禁止严重违规者参与。
+Use a regular Issue for non-sensitive community concerns. For private,
+security-related, or personally sensitive reports, use GitHub's private
+vulnerability reporting flow and identify the report as a community conduct
+matter.
 
-本准则适用于仓库、Issue、PR、评审、社区活动及代表 Open Insight 的公开交流。维护者会尽量保护报告者隐私，并根据事实和严重程度处理。
+Maintainers may edit or remove inappropriate content, restrict participation,
+close discussions, or ban serious repeat offenders. This code applies to the
+repository, Issues, pull requests, reviews, community events, and public
+communication made on behalf of Open Insight.

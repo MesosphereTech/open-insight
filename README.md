@@ -1,13 +1,45 @@
 # Open Insight
 
-## Prepare information once. Use it with any AI.
+## Stop making every AI reread the same files.
 
-Open Insight is an open-source, local-first compiler and portable context
-format. It turns a collection of documents, data files, presentations, web
-exports, technical material, and notes into one `.insight` file that AI agents
-can search, cite, verify, and reuse.
+**Prepare information once. Use it with any AI.**
 
-**One File, Any AI.** The technical category is **Portable AI Context**:
+Open Insight compiles documents, spreadsheets, presentations, web exports,
+technical material, and notes into one local, traceable `.insight` portable context
+file that compatible AI agents can search, cite, verify, and reuse.
+
+**One File, Any AI.** We call this **Portable AI Context**.
+
+Chinese documentation: [README.zh-CN.md](README.zh-CN.md)
+
+<p align="center">
+  <img
+    src="docs/public/assets/open-insight-alpha-validation.gif"
+    alt="Open Insight turns nine mixed source files into one traceable context file, then returns smaller query-scoped context through CLI and MCP."
+    width="960"
+  />
+</p>
+
+Install the complete Open Insight Context Skill:
+
+```bash
+npx @mesospheretech/open-insight
+```
+
+Then ask your agent:
+
+```text
+Package ./materials as research-context.insight.
+Use research-context.insight to compare the relevant findings across the files.
+Cite the source file for every important fact.
+```
+
+- **Reuse context:** prepare a collection once instead of reopening every file
+  for every compatible AI.
+- **Retrieve less:** send bounded, question-relevant context instead of the
+  entire collection.
+- **Trace facts:** resolve important claims to source files, diagnostics, and
+  source maps.
 
 ```text
 Any Information Collection -> One .insight -> Any AI
@@ -19,16 +51,6 @@ Open Insight prepares and retrieves evidence; your chosen AI writes
 the answer, analysis, document, or presentation.
 
 Open Insight is model-agnostic. It does not require a cloud account, bundle a model, or send your files anywhere by default.
-
-Chinese documentation: [README.zh-CN.md](README.zh-CN.md)
-
-<p align="center">
-  <img
-    src="docs/public/assets/open-insight-alpha-validation.gif"
-    alt="Open Insight turns nine mixed source files into one traceable context file, then returns smaller query-scoped context through CLI and MCP."
-    width="960"
-  />
-</p>
 
 ## The problem it solves
 
@@ -63,14 +85,6 @@ collection, not the demo scenario.
 2. Ask the agent to package local files or a folder into one `.insight` file.
 3. Ask that agent, or another compatible AI, to use the `.insight` file for a
    question or deliverable.
-
-For example, a project folder is one possible collection:
-
-```text
-Package ./materials as research-context.insight.
-Use research-context.insight to compare the relevant findings across the files.
-Cite the source file for every important fact.
-```
 
 The agent uses Open Insight to retrieve bounded context and resolve citations.
 It does not need to inject every source into every prompt.

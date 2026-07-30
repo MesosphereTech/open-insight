@@ -207,24 +207,32 @@ automatically. Repository-outside authorized acceptance verified commit
 pinning, clean JSON stdout, model-environment isolation, package compilation,
 and reuse of the installed Core. Historical `v0.1.0-alpha.1` remains
 immutable. The current `v0.1.0-alpha.3` candidate adds automatic isolated
-MarkItDown setup and remains pending a fixed clean-Core commit and authorized
-repository-outside acceptance. Anonymous installation remains blocked until
-the Core repository is made public.
+MarkItDown setup and is fixed at
+`d7fc4b7a66834c01e5fede03bdb618d91df653bb`. Authorized
+repository-outside acceptance passed from a path containing Chinese characters
+and spaces: no manual bootstrap or pip command was used, the Skill prepared
+MarkItDown `0.1.6` in an isolated runtime, a real PDF compiled into one valid
+`.insight`, and diagnostics recorded `cloud_used=false`. The first clean setup
+and compile took about 317 seconds; the cached compile took about 4.9 seconds.
+Anonymous installation remains blocked until the Core repository is made
+public.
 
-The development branch now also carries the published `open-insight-cli` npm
-bootstrap package and the thin published
-`@mesospheretech/open-insight@0.1.0-alpha.2` scoped alias. The `alpha.3`
-packages are the next private candidates and must not replace `latest` before
-their fixed Core tag passes acceptance. The recommended
+The development branch now also carries the published
+`open-insight-cli@0.1.0-alpha.3` npm bootstrap package and the thin published
+`@mesospheretech/open-insight@0.1.0-alpha.3` scoped alias. Both `latest` and
+`next` point to the accepted Alpha 3 packages. The recommended
 public command is `npx @mesospheretech/open-insight`; `npx open-insight-cli`
 remains equivalent. The underlying installer pins `skills@1.5.9` and the
 immutable Alpha Skill source instead of exposing a generic installer plus a
 GitHub tree URL. A packed tarball passed repository-outside installation,
 first-use Core preparation, one-file compilation, and traceable context access.
-Both npm packages are published with the `latest` tag. Authorized
-repository-outside registry installs passed, including a scoped-command install
-from a path containing Chinese characters and spaces. Anonymous installation
-remains blocked until the Core repository becomes public. The
+Both npm packages are published with the `latest` tag, and both also expose
+`next` as `0.1.0-alpha.3`.
+Authorized repository-outside registry installs passed, including a
+scoped-command install from a path containing Chinese characters and spaces.
+The unversioned commands resolve Alpha 3 and report the pinned Alpha 3 Core
+without invoking a model. Anonymous installation remains blocked until the Core
+repository becomes public. The
 updated allowlist dry-run selects 162 files; the increase is limited to the
 branded installer package, its license, and its focused test.
 

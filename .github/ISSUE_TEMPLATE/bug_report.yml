@@ -1,55 +1,55 @@
-name: Bug 报告
-description: 报告可公开复现的 Core OSS 问题
+name: Bug report
+description: Report a publicly reproducible Open Insight Core issue
 title: "[Bug] "
 labels: ["bug", "needs-triage"]
 body:
   - type: markdown
     attributes:
-      value: 请勿上传客户文件、个人信息、API key、`.env`、本机绝对路径或未脱敏日志。安全漏洞请使用 GitHub 私密报告。
+      value: Do not upload customer files, personal data, API keys, `.env` content, local absolute paths, or unsanitized logs. Report security vulnerabilities privately.
   - type: input
     id: version
     attributes:
-      label: Commit / 版本
-      placeholder: git rev-parse HEAD 或 CLI --version
+      label: Commit or version
+      placeholder: git rev-parse HEAD or CLI --version
     validations:
       required: true
   - type: dropdown
     id: area
     attributes:
-      label: 涉及模块
+      label: Area
       options: [Compiler / Parser, Validator / Conformance, CLI / MCP, Skill, SDK / Runtime, Package / Schema, Proof / Benchmark, Documentation, Other]
     validations:
       required: true
   - type: textarea
     id: reproduce
     attributes:
-      label: 最小复现步骤
-      description: 使用公开 fixture 或自行构造的脱敏小样本。
+      label: Minimal reproduction
+      description: Use a public fixture or a small, sanitized sample that you are allowed to share.
     validations:
       required: true
   - type: textarea
     id: expected
     attributes:
-      label: 预期行为
+      label: Expected behavior
     validations:
       required: true
   - type: textarea
     id: actual
     attributes:
-      label: 实际行为与脱敏输出
+      label: Actual behavior and sanitized output
     validations:
       required: true
   - type: dropdown
     id: source_mode
     attributes:
-      label: source mode
-      options: [source_bundled, source_light, 不适用, 不确定]
+      label: Source mode
+      options: [source_bundled, source_light, Not applicable, Unsure]
   - type: checkboxes
     id: safety
     attributes:
-      label: 提交确认
+      label: Submission checks
       options:
-        - label: 我已删除密钥、个人信息、客户材料和本机绝对路径。
+        - label: I removed credentials, personal data, customer material, and local absolute paths.
           required: true
-        - label: 我确认这不是需要私密披露的安全漏洞。
+        - label: I confirm that this is not a security vulnerability requiring private disclosure.
           required: true

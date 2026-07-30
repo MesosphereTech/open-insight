@@ -74,6 +74,12 @@ describe("public Core English README", () => {
     ]) {
       expect(readme).not.toContain(unsupportedClaim);
     }
+    expect(readme.indexOf("open-insight-alpha-validation.gif")).toBeLessThan(
+      readme.indexOf("## The problem it solves")
+    );
+    expect(readme.indexOf("npx @mesospheretech/open-insight")).toBeLessThan(
+      readme.indexOf("## The problem it solves")
+    );
   });
 
   it("publishes an independent Chinese Core README instead of private product history", async () => {
@@ -151,6 +157,9 @@ describe("public Core English README", () => {
     for (const required of [
       "private release candidate",
       "One File, Any AI",
+      "published on the",
+      "public npm registry",
+      "`latest` and `next`",
       "64.1% fewer estimated input tokens on average",
       "model billing usage",
       "universal savings guarantee",

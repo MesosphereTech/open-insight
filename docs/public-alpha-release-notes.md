@@ -23,9 +23,9 @@ The branded installer pins the generic Skill installer and fixed-tag Skill
 source internally. The first compile or read prepares the pinned Core
 automatically. Manual bootstrap remains available for troubleshooting, not as
 a normal user step. `@mesospheretech/open-insight@0.1.0-alpha.3` and its
-equivalent short package `open-insight-cli@0.1.0-alpha.3` are private release
-candidates for the public npm registry. The previous `alpha.2` packages remain
-available until this candidate passes the full acceptance path.
+equivalent short package `open-insight-cli@0.1.0-alpha.3` are published on the
+public npm registry. Both the `latest` and `next` distribution tags resolve to
+`alpha.3`.
 The pinned Core repository remains private during owner
 acceptance, so installation still requires authorized GitHub access.
 

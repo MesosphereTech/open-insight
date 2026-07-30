@@ -11,7 +11,8 @@
 仓库，目前也保持 private 供最终测试。历史 `v0.1.0-alpha.1` 固定到
 `66916abb9c8544fe59c3518019982995df69`；当前私有候选
 `v0.1.0-alpha.2` 固定到 `703c3ca07af049bee3e973a00fee76af9ecaf1a0`；
-当前开发候选已切换到 `v0.1.0-alpha.3`，待干净 Core 导出后记录固定 commit。
+当前私有候选 `v0.1.0-alpha.3` 固定到
+`d7fc4b7a66834c01e5fede03bdb618d91df653bb`。
 授权用户已经从仓库外通过一行安装、首次调用自动准备固定 Core、单文件编译
 与 CLI 只读读取验收；公开发布仍需在切换 Core 仓库可见性后补做无凭据匿名
 安装。开发仓库不进入该公开动作。
@@ -46,8 +47,7 @@
 - 已实现 bootstrap 的本地依赖、构建、CLI 与 MCP 就绪检查；该检查不调用模型、不转发模型环境变量、不上传来源文件、不执行包内代码，也不写回 base package。
 - 已把普通用户主路径收敛为“一条固定 tag 命令安装完整 Skill，然后直接编译或读取”。首次调用 `compile-folder.mjs` 或只读 `cli.mjs` 时自动准备固定 Core，安装进度只写 `stderr`，JSON stdout 保持纯净；手工 bootstrap 只用于排障。`OPEN_INSIGHT_CORE_HOME` 是唯一显式安装位置，`OPEN_INSIGHT_AUTO_BOOTSTRAP=0` 可由管理员关闭自动准备。
 - Skill bootstrap 默认固定 `v0.1.0-alpha.3`，使用版本化安装目录并校验实际 commit；ref 不一致时返回 `version_mismatch`，不会把移动分支伪装成 Alpha。`OPEN_INSIGHT_CORE_REF` 只作为显式测试覆盖入口。
-- 已发布品牌化 npm bootstrap `open-insight-cli@0.1.0-alpha.2` 及其官方 scoped 别名 `@mesospheretech/open-insight@0.1.0-alpha.2`；推荐公开命令为 `npx @mesospheretech/open-insight`，短命令 `npx open-insight-cli` 等价可用，两个包的 `latest` 均指向该已验收版本。scoped 包只固定依赖同版本底层安装器，不复制实现；底层安装器固定 `skills@1.5.9` 与 `v0.1.0-alpha.2` Skill 来源，只转发受支持的安装参数，并从子进程环境移除模型、OCR 和浏览器密钥。2026-07-28 两条命令均从公共 registry 在仓库外完成授权安装，scoped 命令还在含中文和空格的隔离目录核对了完整 `SKILL.md` 与 6 个脚本。此前 packed tarball 的两次验收约 18-26 秒，首次 Core 准备加编译在不同网络/缓存状态下约 34-183 秒，均生成约 29 KB 的单文件 `.insight`。Core commit 校验、2 个来源、2 条 diagnostics、SQLite/FTS、日期与负责人检索均通过。无 scope 名称 `open-insight` 因 npm 防混淆规则被拒绝，因此保留 `open-insight-cli` 并增加官方 scoped 品牌入口；Core 仓库仍为 private，不能描述为匿名安装已经开放。
-- `open-insight-cli@0.1.0-alpha.3` 与 `@mesospheretech/open-insight@0.1.0-alpha.3` 已进入私有候选，固定新的 Skill/Core ref，并增加隔离 MarkItDown 自动准备；发布前 `latest` 继续保留在已验收的 `alpha.2`。
+- 已发布品牌化 npm bootstrap `open-insight-cli@0.1.0-alpha.3` 及其官方 scoped 别名 `@mesospheretech/open-insight@0.1.0-alpha.3`；推荐公开命令为 `npx @mesospheretech/open-insight`，短命令 `npx open-insight-cli` 等价可用，两个包的 `latest` 与 `next` 均指向该已验收版本。scoped 包只固定依赖同版本底层安装器，不复制实现；底层安装器固定 `skills@1.5.9` 与 `v0.1.0-alpha.3` Skill 来源，只转发受支持的安装参数，并从子进程环境移除模型、OCR 和浏览器密钥。2026-07-30 两条无版本命令均从公共 registry 返回 `package_version=0.1.0-alpha.3`、`core_ref=v0.1.0-alpha.3` 和 `model_invoked=false`；scoped 命令还在含中文和空格的隔离目录安装了完整 Skill 与 7 个脚本。registry 安装后的真实 PDF 缓存编译约 9 秒，生成单文件有效 `.insight`，CLI compact 检索返回来源引用和解析诊断。无 scope 名称 `open-insight` 因 npm 防混淆规则被拒绝，因此保留 `open-insight-cli` 并增加官方 scoped 品牌入口；Core 仓库仍为 private，不能描述为匿名安装已经开放。
 
 ### Proof
 
@@ -64,10 +64,13 @@
 真实材料尚缺的工作是人工确认 Gold Answer 和独立 reviewer attestation，不是继续扩建 Proof 代码。开发优先级回到普通用户首次使用路径：`一行安装 Skill -> 首次调用自动准备固定 Core -> 编译文件夹为单个 .insight -> CLI/MCP 只读访问 -> 外部 LLM 问答、分析或生成材料`。
 
 代码中的 Skill 与 Core 安装来源已经统一固定为 `v0.1.0-alpha.3`。该 tag
-将在新的干净私有 Core 仓库建立后完成授权用户的仓库外安装测试：安装
-完整 Skill 后未手工运行 bootstrap，首次编译自动准备并校验 Core，生成单一
-`.insight`；随后 CLI 返回纯 JSON、可用查询索引、来源引用和解析诊断。历史
-`v0.1.0-alpha.1` 保持不可变。
+已经在新的干净私有 Core 仓库建立，并完成授权用户的仓库外安装测试：从中文和
+空格路径安装完整 Skill 后，未手工运行 bootstrap 或 `pip install`，首次编译
+自动准备并校验 Core、创建隔离 MarkItDown `0.1.6` runtime，并生成单一有效
+`.insight`。真实 PDF 首次端到端准备与编译耗时约 317 秒；复用固定 Core 和
+parser 后，同一 PDF 的缓存编译耗时约 4.9 秒。CLI compact 检索返回来源引用和
+解析诊断，diagnostics 记录 `parser=markitdown`、`parser_version=0.1.6`、
+`cloud_used=false`。历史 `v0.1.0-alpha.1` 保持不可变。
 `npm run alpha:release-ref -- --tag v0.1.0-alpha.3` 只核对待发布 tag 文本；
 公开发布门禁必须追加 `--verify-remote`，禁用凭据交互并确认该 tag 可从
 匿名可下载的公开来源读取。当前私有 Core 仓库、本地 fake remote 或授权
