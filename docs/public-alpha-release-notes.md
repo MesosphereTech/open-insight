@@ -3,6 +3,8 @@
 Status: **private release candidate**. This document does not announce a
 public release.
 
+Chinese companion: [public-alpha-release-notes.zh-CN.md](public-alpha-release-notes.zh-CN.md)
+
 ## One File, Any AI
 
 Open Insight turns a mixed information collection into one portable,

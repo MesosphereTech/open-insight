@@ -29,6 +29,7 @@ const exactPaths = new Set([
   "docs/core-oss-prd.md",
   "docs/public-alpha-demo.md",
   "docs/public-alpha-release-notes.md",
+  "docs/public-alpha-release-notes.zh-CN.md",
   "docs/public-core-repository-manifest.md",
   "docs/public/AGENTS.md",
   "docs/public/README.md",

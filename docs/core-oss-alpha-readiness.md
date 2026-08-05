@@ -78,13 +78,20 @@ checkout 测试都不能替代匿名公开分发验收。
 
 首次运行 wrapper 已显式检查 Node.js 20.19+（20.x）或 22.12+、npm 10+、Git 和 Core 状态，并以 `system_checks` 写入安装报告。缺少依赖时返回 `prerequisite_failed`，在 clone / install 前给出中文修复动作；正常路径以 `阶段 1/5` 到 `阶段 5/5` 写入中文进度。检查和子进程环境不会转发模型 key。
 
-品牌安装入口加入 allowlist 后，当前提交的实际干净导出包含 163 个文件（其中
-1 个为生成 manifest），aggregate digest 为
-`b2e3f3997ef6197a05e467d6ca35bf7f753b43b5bbcc76698363476f43786eae`。
-独立导出环境完成 72 项 Core tests、19 项 Skill/installer tests、2 项 CLI
-contract tests、0 vulnerability 依赖审计、密钥扫描和全英文公开 demo。
-这些是 private 候选证据；npm publication 已完成，授权 registry 安装已通过。
-由于 Core 仓库仍为 private，无凭据匿名安装仍未执行。
+2026-07-30 从开发提交
+`87f3753c32595b039d474783dfe1082006f16c6a` 重新生成最新干净候选：
+169 个 allowlisted 文件加 1 个生成 manifest，共 170 个 Core 仓库跟踪文件，
+aggregate digest 为
+`4169db5af5b365333af0d9a489ed4b5014ab1c03e162f58fa96e60f62b404c72`。
+快照先在独立 Git 目录、再在真实私有 Core 克隆中各完成一次
+`verify:core-public`：73 项 Core tests、20 项 Skill/installer tests、2 项 CLI
+contract tests、0 vulnerability 依赖审计、密钥扫描和全英文公开 demo 均通过。
+逐文件 SHA-256 核对 169/169 一致。该快照已推送到私有
+`MesosphereTech/open-insight` 的 `main` 提交
+`976143c8621bf1f8681dfd3b88e0d716537c1bc8`；仓库仍为 private，
+`v0.1.0-alpha.3` 仍解析到原固定 Core commit
+`d7fc4b7a66834c01e5fede03bdb618d91df653bb`，未移动标签。
+这些是 private 候选证据；无凭据匿名安装仍未执行。
 
 ## 3. 可用的本地验证命令
 

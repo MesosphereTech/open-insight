@@ -180,3 +180,6 @@ CLI 和 MCP 复用同一 Runtime。它们不会调用模型、执行包内代码
 当前能力和限制见
 [`docs/core-oss-alpha-readiness.md`](docs/core-oss-alpha-readiness.md)，
 文件格式与产品契约见 [`docs/core-oss-prd.md`](docs/core-oss-prd.md)。
+
+中文候选发布说明见
+[`docs/public-alpha-release-notes.zh-CN.md`](docs/public-alpha-release-notes.zh-CN.md)。

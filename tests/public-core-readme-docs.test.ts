@@ -123,6 +123,10 @@ describe("public Core English README", () => {
         ["docs/core-oss-alpha-readiness.md", "docs/core-oss-alpha-readiness.md"],
         ["docs/core-oss-context-kernel.md", "docs/core-oss-context-kernel.md"],
         ["docs/public-alpha-release-notes.md", "docs/public-alpha-release-notes.md"],
+        [
+          "docs/public-alpha-release-notes.zh-CN.md",
+          "docs/public-alpha-release-notes.zh-CN.md"
+        ],
         ["docs/public-core-repository-manifest.md", "docs/public-core-repository-manifest.md"],
         ["CONTRIBUTING.md", "CONTRIBUTING.md"],
         ["SECURITY.md", "SECURITY.md"]
@@ -173,5 +177,29 @@ describe("public Core English README", () => {
     }
     expect(notes).not.toContain("three AI clients passed");
     expect(notes).not.toContain("guaranteed");
+  });
+
+  it("publishes a Chinese companion with the same evidence boundary", async () => {
+    const [notes, readme] = await Promise.all([
+      readFile(path.resolve("docs/public-alpha-release-notes.zh-CN.md"), "utf8"),
+      readPublicFile("docs/public/README.zh-CN.md", "README.zh-CN.md")
+    ]);
+    for (const required of [
+      "私有发布候选",
+      "One File, Any AI",
+      "64.1%",
+      "estimated input tokens",
+      "不是模型账单",
+      "不是",
+      "普遍节省承诺",
+      "source_bundled",
+      "source_light",
+      "public-alpha-release-notes.md"
+    ]) {
+      expect(notes).toContain(required);
+    }
+    expect(readme).toContain("docs/public-alpha-release-notes.zh-CN.md");
+    expect(notes).not.toContain("90% token savings");
+    expect(notes).not.toContain("保证准确");
   });
 });

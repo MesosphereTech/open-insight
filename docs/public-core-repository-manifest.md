@@ -57,7 +57,8 @@ but the first export must not hide or break the current build graph.
 - all-English public synthetic examples and fixtures
 - reviewed English launch GIFs and contact sheets derived only from public
   synthetic fixtures
-- the reviewed 1280x640 English social preview and candidate release notes
+- the reviewed 1280x640 English social preview, English candidate release
+  notes, and Chinese companion release notes
 - Core-only tests and release scripts
 - current Core OSS documentation, public architecture, and security boundaries
 
@@ -246,3 +247,24 @@ six files and a 4,635-byte npm tarball. That export predates the scoped alias
 files and must be regenerated before the Core repository changes visibility.
 Both npm installer names are now published; the Core repository visibility has
 not changed.
+
+### 2026-07-30 private Core main refresh
+
+The latest reviewed export was generated from private development commit
+`87f3753c32595b039d474783dfe1082006f16c6a`. It contains 169 allowlisted files
+plus the generated `public-export-manifest.json`, for 170 tracked files in the
+Core repository. The aggregate export digest is
+`4169db5af5b365333af0d9a489ed4b5014ab1c03e162f58fa96e60f62b404c72`.
+
+The snapshot passed `npm ci` with zero reported vulnerabilities and then passed
+`verify:core-public` twice: once in an independent Git directory and once in a
+fresh clone of the real private Core repository. The gate covered 73 Core tests,
+20 Skill/installer tests, two CLI contract tests, secret scanning, and the
+all-English synthetic CLI/MCP parity demo. A separate digest pass matched all
+169 allowlisted files.
+
+The verified snapshot is now private Core `main` commit
+`976143c8621bf1f8681dfd3b88e0d716537c1bc8`. Repository visibility remains
+private. The immutable `v0.1.0-alpha.3` tag was not moved and still resolves to
+Core commit `d7fc4b7a66834c01e5fede03bdb618d91df653bb`. Therefore this refresh improves
+the private review candidate but does not complete anonymous Skill acceptance.
