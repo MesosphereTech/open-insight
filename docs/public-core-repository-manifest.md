@@ -248,6 +248,36 @@ files and must be regenerated before the Core repository changes visibility.
 Both npm installer names are now published; the Core repository visibility has
 not changed.
 
+### 2026-08-05 private GitHub Launch Pack refresh
+
+The reviewed Launch Pack export was generated from private development commit
+`2571b4bb17d971d020fd5271b3002e6dbfb9671d`. It contains 170 allowlisted files
+plus `public-export-manifest.json`, for 171 tracked files in the private Core
+repository. The aggregate export digest is
+`50c2a04f74fd811b1b32d827fa16ea1bafea67ce5b10a27f7baae06526dc85cd`.
+
+The refresh adds the corrected 1280x640 English Social Preview and a Chinese
+companion to the English candidate notes. Platform launch copy, repository
+metadata, Discussion categories, and six initial contributor issue drafts stay
+in the private development launch pack; they are not exported as product code.
+The final clean snapshot passed 74 Core tests, 20 Skill/installer tests, two CLI
+contract tests, secret scanning, and the all-English synthetic demo.
+
+The verified snapshot is private Core `main` commit
+`34fbf6f60304e90563a1fd4c2619abf625b0383d`. Repository visibility remains
+private and `v0.1.0-alpha.3` remains immutable at
+`d7fc4b7a66834c01e5fede03bdb618d91df653bb`.
+
+The separate English GIF refresh was completed in private development commit
+`aea26668a198085ed493aa5d1f0a4d620a26879a`. The 960x540, 16-second loop now
+follows the English launch film's value narrative: repeated team rereading cost,
+prepare once, targeted traceable evidence, a bounded synthetic token comparison,
+Skill / CLI / MCP access, and `One File. Any AI.`. Its contact sheet is generated
+from the same final GIF. HyperFrames structure, layout, motion, and contrast checks,
+public documentation tests, and secret scanning passed. This media-only refresh is
+queued for the next private Core candidate and does not change repository visibility
+or move the Alpha tag.
+
 ### 2026-07-30 private Core main refresh
 
 The latest reviewed export was generated from private development commit

@@ -60,10 +60,11 @@ The repository includes two English-only visual assets generated from the same
 synthetic demo facts:
 
 - `docs/public/assets/open-insight-alpha-validation.gif`: a 16-second README
-  loop covering one-file packaging, targeted retrieval, token comparison, and
-  the `One File. Any AI.` boundary;
+  loop covering repeated-reading cost, one-file preparation, targeted evidence
+  retrieval, the bounded public token comparison, and the `One File. Any AI.`
+  boundary;
 - `docs/public/assets/open-insight-alpha-contact-sheet.jpg`: eight reviewed
-  frames from the complete 64-second validation video.
+  frames from the same 16-second README loop.
 - `docs/public/assets/open-insight-social-preview.png`: the reviewed 1280x640
   repository social-preview candidate.
 

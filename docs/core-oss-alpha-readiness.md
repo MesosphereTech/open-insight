@@ -78,6 +78,25 @@ checkout 测试都不能替代匿名公开分发验收。
 
 首次运行 wrapper 已显式检查 Node.js 20.19+（20.x）或 22.12+、npm 10+、Git 和 Core 状态，并以 `system_checks` 写入安装报告。缺少依赖时返回 `prerequisite_failed`，在 clone / install 前给出中文修复动作；正常路径以 `阶段 1/5` 到 `阶段 5/5` 写入中文进度。检查和子进程环境不会转发模型 key。
 
+2026-08-05 从开发提交
+`2571b4bb17d971d020fd5271b3002e6dbfb9671d` 生成 GitHub Launch Pack
+候选：170 个 allowlisted 文件加 1 个生成 manifest，共 171 个 Core 仓库
+跟踪文件，aggregate digest 为
+`50c2a04f74fd811b1b32d827fa16ea1bafea67ce5b10a27f7baae06526dc85cd`。
+本次增加无文字重叠的 1280x640 Social Preview、英文候选说明的中文伴随稿，
+并在私有开发仓库准备 Show HN、Reddit、X、LinkedIn、知乎、V2EX、仓库
+metadata、Discussion 分类和 6 个首批 Issue 草案。最终清洁快照通过 74 项
+Core tests、20 项 Skill/installer tests、2 项 CLI contract tests、密钥扫描和
+全英文公开 demo，已推送到仍为 private 的 `MesosphereTech/open-insight`
+`main` 提交 `34fbf6f60304e90563a1fd4c2619abf625b0383d`。仓库没有切换为
+public，`v0.1.0-alpha.3` tag 没有移动。随后在开发提交
+`aea26668a198085ed493aa5d1f0a4d620a26879a` 完成独立英文 GIF 重制：成片为
+960x540、16 秒、10fps，从团队重复读取资料的时间与 token 成本开始，依次展示
+prepare once、按问题读取可追溯证据、公开合成样例的 bounded token proof、
+Skill / CLI / MCP 和 `One File. Any AI.`。同一 GIF 的 8 帧 contact sheet、
+HyperFrames 结构/布局/运动/对比度检查、公开文档测试和密钥扫描均已通过；该媒体
+切片等待同步到下一份仍为 private 的 Core 候选，不改变仓库可见性或 Alpha tag。
+
 2026-07-30 从开发提交
 `87f3753c32595b039d474783dfe1082006f16c6a` 重新生成最新干净候选：
 169 个 allowlisted 文件加 1 个生成 manifest，共 170 个 Core 仓库跟踪文件，
