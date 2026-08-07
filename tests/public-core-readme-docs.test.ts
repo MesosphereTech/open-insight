@@ -54,6 +54,9 @@ describe("public Core English README", () => {
       "run `pip install`",
       "README.zh-CN.md",
       "does not upload source files or call a model on its own",
+      "about 90%",
+      "selected large, multi-file internal tests",
+      "results vary by material and task",
       "64.1% fewer estimated tokens on average",
       "not model billing usage",
       "not a universal savings guarantee",
@@ -80,6 +83,22 @@ describe("public Core English README", () => {
     expect(readme.indexOf("npx @mesospheretech/open-insight")).toBeLessThan(
       readme.indexOf("## The problem it solves")
     );
+  });
+
+  it("keeps the launch-film and public-fixture token statements distinct", async () => {
+    const [readme, demoGuide] = await Promise.all([
+      readPublicReadme(),
+      readFile(path.resolve("docs/public-alpha-demo.md"), "utf8")
+    ]);
+
+    for (const document of [readme, demoGuide]) {
+      expect(document).toContain("selected large, multi-file internal tests");
+      expect(document).toContain("64.1%");
+      expect(document).toContain("not model billing");
+    }
+    expect(readme).toContain("about 90%");
+    expect(demoGuide).toContain("`≈90%`");
+    expect(demoGuide).toContain("separate, narrower benchmark");
   });
 
   it("publishes an independent Chinese Core README instead of private product history", async () => {

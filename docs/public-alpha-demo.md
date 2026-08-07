@@ -51,17 +51,18 @@ Office and PDF files use a stable binary-size heuristic, and the report
 publishes that limitation next to the savings result.
 
 The demo does not prove that an external model will always answer correctly or
-that OCR is complete. A fixed token-savings claim requires larger public
-materials, real tokenizer/API usage, and independently reviewed answer quality.
+that OCR is complete. A universal or independently reproducible benchmark claim
+requires larger public materials, real tokenizer/API usage, and independently
+reviewed answer quality.
 
 ## Visual validation
 
-The repository includes two English-only visual assets generated from the same
-synthetic demo facts:
+The repository includes two English-only visual assets built from product
+visuals and bounded aggregate test statements; they contain no customer material:
 
 - `docs/public/assets/open-insight-alpha-validation.gif`: a 16-second README
   loop covering repeated-reading cost, one-file preparation, targeted evidence
-  retrieval, the bounded public token comparison, and the `One File. Any AI.`
+  retrieval, the bounded launch-film token statement, and the `One File. Any AI.`
   boundary;
 - `docs/public/assets/open-insight-alpha-contact-sheet.jpg`: eight reviewed
   frames from the same 16-second README loop.
@@ -71,3 +72,10 @@ synthetic demo facts:
 The complete MP4 is prepared as a release or launch asset instead of being
 required by the Core runtime. The animation is silent, contains no customer
 material, and does not imply external-model certification.
+
+The GIF's `≈90%` statement matches the international launch film. It refers to
+selected large, multi-file internal tests using question-driven retrieval and is
+an estimated input-token comparison, not model billing or a universal promise;
+results vary by material and task. The reproducible nine-file public fixture
+above remains a separate, narrower benchmark with 64.1% average estimated
+savings across its four fixed questions.

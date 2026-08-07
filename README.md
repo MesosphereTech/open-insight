@@ -205,10 +205,14 @@ The demo creates a fictional multi-file project, compiles one `.insight` file, a
 
 Read the [public Alpha demo guide](docs/public-alpha-demo.md).
 
-The short animation above is generated from the same synthetic demo facts. A
-frame-by-frame review sheet is available in the
+The short animation above uses the international launch film's bounded
+`about 90%` statement for selected large, multi-file internal tests. It is an
+estimated question-driven retrieval result, not model billing or a universal
+promise; results vary by material and task. A frame-by-frame review sheet is available in the
 [validation contact sheet](docs/public/assets/open-insight-alpha-contact-sheet.jpg).
-Both assets use synthetic English content only.
+Both assets contain no customer material. The smaller public fixture below is a
+separate reproducible benchmark and therefore reports its own, more conservative
+result.
 
 ### Measured in the synthetic demo
 

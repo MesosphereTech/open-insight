@@ -271,12 +271,22 @@ private and `v0.1.0-alpha.3` remains immutable at
 The separate English GIF refresh was completed in private development commit
 `aea26668a198085ed493aa5d1f0a4d620a26879a`. The 960x540, 16-second loop now
 follows the English launch film's value narrative: repeated team rereading cost,
-prepare once, targeted traceable evidence, a bounded synthetic token comparison,
+prepare once, targeted traceable evidence, the launch film's bounded `≈90%`
+selected large, multi-file internal-test statement,
 Skill / CLI / MCP access, and `One File. Any AI.`. Its contact sheet is generated
 from the same final GIF. HyperFrames structure, layout, motion, and contrast checks,
 public documentation tests, and secret scanning passed. This media-only refresh is
 queued for the next private Core candidate and does not change repository visibility
 or move the Alpha tag.
+
+Post-sync record: the reviewed export was regenerated from private development
+commit `5a8c5dceb39f9c505e7086d04b287ad7607f2d87` with 170 allowlisted files.
+Its aggregate digest is
+`5bb1c29e8c9152f01102e617a9bc72fb2756d063c6b20866122344e57dc9cd2f`;
+including the generated manifest, the private Core repository tracks 171 files.
+After the full public-candidate verification passed, the snapshot was pushed to
+private Core `main` commit `522df50c269d7492e8f6e59c46643b8c00bc3f3b`.
+Repository visibility remains private and `v0.1.0-alpha.3` remains unchanged.
 
 ### 2026-07-30 private Core main refresh
 

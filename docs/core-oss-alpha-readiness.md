@@ -92,10 +92,19 @@ Core tests、20 项 Skill/installer tests、2 项 CLI contract tests、密钥扫
 public，`v0.1.0-alpha.3` tag 没有移动。随后在开发提交
 `aea26668a198085ed493aa5d1f0a4d620a26879a` 完成独立英文 GIF 重制：成片为
 960x540、16 秒、10fps，从团队重复读取资料的时间与 token 成本开始，依次展示
-prepare once、按问题读取可追溯证据、公开合成样例的 bounded token proof、
+prepare once、按问题读取可追溯证据、与国际视频一致的 `≈90%` selected
+large, multi-file internal test estimated token statement、
 Skill / CLI / MCP 和 `One File. Any AI.`。同一 GIF 的 8 帧 contact sheet、
 HyperFrames 结构/布局/运动/对比度检查、公开文档测试和密钥扫描均已通过；该媒体
 切片等待同步到下一份仍为 private 的 Core 候选，不改变仓库可见性或 Alpha tag。
+
+同步完成记录：从开发提交 `5a8c5dceb39f9c505e7086d04b287ad7607f2d87`
+生成 170 个 allowlisted 文件，aggregate digest 为
+`5bb1c29e8c9152f01102e617a9bc72fb2756d063c6b20866122344e57dc9cd2f`；
+加入生成 manifest 后形成 171 个 Core 跟踪文件。完整公开候选门禁通过后，
+该快照已推送到仍为 private 的 `MesosphereTech/open-insight` `main` 提交
+`522df50c269d7492e8f6e59c46643b8c00bc3f3b`。仓库没有切换为 public，
+`v0.1.0-alpha.3` tag 没有移动。
 
 2026-07-30 从开发提交
 `87f3753c32595b039d474783dfe1082006f16c6a` 重新生成最新干净候选：

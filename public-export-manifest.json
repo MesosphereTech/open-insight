@@ -2,8 +2,8 @@
   "schema_version": "open-insight.public-core-export.v0.1",
   "status": "exported_private_review",
   "export_tool_version": "0.1.0",
-  "private_candidate_commit": "5a8c5dceb39f9c505e7086d04b287ad7607f2d87",
-  "private_candidate_tree_sha": "1e7f601fdb62e9f79492e0979cd380d215a5d912",
+  "private_candidate_commit": "4c55f7d4697e6ae271f0b07be8fec9be39fa0ee8",
+  "private_candidate_tree_sha": "45446debd77c74186998709c76af72fc74963e90",
   "exported_file_count": 170,
   "files": [
     {
@@ -156,7 +156,7 @@
     },
     {
       "path": "docs/core-oss-alpha-readiness.md",
-      "sha256": "065210466b861b60e7ecbdff60f238507b925e29e824f062a9aafcfb299d3663"
+      "sha256": "b88c0b3ab8bde0710befee3d8769a89217e45c7460ab3fb3e47e01a37b9f42d5"
     },
     {
       "path": "docs/core-oss-context-access.md",
@@ -172,7 +172,7 @@
     },
     {
       "path": "docs/public-alpha-demo.md",
-      "sha256": "4747bc15e9d6f9c45bebd199cc26fd32e0533b8cdb9cb59252b8f0ef8c637ce1"
+      "sha256": "281b0cf5f256d761d49c80b696126bf478d38412df49c29b78bee798dc0753d2"
     },
     {
       "path": "docs/public-alpha-release-notes.md",
@@ -184,15 +184,15 @@
     },
     {
       "path": "docs/public-core-repository-manifest.md",
-      "sha256": "293fb28e670436bde5be44514ed126c80c8dd9c0e105f90809bba91f348401a8"
+      "sha256": "fc0bb4d8fa2b1622ec4b4d5aabb500f9be311ebf5b0cd1a5f6439d6218bc4aeb"
     },
     {
       "path": "docs/public/assets/open-insight-alpha-contact-sheet.jpg",
-      "sha256": "0e6fe7b9f8bfb66a284a0c84eac0a9f18511b55976ffd4af3d743beb4fff93f3"
+      "sha256": "88fbc14ccd5ac7025ddf9abe5bcfcd4f6159c1c47baa0d2ed7e541d5fb478a3d"
     },
     {
       "path": "docs/public/assets/open-insight-alpha-validation.gif",
-      "sha256": "f2044204b38f78b4c5217876f87adc6686df6cc7abc3ff80ca65e556470d3042"
+      "sha256": "07259ac8cb31c0e519f51fbba80a7adcf9226e5a1b2176a0e0a58eb9c07f3330"
     },
     {
       "path": "docs/public/assets/open-insight-social-preview.png",
@@ -296,7 +296,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "0095007283a7329c5ba648776152648ef4fe8014d47298f3f932f1b67cae10d4"
+      "sha256": "705718d19a5a31236046b857833f1d06806888bbaeb6e2564f5354038e36d659"
     },
     {
       "path": "README.zh-CN.md",
@@ -676,7 +676,7 @@
     },
     {
       "path": "tests/public-core-readme-docs.test.ts",
-      "sha256": "67d162123a9267951333309c9a2133bdf7fb7912cc102ceba415b634ad75e993"
+      "sha256": "318e1ea445d4128015cf17bea664b7ee65cf6729a00ceb128d53bd129e8f709f"
     },
     {
       "path": "tsconfig.base.json",
@@ -687,7 +687,7 @@
       "sha256": "909bb74282772b1c2a6bd14d2efdc003df810d9664ebd08445fdc9572e3bdabf"
     }
   ],
-  "aggregate_manifest_digest": "5bb1c29e8c9152f01102e617a9bc72fb2756d063c6b20866122344e57dc9cd2f",
+  "aggregate_manifest_digest": "48fd714487234c09a75646d0abf1cff1933d15dc1acb6e7cd03cb22e86ca7103",
   "excluded_path_categories": {
     "outside_public_dependency_closure": 16,
     "private_ci": 5,
