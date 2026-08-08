@@ -288,6 +288,20 @@ After the full public-candidate verification passed, the snapshot was pushed to
 private Core `main` commit `522df50c269d7492e8f6e59c46643b8c00bc3f3b`.
 Repository visibility remains private and `v0.1.0-alpha.3` remains unchanged.
 
+Final token-claim alignment record (2026-08-07): private development commit
+`4c55f7d4697e6ae271f0b07be8fec9be39fa0ee8` aligns the English GIF with the
+international launch film's bounded statement of about 90% estimated token
+savings in selected large, multi-file internal tests. The separate reproducible
+9-file public fixture remains reported as 64.1%; neither figure is represented as
+model billing or a universal result. The export contains 170 allowlisted files with
+aggregate digest
+`48fd714487234c09a75646d0abf1cff1933d15dc1acb6e7cd03cb22e86ca7103`;
+including the generated manifest, the private Core repository tracks 171 files.
+After 75 Core tests, 20 Skill/installer tests, 2 CLI contract tests, secret scanning,
+and the all-English public demo passed, the snapshot was pushed to private Core
+`main` commit `eb0957560a67b3393bd6c7b9e08e69b1f24117b1`. Repository visibility
+remains private and `v0.1.0-alpha.3` remains unchanged.
+
 ### 2026-07-30 private Core main refresh
 
 The latest reviewed export was generated from private development commit

@@ -106,6 +106,18 @@ HyperFrames 结构/布局/运动/对比度检查、公开文档测试和密钥�
 `522df50c269d7492e8f6e59c46643b8c00bc3f3b`。仓库没有切换为 public，
 `v0.1.0-alpha.3` tag 没有移动。
 
+2026-08-07 完成最终 token 陈述对齐：开发提交
+`4c55f7d4697e6ae271f0b07be8fec9be39fa0ee8` 将英文 GIF 与国际视频统一为
+“部分大型、多文件内部样本约 `90%` estimated token savings”，同时继续把
+公开 9 文件合成样例的 `64.1%` 作为独立、可复现实验结果，不把两者混为普遍
+承诺。导出包含 170 个 allowlisted 文件，aggregate digest 为
+`48fd714487234c09a75646d0abf1cff1933d15dc1acb6e7cd03cb22e86ca7103`；
+加入 manifest 后形成 171 个 Core 跟踪文件。75 项 Core tests、20 项
+Skill/installer tests、2 项 CLI contract tests、密钥扫描和全英文公开 demo
+通过后，快照已推送到仍为 private 的 `MesosphereTech/open-insight` `main`
+提交 `eb0957560a67b3393bd6c7b9e08e69b1f24117b1`；
+`v0.1.0-alpha.3` tag 没有移动。
+
 2026-07-30 从开发提交
 `87f3753c32595b039d474783dfe1082006f16c6a` 重新生成最新干净候选：
 169 个 allowlisted 文件加 1 个生成 manifest，共 170 个 Core 仓库跟踪文件，

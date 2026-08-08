@@ -2,8 +2,8 @@
   "schema_version": "open-insight.public-core-export.v0.1",
   "status": "exported_private_review",
   "export_tool_version": "0.1.0",
-  "private_candidate_commit": "4c55f7d4697e6ae271f0b07be8fec9be39fa0ee8",
-  "private_candidate_tree_sha": "45446debd77c74186998709c76af72fc74963e90",
+  "private_candidate_commit": "fe142845000e1ab7da63263578e7e49f2d79b02a",
+  "private_candidate_tree_sha": "37005d41e4b7e30c3ec991a916d8b52a4d81f96b",
   "exported_file_count": 170,
   "files": [
     {
@@ -29,6 +29,34 @@
     {
       "path": "AGENTS.md",
       "sha256": "7103baec7e91f76eedf1560c5b2e6ca526d085b3dfd77693e6e35ed40df22439"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "sha256": "20db7082c03cf2c490e448d19d1ac4e76c4bf8798b64f6e67d357d3407dcd768"
+    },
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "sha256": "22f66d7c9eceff4e5bf94bf9d811001f393c5426bd65dc6847737a385b285059"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "sha256": "42558c016f483b99c3a79279e92005f68668e3e059d60172e81e4bcb03eda0c5"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "edf1df3ae04db8e991c4c07be74c2432dafe70ea156b3e9cb4f86a61c8c6baff"
+    },
+    {
+      "path": "README.md",
+      "sha256": "705718d19a5a31236046b857833f1d06806888bbaeb6e2564f5354038e36d659"
+    },
+    {
+      "path": "README.zh-CN.md",
+      "sha256": "52c2250513d35febe9ee635fc8d5b08376166d7f5736922a9682dded4f3c9933"
+    },
+    {
+      "path": "SECURITY.md",
+      "sha256": "b9c2bd91e3dfe18e9161446b2c36c8dc0162c7b410e2086c5c26700d0bb7b478"
     },
     {
       "path": "apps/cli/package.json",
@@ -99,28 +127,8 @@
       "sha256": "df34ba05e02e99ddbed164c6c7ed079116efceace9096b1775974fa892f8eee1"
     },
     {
-      "path": "CHANGELOG.md",
-      "sha256": "20db7082c03cf2c490e448d19d1ac4e76c4bf8798b64f6e67d357d3407dcd768"
-    },
-    {
-      "path": "CODE_OF_CONDUCT.md",
-      "sha256": "22f66d7c9eceff4e5bf94bf9d811001f393c5426bd65dc6847737a385b285059"
-    },
-    {
-      "path": "CONTRIBUTING.md",
-      "sha256": "42558c016f483b99c3a79279e92005f68668e3e059d60172e81e4bcb03eda0c5"
-    },
-    {
-      "path": "distribution/open-insight/bin/open-insight.mjs",
-      "sha256": "f9b512d56082c8d80df1819c1cc05e9e160023fdc7af16f4c809f34891c2ffa2"
-    },
-    {
       "path": "distribution/open-insight/LICENSE",
       "sha256": "edf1df3ae04db8e991c4c07be74c2432dafe70ea156b3e9cb4f86a61c8c6baff"
-    },
-    {
-      "path": "distribution/open-insight/package.json",
-      "sha256": "7d1079501b79c5496f6fe3b129edf8b13a7272ee269c5dc91866c6d690a418be"
     },
     {
       "path": "distribution/open-insight/README.md",
@@ -131,16 +139,16 @@
       "sha256": "ea628044de1bd42ee0186153c767d05f529807b244a4650f7a46f611f7651beb"
     },
     {
-      "path": "distribution/open-insight/scoped/bin/open-insight.mjs",
-      "sha256": "484ade413870167bd25892b23e29ef36c7f6ce079b49e378c0197bae57743f5e"
+      "path": "distribution/open-insight/bin/open-insight.mjs",
+      "sha256": "f9b512d56082c8d80df1819c1cc05e9e160023fdc7af16f4c809f34891c2ffa2"
+    },
+    {
+      "path": "distribution/open-insight/package.json",
+      "sha256": "7d1079501b79c5496f6fe3b129edf8b13a7272ee269c5dc91866c6d690a418be"
     },
     {
       "path": "distribution/open-insight/scoped/LICENSE",
       "sha256": "edf1df3ae04db8e991c4c07be74c2432dafe70ea156b3e9cb4f86a61c8c6baff"
-    },
-    {
-      "path": "distribution/open-insight/scoped/package.json",
-      "sha256": "1f720220043c84733494eebcf34643a36a4e4087ccaca31c73427ed02f916731"
     },
     {
       "path": "distribution/open-insight/scoped/README.md",
@@ -151,12 +159,20 @@
       "sha256": "62296d075af9a1b4a8b2a83ccd8f355916883f246f826d41b373581774d050e8"
     },
     {
+      "path": "distribution/open-insight/scoped/bin/open-insight.mjs",
+      "sha256": "484ade413870167bd25892b23e29ef36c7f6ce079b49e378c0197bae57743f5e"
+    },
+    {
+      "path": "distribution/open-insight/scoped/package.json",
+      "sha256": "1f720220043c84733494eebcf34643a36a4e4087ccaca31c73427ed02f916731"
+    },
+    {
       "path": "distribution/open-insight/src/index.mjs",
       "sha256": "177d8fba1f91a84c6b87d2522b0ebfcd5b54f6f0e9476796badc46579cebf7cb"
     },
     {
       "path": "docs/core-oss-alpha-readiness.md",
-      "sha256": "b88c0b3ab8bde0710befee3d8769a89217e45c7460ab3fb3e47e01a37b9f42d5"
+      "sha256": "4a3640d14fa08cc0cb39ba0bb6c6e9afddc696c7037180e88562ddda4610a38f"
     },
     {
       "path": "docs/core-oss-context-access.md",
@@ -184,7 +200,7 @@
     },
     {
       "path": "docs/public-core-repository-manifest.md",
-      "sha256": "fc0bb4d8fa2b1622ec4b4d5aabb500f9be311ebf5b0cd1a5f6439d6218bc4aeb"
+      "sha256": "d1ef79dce812e48779f8de750938de5c4201e5368a19a35281a0dfb6e41d4133"
     },
     {
       "path": "docs/public/assets/open-insight-alpha-contact-sheet.jpg",
@@ -199,16 +215,12 @@
       "sha256": "5f38380cb96db504ea26974990bed994b838c5305a54e771baf374727ac2c1fd"
     },
     {
-      "path": "LICENSE",
-      "sha256": "edf1df3ae04db8e991c4c07be74c2432dafe70ea156b3e9cb4f86a61c8c6baff"
-    },
-    {
       "path": "package-lock.json",
-      "sha256": "4414cd6d01b076c4a0c335d7805a6ea7503798da61a82223354c188aaa93825e"
+      "sha256": "362d1c02dcffa037e0dcb72af216af039a697bb2b34febd57ce8ed3694600ecd"
     },
     {
       "path": "package.json",
-      "sha256": "b2bc541578bc0edf4b3b9c89c45db1f29ba63ea0c1086c5c86ef112527a066ff"
+      "sha256": "7f73867fd03c069763a0c8fbffd97c239af64645f8f649b9954e73a6205d9142"
     },
     {
       "path": "packages/insight-compiler/package.json",
@@ -295,14 +307,6 @@
       "sha256": "03ee521b791de973bf171c819604299eb38baeff3cd220a32f550cdf11a8fb5c"
     },
     {
-      "path": "README.md",
-      "sha256": "705718d19a5a31236046b857833f1d06806888bbaeb6e2564f5354038e36d659"
-    },
-    {
-      "path": "README.zh-CN.md",
-      "sha256": "52c2250513d35febe9ee635fc8d5b08376166d7f5736922a9682dded4f3c9933"
-    },
-    {
       "path": "scripts/audit-core-oss-public-release.mjs",
       "sha256": "8468eb629a3a93951c4ac018696a55ad70aa3847e3f2e0dfeb1b020c77a1a717"
     },
@@ -347,8 +351,12 @@
       "sha256": "525bfd07ebf60204d18e8d057391319ed11b732a95327247a26fe6b6fdfd247c"
     },
     {
-      "path": "SECURITY.md",
-      "sha256": "b9c2bd91e3dfe18e9161446b2c36c8dc0162c7b410e2086c5c26700d0bb7b478"
+      "path": "skills/open-insight-context/SKILL.md",
+      "sha256": "304a569fe7c3df66168ee1198f16f7aa680c0ad0f7461dc24f3d325c11509d7a"
+    },
+    {
+      "path": "skills/open-insight-context/SKILL.zh-CN.md",
+      "sha256": "c747c5910d6079cc4855fa0254b6bd5d5853913ce63f3199eaa79a57ac59be65"
     },
     {
       "path": "skills/open-insight-context/agents/openai.yaml",
@@ -385,14 +393,6 @@
     {
       "path": "skills/open-insight-context/scripts/parser-runtime.mjs",
       "sha256": "9ec8a9e0e895c8590b15321413684ebe3166f446ccff6685c5b0fb98849f983e"
-    },
-    {
-      "path": "skills/open-insight-context/SKILL.md",
-      "sha256": "304a569fe7c3df66168ee1198f16f7aa680c0ad0f7461dc24f3d325c11509d7a"
-    },
-    {
-      "path": "skills/open-insight-context/SKILL.zh-CN.md",
-      "sha256": "c747c5910d6079cc4855fa0254b6bd5d5853913ce63f3199eaa79a57ac59be65"
     },
     {
       "path": "spec/cli-contracts/apply-review-patch-result.schema.json",
@@ -687,7 +687,7 @@
       "sha256": "909bb74282772b1c2a6bd14d2efdc003df810d9664ebd08445fdc9572e3bdabf"
     }
   ],
-  "aggregate_manifest_digest": "48fd714487234c09a75646d0abf1cff1933d15dc1acb6e7cd03cb22e86ca7103",
+  "aggregate_manifest_digest": "9f6ad79c2ea88b29426009c74d539c638c3d780f13e48c57acc9d19e5962424a",
   "excluded_path_categories": {
     "outside_public_dependency_closure": 16,
     "private_ci": 5,
