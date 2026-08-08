@@ -1,4 +1,4 @@
-# Open Insight v0.1.0-alpha.3 Candidate Notes
+# Open Insight v0.1.0-alpha.4 Candidate Notes
 
 Status: **public silent-test Alpha**. The clean Core repository is public for a
 3-7 day installation and first-use test; no launch promotion has started.
@@ -24,10 +24,10 @@ npx @mesospheretech/open-insight
 The branded installer pins the generic Skill installer and fixed-tag Skill
 source internally. The first compile or read prepares the pinned Core
 automatically. Manual bootstrap remains available for troubleshooting, not as
-a normal user step. `@mesospheretech/open-insight@0.1.0-alpha.3` and its
-equivalent short package `open-insight-cli@0.1.0-alpha.3` are published on the
+a normal user step. `@mesospheretech/open-insight@0.1.0-alpha.4` and its
+equivalent short package `open-insight-cli@0.1.0-alpha.4` are published on the
 public npm registry. Both the `latest` and `next` distribution tags resolve to
-`alpha.3`.
+`alpha.4`.
 The pinned Core repository is public. Anonymous installation, fixed-Core
 bootstrap, one-file compilation, validation, and compact retrieval passed from
 a clean directory containing Chinese characters and spaces on 2026-08-08.

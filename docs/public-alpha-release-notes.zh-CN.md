@@ -1,4 +1,4 @@
-# Open Insight v0.1.0-alpha.3 中文候选说明
+# Open Insight v0.1.0-alpha.4 中文候选说明
 
 状态：**public 静默测试 Alpha**。干净 Core 仓库公开 3-7 天用于安装和首次
 使用验证，尚未开始发布宣传。

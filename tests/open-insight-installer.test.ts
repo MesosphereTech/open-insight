@@ -27,9 +27,9 @@ describe("open-insight branded installer", () => {
     expect(packageJson.dependencies.skills).toBe("1.5.9");
     expect(packageJson.license).toBe("MIT");
     expect(packageJson.files).toContain("LICENSE");
-    expect(OPEN_INSIGHT_CORE_REF).toBe("v0.1.0-alpha.3");
+    expect(OPEN_INSIGHT_CORE_REF).toBe("v0.1.0-alpha.4");
     expect(OPEN_INSIGHT_SKILL_SOURCE).toContain(
-      "/v0.1.0-alpha.3/skills/open-insight-context"
+      "/v0.1.0-alpha.4/skills/open-insight-context"
     );
   });
 
@@ -43,10 +43,10 @@ describe("open-insight branded installer", () => {
     );
 
     expect(packageJson.name).toBe("@mesospheretech/open-insight");
-    expect(packageJson.version).toBe("0.1.0-alpha.3");
+    expect(packageJson.version).toBe("0.1.0-alpha.4");
     expect(packageJson.publishConfig).toEqual({ access: "public" });
     expect(packageJson.dependencies).toEqual({
-      "open-insight-cli": "0.1.0-alpha.3"
+      "open-insight-cli": "0.1.0-alpha.4"
     });
     expect(packageJson.bin).toEqual({ "open-insight": "bin/open-insight.mjs" });
     expect(wrapper).toContain(
@@ -74,7 +74,7 @@ describe("open-insight branded installer", () => {
     expect(createInstallerPlan(projectOptions)).toMatchObject({
       status: "planned",
       install_scope: "project",
-      core_ref: "v0.1.0-alpha.3",
+      core_ref: "v0.1.0-alpha.4",
       first_use_auto_bootstrap: true,
       model_invoked: false
     });
@@ -153,7 +153,7 @@ describe("open-insight branded installer", () => {
       schema_version: "open-insight.installer-plan.v0.1",
       status: "planned",
       package_name: "open-insight-cli",
-      core_ref: "v0.1.0-alpha.3",
+      core_ref: "v0.1.0-alpha.4",
       install_scope: "project",
       model_invoked: false
     });

@@ -64,7 +64,7 @@ npx @mesospheretech/open-insight
 The equivalent short command is `npx open-insight-cli`.
 
 The branded installer pins the generic Skill installer and immutable
-`v0.1.0-alpha.3` Skill source internally. The user does not need to copy a
+`v0.1.0-alpha.4` Skill source internally. The user does not need to copy a
 GitHub tree URL. The installer asks which supported AI client should receive
 the Skill. The npm package and Core repository remain private candidates until
 release approval; after publication, this command must work without repository

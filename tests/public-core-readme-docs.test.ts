@@ -42,7 +42,7 @@ describe("public Core English README", () => {
       "npx open-insight-cli",
       "npx @mesospheretech/open-insight",
       "branded installer",
-      "v0.1.0-alpha.3",
+      "v0.1.0-alpha.4",
       "There is no separate setup command in the normal workflow",
       "compile-folder.mjs",
       "context answer-context",

@@ -1,6 +1,6 @@
 {
   "name": "open-insight-cli",
-  "version": "0.1.0-alpha.3",
+  "version": "0.1.0-alpha.4",
   "description": "Install the Open Insight Context Skill: One File, Any AI.",
   "type": "module",
   "bin": {

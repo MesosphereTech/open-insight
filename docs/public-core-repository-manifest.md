@@ -143,7 +143,7 @@ npm run verify:core-public
 npm run cli-contracts:check
 npm run alpha:skill-acceptance
 npm run alpha:parser-acceptance
-npm run alpha:release-ref -- --tag v0.1.0-alpha.3 --verify-remote
+npm run alpha:release-ref -- --tag v0.1.0-alpha.4 --verify-remote
 ```
 
 The exact public script set may become smaller than the private monorepo set,
@@ -184,6 +184,15 @@ Core tests, 20 Skill tests, two CLI contract tests, secret scanning, the English
 public demo, and a zero-high-vulnerability dependency audit. GitHub Secret
 Scanning, Push Protection, Dependabot security updates, and `main` protection
 against force pushes and deletion are enabled.
+
+The post-activation audit found that the immutable Alpha 3 lockfile still
+resolved high-severity `fast-uri` and `nanoid` advisories. Alpha 3 was not
+moved. `v0.1.0-alpha.4` replaces it as the default silent-test candidate with
+updated transitive dependencies. The public Core checkout, fixed tag, and
+anonymous first-use Core installation pass `npm audit --audit-level=high` with
+zero high vulnerabilities. `open-insight-cli@0.1.0-alpha.4` and
+`@mesospheretech/open-insight@0.1.0-alpha.4` are published, and both `latest`
+and `next` resolve to Alpha 4.
 
 The records below describe earlier private candidate stages and are retained as
 release history.

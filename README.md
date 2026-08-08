@@ -142,7 +142,7 @@ The shorter equivalent command is `npx open-insight-cli`. Both packages use the
 same pinned installer implementation.
 
 The branded installer pins both the generic Skill installer and the immutable
-`v0.1.0-alpha.3` Skill source, so users do not need a GitHub tree URL. Choose
+`v0.1.0-alpha.4` Skill source, so users do not need a GitHub tree URL. Choose
 your supported AI client when prompted. The `open-insight-cli` npm launcher is
 public, and the Core repository is now in a public silent-test window.
 Installation no longer requires repository credentials. Anonymous installation,

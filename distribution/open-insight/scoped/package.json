@@ -1,6 +1,6 @@
 {
   "name": "@mesospheretech/open-insight",
-  "version": "0.1.0-alpha.3",
+  "version": "0.1.0-alpha.4",
   "description": "Official Open Insight installer: One File, Any AI.",
   "type": "module",
   "bin": {
@@ -13,7 +13,7 @@
     "README.zh-CN.md"
   ],
   "dependencies": {
-    "open-insight-cli": "0.1.0-alpha.3"
+    "open-insight-cli": "0.1.0-alpha.4"
   },
   "engines": {
     "node": "^20.19.0 || >=22.12.0"

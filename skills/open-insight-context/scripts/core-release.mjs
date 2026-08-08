@@ -1,7 +1,7 @@
 import os from "node:os";
 import path from "node:path";
 
-export const OPEN_INSIGHT_DEFAULT_CORE_REF = "v0.1.0-alpha.3";
+export const OPEN_INSIGHT_DEFAULT_CORE_REF = "v0.1.0-alpha.4";
 export const OPEN_INSIGHT_DEFAULT_CORE_REPOSITORY = "https://github.com/MesosphereTech/open-insight.git";
 export const OPEN_INSIGHT_MINIMUM_NODE_VERSION = "20.19.0";
 export const OPEN_INSIGHT_MODERN_NODE_VERSION = "22.12.0";
@@ -19,7 +19,7 @@ export function normalizeCoreRef(value = process.env.OPEN_INSIGHT_CORE_REF || OP
     ref.endsWith(".lock");
   if (!validShape || invalidSequence) {
     throw new Error(
-      "OPEN_INSIGHT_CORE_REF 不是安全的 Git tag/branch 名称。请使用发布 tag（例如 v0.1.0-alpha.3）或普通分支名。"
+      "OPEN_INSIGHT_CORE_REF 不是安全的 Git tag/branch 名称。请使用发布 tag（例如 v0.1.0-alpha.4）或普通分支名。"
     );
   }
   return ref;

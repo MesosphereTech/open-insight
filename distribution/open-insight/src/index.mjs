@@ -7,7 +7,7 @@ const packageJson = require("../package.json");
 
 export const OPEN_INSIGHT_INSTALLER_VERSION = packageJson.version;
 export const OPEN_INSIGHT_SKILL_NAME = "open-insight-context";
-export const OPEN_INSIGHT_CORE_REF = "v0.1.0-alpha.3";
+export const OPEN_INSIGHT_CORE_REF = "v0.1.0-alpha.4";
 export const OPEN_INSIGHT_SKILL_SOURCE =
   `https://github.com/MesosphereTech/open-insight/tree/${OPEN_INSIGHT_CORE_REF}/skills/${OPEN_INSIGHT_SKILL_NAME}`;
 export const SKILLS_INSTALLER_VERSION = "1.5.9";
