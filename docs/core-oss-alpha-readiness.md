@@ -71,6 +71,13 @@
 CLI compact 读取；安装后的 Core 通过 `npm audit --audit-level=high`，没有
 high vulnerability。历史 `v0.1.0-alpha.1` 保持不可变；`v0.1.0-alpha.2` 与
 `v0.1.0-alpha.3` 同样不可变。Alpha 3 仅用于历史追溯，不再作为默认入口。
+Alpha 4 的公开 Core commit 为
+`3a375b8c22a9ac8fee13c67441384ccb1a06d064`，固定 tag 解引用到同一 commit。
+匿名首次使用约 30.8 秒完成两来源编译、校验与 compact 读取，返回 2 个 source
+refs 和 2 个 parse diagnostic ids；随后公开 9 来源合成样例的 CLI/MCP parity
+通过，四个问题均命中预期证据，平均 estimated token saving 为 64.12%，source、
+diagnostic 与 numeric coverage 均为 1。该结果只描述固定公开合成样例，不构成
+通用性能或准确率承诺。
 `npm run alpha:release-ref -- --tag v0.1.0-alpha.4` 只核对待发布 tag 文本；
 公开发布门禁必须追加 `--verify-remote`，禁用凭据交互并确认该 tag 可从
 匿名可下载的公开来源读取。当前私有 Core 仓库、本地 fake remote 或授权

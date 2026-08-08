@@ -194,6 +194,20 @@ zero high vulnerabilities. `open-insight-cli@0.1.0-alpha.4` and
 `@mesospheretech/open-insight@0.1.0-alpha.4` are published, and both `latest`
 and `next` resolve to Alpha 4.
 
+The immutable Alpha 4 public baseline is Core commit
+`3a375b8c22a9ac8fee13c67441384ccb1a06d064`; annotated tag
+`v0.1.0-alpha.4` dereferences to the same commit. A fresh anonymous install in
+a path containing Chinese characters and spaces completed the one-line install,
+fixed-Core bootstrap, two-source compilation, validation, and compact retrieval
+in about 30.8 seconds. The compact result was `status=ok` with two source
+references and two parse diagnostic IDs, and the isolated Core dependency audit
+reported zero vulnerabilities. The same anonymous installation passed the
+public nine-source synthetic CLI/MCP parity demo: all four questions found the
+expected evidence, average estimated token savings were 64.12%, source,
+diagnostic, and numeric coverage were all 1, and no model, secret, or base-package
+mutation was involved. These figures describe the fixed public fixture and are
+not a universal performance claim.
+
 The records below describe earlier private candidate stages and are retained as
 release history.
 
