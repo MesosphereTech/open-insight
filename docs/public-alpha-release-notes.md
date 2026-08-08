@@ -1,7 +1,7 @@
 # Open Insight v0.1.0-alpha.3 Candidate Notes
 
-Status: **private release candidate**. This document does not announce a
-public release.
+Status: **public silent-test Alpha**. The clean Core repository is public for a
+3-7 day installation and first-use test; no launch promotion has started.
 
 Chinese companion: [public-alpha-release-notes.zh-CN.md](public-alpha-release-notes.zh-CN.md)
 
@@ -28,8 +28,9 @@ a normal user step. `@mesospheretech/open-insight@0.1.0-alpha.3` and its
 equivalent short package `open-insight-cli@0.1.0-alpha.3` are published on the
 public npm registry. Both the `latest` and `next` distribution tags resolve to
 `alpha.3`.
-The pinned Core repository remains private during owner
-acceptance, so installation still requires authorized GitHub access.
+The pinned Core repository is public. Anonymous installation, fixed-Core
+bootstrap, one-file compilation, validation, and compact retrieval passed from
+a clean directory containing Chinese characters and spaces on 2026-08-08.
 
 ## Candidate contents
 
@@ -99,17 +100,11 @@ contract check.
 - visual applications, hosted collaboration, and enterprise controls are not
   part of this public Core candidate.
 
-## Remaining release blockers
+## Silent-test scope
 
-1. Keep the development repository private; change only the reviewed Core
-   repository to public after final owner approval.
-2. Verify `npx @mesospheretech/open-insight` without development-repository
-   access after the Core repository becomes public.
-3. Verify anonymous Skill installation from the public repository and fixed
-   `v0.1.0-alpha.3` tag.
-4. Re-run the remote release-reference check and public Core gates after the
-   visibility change. The private authorized candidate already passed the Core,
-   Skill, CLI contract, secret, and CLI/MCP parity gates.
-5. Upload the reviewed social preview and complete MP4 as launch assets.
-6. Publish only after the release audit contains no private paths, credentials,
-   customer materials, or commercial product code.
+1. Keep the development repository private.
+2. Observe anonymous installation, first Core bootstrap, parser setup, one-file
+   compilation, and CLI/MCP feedback for 3-7 days.
+3. Fix only release-blocking defects; do not expand Proof or start promotion.
+4. Continue rejecting private paths, credentials, customer materials, and
+   commercial product code from the public Core repository.

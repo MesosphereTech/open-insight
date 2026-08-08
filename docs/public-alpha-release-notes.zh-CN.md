@@ -1,6 +1,7 @@
 # Open Insight v0.1.0-alpha.3 中文候选说明
 
-状态：**私有发布候选**。本文不代表项目已经公开发布。
+状态：**public 静默测试 Alpha**。干净 Core 仓库公开 3-7 天用于安装和首次
+使用验证，尚未开始发布宣传。
 
 ## One File, Any AI
 
@@ -17,9 +18,9 @@ Alpha 是本地上下文工具链。它不内置模型、不默认上传来源�
 npx @mesospheretech/open-insight
 ```
 
-首次编译或读取时，Skill 会自动准备并校验固定版本 Core。当前 Core 仓库在最终
-验收期间仍保持 private，因此安装仍需要获得仓库访问权限。仓库公开后必须重新完成
-匿名安装验收，才能删除这条边界说明。
+首次编译或读取时，Skill 会自动准备并校验固定版本 Core。2026-08-08 已在
+禁用 Git 凭据提示的全新中文空格目录中完成匿名安装、固定 Core bootstrap、
+单文件编译、校验和 compact 检索；安装不再需要仓库访问权限。
 
 ## 当前候选包含
 
@@ -60,12 +61,12 @@ token 数字是针对该 fixture 的确定性估算，不是模型账单、模�
 - 外部模型回答仍应结合返回的来源引用进行复核；
 - 可视化应用、托管协作和企业控制不属于 Core Alpha。
 
-## 公开前剩余动作
+## 静默测试范围
 
-1. 仅在最终确认后把 Core 候选仓库切换为 public；开发仓库继续保持 private。
-2. 仓库公开后重新验证无授权情况下的 npm 安装、Skill 下载和固定 tag。
-3. 重新运行公开审计、Core tests、Skill acceptance 和远端 release-ref 检查。
-4. 上传最终 Social Preview、GIF 和 MP4 发布素材。
-5. 确认公开内容不包含私有路径、凭据、客户材料或商业产品代码。
+1. `MesosphereTech/open-insight-development` 永久保持 private。
+2. 3-7 天内观察匿名安装、首次 Core bootstrap、parser 准备、单文件编译和
+   CLI/MCP 读取反馈。
+3. 只处理阻塞发布的缺陷，不扩建 Proof，也不开始宣传。
+4. 继续禁止私有路径、凭据、客户材料和商业产品代码进入公开 Core。
 
 英文候选说明见 [public-alpha-release-notes.md](public-alpha-release-notes.md)。

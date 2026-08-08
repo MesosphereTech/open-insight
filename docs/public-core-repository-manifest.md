@@ -1,15 +1,16 @@
 # Public Core Repository Manifest
 
-Last updated: 2026-07-28
+Last updated: 2026-08-08
 
 ## 1. Purpose
 
 `MesosphereTech/open-insight-development` is the permanent private development
 repository. `MesosphereTech/open-insight` is the clean Core repository created
 from a reviewed **allowlist** with independent Git history. The Core repository
-also remains private during final acceptance and becomes public only after
-explicit approval. The private candidate commit remains the implementation
-baseline; the export manifest records which files were selected and why.
+entered a 3-7 day public silent-test window on 2026-08-08 after explicit owner
+approval. The development repository remains private. The reviewed candidate
+commit remains the implementation baseline; the export manifest records which
+files were selected and why.
 
 The public Core is the canonical upstream for the `.insight` package and its
 Skill/CLI/MCP toolchain. Other applications may consume it as a dependency.
@@ -162,12 +163,44 @@ Core fixes land in public first. The private commercial repository consumes a
 versioned Core release and may carry unreleased integration changes on private
 branches. Core security fixes must not depend on private product code.
 
-## 8. Current private repository status
+## 8. Repository status and export history
+
+### 2026-08-08 public silent-test activation
+
+The clean Core repository is public at `MesosphereTech/open-insight`; the
+development repository `MesosphereTech/open-insight-development` remains
+private. No launch promotion is part of this window. Public Core `main` is
+`4290fdcf9b654e2265dfc7fe5f8ba5134c7e3342`; immutable
+`v0.1.0-alpha.3` remains unchanged.
+
+Anonymous HTTP and Git access to `main` and the fixed tag passed with credential
+interaction disabled. A clean directory containing Chinese characters and
+spaces installed the complete Skill through
+`npx @mesospheretech/open-insight@0.1.0-alpha.3`, bootstrapped an isolated Core
+in about 28 seconds, compiled Markdown and CSV into one 31,638-byte
+`source_bundled .insight`, validated it, and returned compact context with a
+source reference and parse diagnostic. The pre-activation export passed 75
+Core tests, 20 Skill tests, two CLI contract tests, secret scanning, the English
+public demo, and a zero-high-vulnerability dependency audit. GitHub Secret
+Scanning, Push Protection, Dependabot security updates, and `main` protection
+against force pushes and deletion are enabled.
+
+The records below describe earlier private candidate stages and are retained as
+release history.
 
 The private development repository provides:
 
 ```bash
 npm run alpha:public-export -- --output output/public-core-export
+```
+
+The exporter remains fail-closed and records
+`anonymous_skill_acceptance=blocked_repository_private` unless a maintainer has
+actually completed the anonymous test. After the 2026-08-08 verification, the
+public silent-test refresh uses:
+
+```bash
+npm run alpha:public-export -- --output output/public-core-export --anonymous-skill-acceptance verified_public_repository
 ```
 
 The exporter selects Git-tracked files before copying, applies explicit

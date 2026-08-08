@@ -172,13 +172,13 @@ describe("public Core English README", () => {
     expect(readme).not.toContain("](../../");
   });
 
-  it("publishes honest all-English candidate notes", async () => {
+  it("publishes honest all-English silent-test notes", async () => {
     const notes = await readFile(
       path.resolve("docs/public-alpha-release-notes.md"),
       "utf8"
     );
     for (const required of [
-      "private release candidate",
+      "public silent-test Alpha",
       "One File, Any AI",
       "published on the",
       "public npm registry",
@@ -190,7 +190,7 @@ describe("public Core English README", () => {
       "Gemini CLI",
       "Claude Code",
       "Externally blocked",
-      "Remaining release blockers"
+      "Silent-test scope"
     ]) {
       expect(notes).toContain(required);
     }
@@ -204,7 +204,7 @@ describe("public Core English README", () => {
       readPublicFile("docs/public/README.zh-CN.md", "README.zh-CN.md")
     ]);
     for (const required of [
-      "私有发布候选",
+      "public 静默测试 Alpha",
       "One File, Any AI",
       "64.1%",
       "estimated input tokens",

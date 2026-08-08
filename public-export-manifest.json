@@ -1,9 +1,9 @@
 {
   "schema_version": "open-insight.public-core-export.v0.1",
-  "status": "exported_private_review",
+  "status": "exported_public_silent_test",
   "export_tool_version": "0.1.0",
-  "private_candidate_commit": "fe142845000e1ab7da63263578e7e49f2d79b02a",
-  "private_candidate_tree_sha": "37005d41e4b7e30c3ec991a916d8b52a4d81f96b",
+  "private_candidate_commit": "06d6ec84e4e67a6decf2fa3641664585a6a7271f",
+  "private_candidate_tree_sha": "4668848f605eb6128906dcc098185a19b21232c0",
   "exported_file_count": 170,
   "files": [
     {
@@ -48,11 +48,11 @@
     },
     {
       "path": "README.md",
-      "sha256": "705718d19a5a31236046b857833f1d06806888bbaeb6e2564f5354038e36d659"
+      "sha256": "29fc8b432fabbb446627e90ef39df01df573a7a50b11e03aa5c6c9e74f9ca813"
     },
     {
       "path": "README.zh-CN.md",
-      "sha256": "52c2250513d35febe9ee635fc8d5b08376166d7f5736922a9682dded4f3c9933"
+      "sha256": "5dd8526950611672afd8be99220ebb0de81b5ccc29afa95b65ce85a171dec41e"
     },
     {
       "path": "SECURITY.md",
@@ -172,7 +172,7 @@
     },
     {
       "path": "docs/core-oss-alpha-readiness.md",
-      "sha256": "4a3640d14fa08cc0cb39ba0bb6c6e9afddc696c7037180e88562ddda4610a38f"
+      "sha256": "383b30afade8e0746a175a623cda319a491a9db0aa74c5724cdea3b8d36d5ff0"
     },
     {
       "path": "docs/core-oss-context-access.md",
@@ -192,15 +192,15 @@
     },
     {
       "path": "docs/public-alpha-release-notes.md",
-      "sha256": "c75f66f82c0d5b5c54b9478516415fce08e01b1e8dc4f0f196e1140566cb8474"
+      "sha256": "cf7bc9b7a22a8431b9adece5ab76a4ea8a5d33d23b448f4625c244036a9f4ebe"
     },
     {
       "path": "docs/public-alpha-release-notes.zh-CN.md",
-      "sha256": "ae878be24b8f128c0e4bcb7119b44b528cabb03f72b33102309f39bf892d7b56"
+      "sha256": "d0ff9784537e26d299b4db325cf243726d456de787b8d9c2e07724f3e3184fa9"
     },
     {
       "path": "docs/public-core-repository-manifest.md",
-      "sha256": "d1ef79dce812e48779f8de750938de5c4201e5368a19a35281a0dfb6e41d4133"
+      "sha256": "c16700b71525a4ef6e8d8dbd2de46df6a59836e2a537a0486c312fc6b68e08cf"
     },
     {
       "path": "docs/public/assets/open-insight-alpha-contact-sheet.jpg",
@@ -324,7 +324,7 @@
     },
     {
       "path": "scripts/export-public-core.mjs",
-      "sha256": "4584b9d55a8de9c2f1b6aa8e00cfdc61745285fd562a9a8b7105f7918b9fb52f"
+      "sha256": "0b99dd29548ec3032035d7b0cf661e0a384b4d127c4b1b65ed2eb32aa7dee24e"
     },
     {
       "path": "scripts/public-alpha-fixtures.mjs",
@@ -676,7 +676,7 @@
     },
     {
       "path": "tests/public-core-readme-docs.test.ts",
-      "sha256": "318e1ea445d4128015cf17bea664b7ee65cf6729a00ceb128d53bd129e8f709f"
+      "sha256": "881dfbbec180fed15c4331f3720afb89e1592e14149759986eef6556f4412f89"
     },
     {
       "path": "tsconfig.base.json",
@@ -687,7 +687,7 @@
       "sha256": "909bb74282772b1c2a6bd14d2efdc003df810d9664ebd08445fdc9572e3bdabf"
     }
   ],
-  "aggregate_manifest_digest": "9f6ad79c2ea88b29426009c74d539c638c3d780f13e48c57acc9d19e5962424a",
+  "aggregate_manifest_digest": "689aa458a85b9d2ad031a295ec7940e6e1c71d4f99e1fbab51a95db7d96141fb",
   "excluded_path_categories": {
     "outside_public_dependency_closure": 16,
     "private_ci": 5,
@@ -703,7 +703,7 @@
     "denylist_clear": true,
     "secret_scan": "passed",
     "license_scan": "present_pending_attribution_review",
-    "anonymous_skill_acceptance": "blocked_repository_private"
+    "anonymous_skill_acceptance": "verified_public_repository"
   },
   "safety": {
     "private_materials_exported": false,

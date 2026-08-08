@@ -144,9 +144,10 @@ same pinned installer implementation.
 The branded installer pins both the generic Skill installer and the immutable
 `v0.1.0-alpha.3` Skill source, so users do not need a GitHub tree URL. Choose
 your supported AI client when prompted. The `open-insight-cli` npm launcher is
-public, while the Core repository remains private during owner acceptance.
-Installation currently requires authorized GitHub access; the same command
-becomes anonymous once the Core repository is public.
+public, and the Core repository is now in a public silent-test window.
+Installation no longer requires repository credentials. Anonymous installation,
+fixed-Core bootstrap, one-file compilation, validation, and compact retrieval
+were verified from a clean directory on 2026-08-08.
 
 ### 2. Compile a folder into one file
 
@@ -302,8 +303,8 @@ Current limitations include:
 For release scope and verification boundaries, read
 [Core OSS Alpha readiness](docs/core-oss-alpha-readiness.md) and the
 [public Core repository manifest](docs/public-core-repository-manifest.md).
-The current private candidate is summarized in the
-[Alpha candidate notes](docs/public-alpha-release-notes.md).
+The current silent-test candidate is summarized in the
+[Alpha notes](docs/public-alpha-release-notes.md).
 
 ## Contributing
 

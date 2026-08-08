@@ -99,8 +99,9 @@ npx @mesospheretech/open-insight
 品牌安装器在内部固定通用 Skill 安装器和不可变的
 `v0.1.0-alpha.3` Skill 来源，普通用户不需要看到 GitHub 长路径。安装器会
 询问把 Skill 交给哪个受支持的 AI 客户端。`open-insight-cli` npm 安装器
-已经公开，Core 仓库仍处于 private 验收；当前安装需要 GitHub 授权，Core
-仓库公开后同一条命令才可供匿名用户直接运行。
+和干净 Core 仓库均已进入 public 静默测试；当前安装不再需要 GitHub 仓库
+权限。2026-08-08 已从全新中文空格目录完成匿名安装、固定 Core bootstrap、
+单文件编译、校验和 compact 检索。
 
 要求：
 
@@ -176,7 +177,8 @@ CLI 和 MCP 复用同一 Runtime。它们不会调用模型、执行包内代码
 
 ## 当前状态
 
-这是 `v0.1.0-alpha.3` 私有发布候选的公开 Core 快照准备稿，不是稳定版本。
+这是 `v0.1.0-alpha.3` 的 3-7 天 public 静默测试版本，不是稳定版本，也未开始
+发布宣传。
 当前能力和限制见
 [`docs/core-oss-alpha-readiness.md`](docs/core-oss-alpha-readiness.md)，
 文件格式与产品契约见 [`docs/core-oss-prd.md`](docs/core-oss-prd.md)。

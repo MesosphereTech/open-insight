@@ -9,6 +9,10 @@ import { fileURLToPath } from "node:url";
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..");
 const exportMarker = ".open-insight-public-export";
+const anonymousSkillAcceptanceValues = new Set([
+  "blocked_repository_private",
+  "verified_public_repository"
+]);
 
 const exactPaths = new Set([
   ".gitignore",
@@ -104,7 +108,8 @@ function parseArgs(argv) {
     output: path.join(repoRoot, "output", "public-core-export"),
     force: false,
     dryRun: false,
-    skipLockfile: false
+    skipLockfile: false,
+    anonymousSkillAcceptance: "blocked_repository_private"
   };
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
@@ -112,9 +117,17 @@ function parseArgs(argv) {
     else if (arg === "--force") options.force = true;
     else if (arg === "--dry-run") options.dryRun = true;
     else if (arg === "--skip-lockfile") options.skipLockfile = true;
+    else if (arg === "--anonymous-skill-acceptance") {
+      options.anonymousSkillAcceptance = argv[++index] ?? "";
+    }
     else throw new Error(`Unknown argument: ${arg}`);
   }
   if (!options.output) throw new Error("--output requires a path.");
+  if (!anonymousSkillAcceptanceValues.has(options.anonymousSkillAcceptance)) {
+    throw new Error(
+      "--anonymous-skill-acceptance must be blocked_repository_private or verified_public_repository."
+    );
+  }
   return options;
 }
 
@@ -332,7 +345,10 @@ async function main() {
     .digest("hex");
   const report = {
     schema_version: "open-insight.public-core-export.v0.1",
-    status: "exported_private_review",
+    status:
+      options.anonymousSkillAcceptance === "verified_public_repository"
+        ? "exported_public_silent_test"
+        : "exported_private_review",
     export_tool_version: "0.1.0",
     private_candidate_commit: sourceCommit,
     private_candidate_tree_sha: sourceTree,
@@ -347,7 +363,7 @@ async function main() {
       denylist_clear: true,
       secret_scan: "passed",
       license_scan: (await exists(path.join(options.output, "LICENSE"))) ? "present_pending_attribution_review" : "failed",
-      anonymous_skill_acceptance: "blocked_repository_private"
+      anonymous_skill_acceptance: options.anonymousSkillAcceptance
     },
     safety: {
       private_materials_exported: false,
