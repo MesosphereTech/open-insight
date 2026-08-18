@@ -2,8 +2,8 @@
   "schema_version": "open-insight.public-core-export.v0.1",
   "status": "exported_public_silent_test",
   "export_tool_version": "0.1.0",
-  "private_candidate_commit": "43427d9aef2debeee8de858f850d76746ad0d5e1",
-  "private_candidate_tree_sha": "9f1e7569725fcfa6eea22727df7e85280d6d6b70",
+  "private_candidate_commit": "1376fea798051ce47f19cbc436200c792dd11fe8",
+  "private_candidate_tree_sha": "a5d26235b9457b46778b9cefabda8a22cc5530b5",
   "exported_file_count": 179,
   "files": [
     {
@@ -176,7 +176,7 @@
     },
     {
       "path": "docs/core-oss-alpha-readiness.md",
-      "sha256": "ed59e82183d70a9a3bbf78d5ad73362a992a9180afeea56d0d230b7346220e5f"
+      "sha256": "93687b7ea0524f20c327dce4f610dcbdc708010be99e5ec98e239e8473ff0c4f"
     },
     {
       "path": "docs/core-oss-context-access.md",
@@ -723,7 +723,7 @@
       "sha256": "25bab108ba5da6edb2861642304a80c92395df60b94e1a4810b7cd8f7cc42bb5"
     }
   ],
-  "aggregate_manifest_digest": "9464c4af2bb9b64510332e5b2de8b0b168e37ef7ac98a5cd971b4ce325e62705",
+  "aggregate_manifest_digest": "a3ee2b2040416f19222f7aa45e31d3b4f550bfc3a9af1bae3ecb2f75d3bd87e3",
   "excluded_path_categories": {
     "outside_public_dependency_closure": 16,
     "private_ci": 5,

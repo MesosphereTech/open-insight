@@ -12,15 +12,15 @@
 `66916abb9c8544fe59c3518019982995df69`；当前私有候选
 `v0.1.0-alpha.2` 固定到 `703c3ca07af049bee3e973a00fee76af9ecaf1a0`；
 上一不可变候选 `v0.1.0-alpha.3` 固定到
-`d7fc4b7a66834c01e5fede03bdb618d91df653bb`；当前安全修复候选为
-`v0.1.0-alpha.4`。
+`d7fc4b7a66834c01e5fede03bdb618d91df653bb`；`v0.1.0-alpha.4` 保持为
+不可变历史安全修复版本，当前公开候选为 `v0.1.0-alpha.5`。
 授权用户验收完成后，又在禁用 Git 凭据提示的全新中文空格目录中完成一行匿名
 安装、首次调用自动准备固定 Core、单文件编译、校验与 CLI compact 读取。
 匿名公开分发验收已通过；开发仓库未进入该公开动作并继续保持 private。
 
-下一候选 `v0.1.0-alpha.5` 当前只存在于私有开发仓库。它增加普通用户可见的编译进度、安装后自然语言用法和基于 package facts 的输出内容/格式建议。开发代码默认 ref 与安装器候选版本已经前移，但公开 Core tag、npm 包和公共 dist-tags 均尚未更新；公共用户仍安装已发布的 `alpha.4`。2026-08-13，commit `ed13c89056401c2dfacbe414109e38a20af24d06` 已在仓库外中文空格路径完成 9 步私有候选验收：固定 Core 安装、单文件编译、校验、CLI/MCP answer-context 和输出建议 parity 全部通过；共返回 6 项 HTML、Word、PPT 与问答建议，且 `model_invoked=false`、`private_materials_read=false`、`base_package_mutation=false`。完整 `npm run verify` 同步通过。该结果仍不是公开发布证据；只有发布审计通过并获准同步公开 Core 后，才能创建不可变公开 tag 并发布 npm。
+`v0.1.0-alpha.5` 增加普通用户可见的编译进度、安装后自然语言用法和基于 package facts 的输出内容/格式建议。2026-08-18，公开 Core commit `694ff60db9a13e869934730e4058f05ec711e5ae` 已建立不可变 tag；`open-insight-cli@0.1.0-alpha.5` 与 `@mesospheretech/open-insight@0.1.0-alpha.5` 已发布，两个包的 `latest` 与 `next` 均指向 Alpha 5。完整 `npm run verify`、179 文件公开导出清单、`verify:core-public` 和匿名 tag 下载均通过。
 
-`alpha.5` 还把此前未随 Context Skill 交付的官方长文 HTML Surface 纳入一行安装，并在检测到 WorkBuddy 时自动注册不绑定单个包的通用只读 MCP。HTML 是当前 Open Insight 内置输出能力；Word/PPT 仍由外部 AI 客户端使用 `.insight` 证据生成。该能力在候选正式发布前不属于公共 `alpha.4`。
+`alpha.5` 还把此前未随 Context Skill 交付的官方长文 HTML Surface 纳入一行安装，并在检测到 WorkBuddy 时自动注册不绑定单个包的通用只读 MCP。HTML 是当前 Open Insight 内置输出能力；Word/PPT 仍由外部 AI 客户端使用 `.insight` 证据生成。
 
 ## 2. 已实现并可声明的能力
 
@@ -42,12 +42,12 @@
 
 ### Skill
 
-- 下一候选的一行安装同时交付 `open-insight-context` 与
+- 当前发布的一行安装同时交付 `open-insight-context` 与
   `open-insight-full-document-surface`：后者可从仓库外中文空格路径读取
   `.insight`，生成不修改 base package 的 reading / audit 长文 HTML；可选
   调用本地 Codex 或 Gemini 完成最终静态排版。Word/PPT 仍由用户当前 AI
   客户端生成，不属于 Core 内置导出器。
-- 下一候选增加通用 `mcp serve --unbound --transport stdio`。WorkBuddy 被识别时，
+- 当前发布增加通用 `mcp serve --unbound --transport stdio`。WorkBuddy 被识别时，
   一行安装会幂等地注册该只读服务；每次工具调用显式携带 `package_path`，服务
   不扫描磁盘、不保存最近文件，也不读取模型密钥。配置损坏或同名冲突时不覆盖
   用户配置并诚实降级到 CLI。
@@ -61,8 +61,8 @@
 - 已增加实验性的显式模型 OCR 接口：默认 `ocr_mode=off`；只有 `--parser markitdown --ocr llm` 和专用 `OPEN_INSIGHT_OCR_*` 配置同时存在时才运行。Skill 可在该显式动作后自动安装固定 `markitdown-ocr 0.1.0`，但不自动选择 Azure、模型、endpoint、密钥或数据外发授权。模型 OCR 结果固定为 warning 和人工复核边界，记录 `cloud_used`；没有 OCR 标记时不能宣称扫描正文完整。2026-07-23 在 commit `0d2ba68` 上使用隔离安装的 `markitdown-ocr 0.1.0`、一页图片型 PDF 和本机模拟 OpenAI-compatible 视觉 endpoint 完成了真实插件接线验收：OCR 标记、normalized 正文、复合 parser identity、单文件打包和 `base_package_mutation=false` 均通过，且未外发资料。该验收不评价真实视觉模型 OCR 准确率；真实扫描件、真实 endpoint 和不同版式的识别质量仍待专项测试，因此不属于 Alpha 默认能力声明。
 - 已实现 bootstrap 的本地依赖、构建、CLI 与 MCP 就绪检查；该检查不调用模型、不转发模型环境变量、不上传来源文件、不执行包内代码，也不写回 base package。
 - 已把普通用户主路径收敛为“一条固定 tag 命令安装完整 Skill，然后直接编译或读取”。首次调用 `compile-folder.mjs` 或只读 `cli.mjs` 时自动准备固定 Core，安装进度只写 `stderr`，JSON stdout 保持纯净；手工 bootstrap 只用于排障。`OPEN_INSIGHT_CORE_HOME` 是唯一显式安装位置，`OPEN_INSIGHT_AUTO_BOOTSTRAP=0` 可由管理员关闭自动准备。
-- 下一候选 Skill bootstrap 默认固定 `v0.1.0-alpha.5`，使用版本化安装目录并校验实际 commit；ref 不一致时返回 `version_mismatch`，不会把移动分支伪装成 Alpha。`OPEN_INSIGHT_CORE_REF` 只作为显式测试覆盖入口。公共 npm `latest` 在候选发布前仍安装 `alpha.4`。
-- 已发布品牌化 npm bootstrap `open-insight-cli@0.1.0-alpha.4` 及其官方 scoped 别名 `@mesospheretech/open-insight@0.1.0-alpha.4`；推荐公开命令为 `npx @mesospheretech/open-insight`，短命令 `npx open-insight-cli` 等价可用。scoped 包只固定依赖同版本底层安装器，不复制实现；底层安装器固定 `skills@1.5.9` 与 `v0.1.0-alpha.4` Skill 来源，只转发受支持的安装参数，并从子进程环境移除模型、OCR 和浏览器密钥。无 scope 名称 `open-insight` 因 npm 防混淆规则被拒绝，因此保留 `open-insight-cli` 并增加官方 scoped 品牌入口；公共匿名安装与 high vulnerability 审计必须同时通过。
+- 当前发布的 Skill bootstrap 默认固定 `v0.1.0-alpha.5`，使用版本化安装目录并校验实际 commit；ref 不一致时返回 `version_mismatch`，不会把移动分支伪装成 Alpha。`OPEN_INSIGHT_CORE_REF` 只作为显式测试覆盖入口。公共 npm `latest` 与 `next` 均安装 `alpha.5`。
+- 已发布品牌化 npm bootstrap `open-insight-cli@0.1.0-alpha.5` 及其官方 scoped 别名 `@mesospheretech/open-insight@0.1.0-alpha.5`；推荐公开命令为 `npx @mesospheretech/open-insight`，短命令 `npx open-insight-cli` 等价可用。scoped 包只固定依赖同版本底层安装器，不复制实现；底层安装器固定 `skills@1.5.9` 与 `v0.1.0-alpha.5` Skill 来源，只转发受支持的安装参数，并从子进程环境移除模型、OCR 和浏览器密钥。无 scope 名称 `open-insight` 因 npm 防混淆规则被拒绝，因此保留 `open-insight-cli` 并增加官方 scoped 品牌入口；公共匿名安装与 high vulnerability 审计必须同时通过。
 
 ### Proof
 
@@ -78,7 +78,7 @@
 
 真实材料尚缺的工作是人工确认 Gold Answer 和独立 reviewer attestation，不是继续扩建 Proof 代码。开发优先级回到普通用户首次使用路径：`一行安装 Skill -> 首次调用自动准备固定 Core -> 编译文件夹为单个 .insight -> CLI/MCP 只读访问 -> 外部 LLM 问答、分析或生成材料`。
 
-当前开发代码中的 Skill 与 Core 安装来源已经统一固定为 `v0.1.0-alpha.5`，用于私有候选验收；该 tag 尚未在公开 Core 仓库建立，两个品牌化 npm bootstrap 也尚未发布 Alpha 5。已发布的 `v0.1.0-alpha.4` 继续保持不可变，两个包的公共 `latest` 与 `next` 仍指向该已验收版本。Alpha 4 的全新中文空格目录验收曾在禁用 Git 凭据
+当前开发代码中的 Skill 与 Core 安装来源已经统一固定为 `v0.1.0-alpha.5`；公开 tag 与两个品牌化 npm bootstrap 均已发布。2026-08-18 在全新中文空格目录、空 npm 用户配置和匿名仓库读取条件下完成一行安装，实际得到 2 个 Skill、通用 WorkBuddy MCP、固定 Core、3 来源单文件编译、Validator、CLI answer-context、6 项输出建议和 reading HTML；验收保持 `model_invoked=false`、`base_package_mutation=false`。首次默认 GitHub 路由曾发生连接重置，改用 GitHub 官方可达边缘节点后完成同一匿名 Git 协议验收；这属于本机网络路由诊断，不改变固定 tag 或包内容。`v0.1.0-alpha.4` 继续保持不可变。Alpha 4 的全新中文空格目录验收曾在禁用 Git 凭据
 交互后完成匿名一行安装，未手工运行 bootstrap；首次调用自动准备固定 Core、单文件编译、校验与
 CLI compact 读取；安装后的 Core 通过 `npm audit --audit-level=high`，没有
 high vulnerability。历史 `v0.1.0-alpha.1` 保持不可变；`v0.1.0-alpha.2` 与
