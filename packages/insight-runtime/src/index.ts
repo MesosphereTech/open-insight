@@ -1072,6 +1072,44 @@ export interface ContextUserMaterialContractResult extends ContextBaseResult {
   evidence_boundary: ContextEvidenceBoundary;
 }
 
+export type ContextRecommendedOutputFormat = "html" | "word" | "ppt" | "qa" | "audit";
+
+export interface ContextOutputRecommendation {
+  recommendation_id: string;
+  priority: number;
+  title: string;
+  title_cn: string;
+  content_suggestion: string;
+  content_suggestion_cn: string;
+  primary_format: ContextRecommendedOutputFormat;
+  alternative_formats: ContextRecommendedOutputFormat[];
+  context_route: "analysis" | "html_restore" | "word_outline" | "ppt_outline" | "question_answering" | "audit_trace";
+  readiness: "ready" | "needs_review" | "limited";
+  rationale: string[];
+  rationale_cn: string[];
+  next_action_cn: string;
+}
+
+export interface ContextOutputRecommendationsResult extends ContextBaseResult {
+  recommendation_basis: {
+    source_count: number;
+    source_types: string[];
+    dataset_count: number;
+    field_count: number;
+    chunk_count: number;
+    parse_diagnostic_count: number;
+    parse_warning_count: number;
+    has_long_form_content: boolean;
+    has_structured_data: boolean;
+    multi_source: boolean;
+  };
+  recommendations: ContextOutputRecommendation[];
+  proactive_user_message_cn: string[];
+  output_boundary: "external_file_or_overlay_or_derived_package";
+  model_invoked: false;
+  base_package_mutation: false;
+}
+
 export interface ContextSourceItem extends ContextTraceFields {
   source_id: string;
   type: string;
@@ -1330,6 +1368,202 @@ export async function buildContextUserMaterialContract(packageRoot: string): Pro
     source_verification_required: readingStrategy.source_verification_required,
     preferred_chunk_access: readingStrategy.preferred_chunk_access,
     evidence_boundary: readingStrategy.evidence_boundary
+  };
+}
+
+export async function recommendContextOutputs(packageRoot: string): Promise<ContextOutputRecommendationsResult> {
+  const state = await loadContextPackageState(packageRoot);
+  const base = buildContextBaseResult(state);
+  const sources = getContextLineageSources(state);
+  const sourceTypes = [...new Set(sources.map((source) => source.type).filter(Boolean))].sort();
+  const sourceCount = sources.length;
+  const datasetCount = state.catalog.datasets.length;
+  const fieldCount = state.catalog.datasets.reduce((total, dataset) => total + (dataset.columns?.length ?? 0), 0);
+  const chunkCount = state.queryIndex.available ? state.queryIndex.sqlite_table_counts.chunks : 0;
+  const parseWarningCount = state.parseDiagnostics.filter(
+    (item) => item.severity === "warning" || item.severity === "error" || item.status !== "ok"
+  ).length;
+  const hasStructuredData = datasetCount > 0 || fieldCount > 0 || (state.queryIndex.available && state.queryIndex.spreadsheet_formula_count > 0);
+  const hasLongFormContent =
+    chunkCount >= 8 ||
+    sourceTypes.some((type) => /pdf|word|docx|markdown|html|text|presentation|pptx/iu.test(type));
+  const multiSource = sourceCount > 1;
+  const recommendations: ContextOutputRecommendation[] = [];
+  const readiness = parseWarningCount > 0 ? "needs_review" : "ready";
+
+  recommendations.push({
+    recommendation_id: "source_collection_overview",
+    priority: 1,
+    title: multiSource ? "Cross-source overview" : "Source overview",
+    title_cn: multiSource ? "跨文件资料综览" : "资料内容综览",
+    content_suggestion: multiSource
+      ? `Organize the ${sourceCount} sources into a structured overview with shared themes, differences, and source links.`
+      : "Organize the source into a concise overview with its structure, key content, and source links.",
+    content_suggestion_cn: multiSource
+      ? `把 ${sourceCount} 份来源整理成结构化综览，说明共同主题、差异和对应出处。`
+      : "把当前资料整理成一份结构化综览，说明内容结构、重点和对应出处。",
+    primary_format: "html",
+    alternative_formats: ["word", "ppt"],
+    context_route: "analysis",
+    readiness,
+    rationale: [multiSource ? "The package contains multiple sources." : "The package contains a reusable source collection."],
+    rationale_cn: [multiSource ? `包内包含 ${sourceCount} 份来源，适合先建立跨文件导航。` : "包内资料适合先形成可浏览的内容导航。"],
+    next_action_cn: "先生成可浏览的 HTML 综览；需要正式交付时再转为 Word 或 PPT。"
+  });
+
+  if (hasLongFormContent) {
+    recommendations.push({
+      recommendation_id: "long_form_reading_restore",
+      priority: 2,
+      title: "Long-form reading edition",
+      title_cn: "长文阅读复现稿",
+      content_suggestion: "Reconstruct the readable document order, headings, paragraphs, tables, and page cues without summarizing away source content.",
+      content_suggestion_cn: "按原有阅读顺序重建标题、段落、表格和页码线索，形成完整阅读稿，不把正文压缩成摘要。",
+      primary_format: "html",
+      alternative_formats: ["word"],
+      context_route: "html_restore",
+      readiness,
+      rationale: [`The package exposes ${chunkCount} indexed reading units or long-form document sources.`],
+      rationale_cn: [`包内存在长文来源或 ${chunkCount} 个可寻址阅读单元，适合做完整复现。`],
+      next_action_cn: "让当前 AI 先按 html_restore 路线补读必要片段，再生成阅读版 HTML；需要编辑时另存 Word。"
+    });
+  }
+
+  if (hasStructuredData) {
+    recommendations.push({
+      recommendation_id: "structured_data_analysis",
+      priority: recommendations.length + 1,
+      title: "Structured data analysis",
+      title_cn: "表格与结构化数据分析",
+      content_suggestion: "Explain the available tables and fields, surface useful comparisons and numbers, and preserve table and source references.",
+      content_suggestion_cn: "说明可用表格和字段，整理可比较的数字与关系，并保留表格及来源引用。",
+      primary_format: "html",
+      alternative_formats: ["word", "ppt"],
+      context_route: "analysis",
+      readiness,
+      rationale: [`The package contains ${datasetCount} datasets and ${fieldCount} fields.`],
+      rationale_cn: [`包内包含 ${datasetCount} 个数据集和 ${fieldCount} 个字段，适合结构化分析。`],
+      next_action_cn: "先通过 query-table 和 compact context 核对数字，再生成分析型 HTML、Word 或图表演示稿。"
+    });
+  }
+
+  if (multiSource || hasLongFormContent || hasStructuredData) {
+    recommendations.push({
+      recommendation_id: "formal_document_report",
+      priority: recommendations.length + 1,
+      title: "Formal document report",
+      title_cn: "正式 Word 报告",
+      content_suggestion: "Create an editable formal report that preserves the source structure, key facts or tables, citations, and review points.",
+      content_suggestion_cn: "生成一份可继续编辑的正式报告，保留资料结构、关键事实或表格、来源引用和待核对点。",
+      primary_format: "word",
+      alternative_formats: ["html"],
+      context_route: "word_outline",
+      readiness,
+      rationale: ["The package contains enough long-form, cross-source, or structured content for a durable document."],
+      rationale_cn: ["包内的长文、多来源或结构化内容足以组织成正式文档。"],
+      next_action_cn: "先让当前 AI 按来源生成报告结构并补读必要片段，再使用其文档能力生成 Word 文件。"
+    });
+  }
+
+  if (multiSource || hasLongFormContent || hasStructuredData) {
+    recommendations.push({
+      recommendation_id: "presentation_deck",
+      priority: recommendations.length + 1,
+      title: "Presentation deck",
+      title_cn: "演示汇报稿",
+      content_suggestion: "Turn the package into a concise presentation with a cover, structure, key evidence, tables or figures, and source notes.",
+      content_suggestion_cn: "把资料组织成包含封面、结构、关键证据、表格或图示和来源注释的演示稿。",
+      primary_format: "ppt",
+      alternative_formats: ["html"],
+      context_route: "ppt_outline",
+      readiness,
+      rationale: [multiSource ? "Multiple sources benefit from a presentation narrative." : "The package has enough structure for a presentation narrative."],
+      rationale_cn: [multiSource ? "多来源资料适合通过演示结构压缩沟通成本。" : "现有长文或表格结构足以组织成演示叙事。"],
+      next_action_cn: "先生成 8-12 页页面大纲，再由当前 AI 使用演示文稿能力制作最终 PPT 或 HTML deck。"
+    });
+  }
+
+  if (parseWarningCount > 0 || state.sourceMode === "source_light") {
+    recommendations.push({
+      recommendation_id: "evidence_quality_audit",
+      priority: recommendations.length + 1,
+      title: "Evidence and parsing audit",
+      title_cn: "证据与解析质量核对清单",
+      content_suggestion: "List parsing warnings, evidence boundaries, missing raw sources, and the items that require human verification before reuse.",
+      content_suggestion_cn: "列出解析警告、证据边界、缺失的原始文件和继续使用前需要人工核对的事项。",
+      primary_format: "audit",
+      alternative_formats: ["word", "html"],
+      context_route: "audit_trace",
+      readiness: "limited",
+      rationale: [
+        ...(parseWarningCount > 0 ? [`The package has ${parseWarningCount} parsing warnings or errors.`] : []),
+        ...(state.sourceMode === "source_light" ? ["The package does not bundle raw source binaries."] : [])
+      ],
+      rationale_cn: [
+        ...(parseWarningCount > 0 ? [`包内有 ${parseWarningCount} 条解析警告或错误。`] : []),
+        ...(state.sourceMode === "source_light" ? ["当前为 source_light，包内不含原始二进制证据。"] : [])
+      ],
+      next_action_cn: "先生成核对清单并处理高风险警告，再把材料作为正式事实依据对外使用。"
+    });
+  }
+
+  recommendations.push({
+    recommendation_id: "source_backed_question_answering",
+    priority: recommendations.length + 1,
+    title: "Source-backed Q&A",
+    title_cn: "带来源的持续问答",
+    content_suggestion: "Use bounded context retrieval to answer follow-up questions and cite the relevant source and location for each material fact.",
+    content_suggestion_cn: "围绕这份资料持续提问；每个重要事实都注明来源文件和原文位置，证据不足时明确说明。",
+    primary_format: "qa",
+    alternative_formats: ["html", "word"],
+    context_route: "question_answering",
+    readiness,
+    rationale: ["The package exposes traceable context access for external AI clients."],
+    rationale_cn: ["当前包可通过只读上下文接口向外部 AI 提供可追溯材料。"],
+    next_action_cn: "直接提出问题；当前 AI 应先调用 answer-context，需要时再按返回计划局部补读。"
+  });
+
+  const sortedRecommendations = recommendations.sort((left, right) => left.priority - right.priority);
+  const proactiveRecommendations: ContextOutputRecommendation[] = [];
+  const auditRecommendation = sortedRecommendations.find((item) => item.recommendation_id === "evidence_quality_audit");
+  if (auditRecommendation) proactiveRecommendations.push(auditRecommendation);
+  for (const format of ["html", "word", "ppt", "qa"] as const) {
+    const candidate = sortedRecommendations.find(
+      (item) => item.primary_format === format && !proactiveRecommendations.some((selected) => selected.recommendation_id === item.recommendation_id)
+    );
+    if (candidate && proactiveRecommendations.length < 4) proactiveRecommendations.push(candidate);
+  }
+  for (const candidate of sortedRecommendations) {
+    if (proactiveRecommendations.length >= 4) break;
+    if (!proactiveRecommendations.some((selected) => selected.recommendation_id === candidate.recommendation_id)) {
+      proactiveRecommendations.push(candidate);
+    }
+  }
+  return {
+    ...base,
+    recommendation_basis: {
+      source_count: sourceCount,
+      source_types: sourceTypes,
+      dataset_count: datasetCount,
+      field_count: fieldCount,
+      chunk_count: chunkCount,
+      parse_diagnostic_count: state.parseDiagnostics.length,
+      parse_warning_count: parseWarningCount,
+      has_long_form_content: hasLongFormContent,
+      has_structured_data: hasStructuredData,
+      multi_source: multiSource
+    },
+    recommendations: sortedRecommendations,
+    proactive_user_message_cn: [
+      `这份 .insight 包含 ${sourceCount} 份来源。根据内容结构，我建议优先考虑：`,
+      ...proactiveRecommendations.map(
+        (item, index) => `${index + 1}. ${item.title_cn}（建议格式：${item.primary_format.toUpperCase()}）——${item.content_suggestion_cn}`
+      ),
+      "你可以直接告诉我选择哪一种，我会基于 .insight 继续生成，并把结果另存为外部文件。"
+    ],
+    output_boundary: "external_file_or_overlay_or_derived_package",
+    model_invoked: false,
+    base_package_mutation: false
   };
 }
 

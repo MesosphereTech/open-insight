@@ -135,6 +135,12 @@
       "result_schema_version": "open-insight.user-material-contract.v0.1"
     },
     {
+      "id": "context-output-recommendations-result",
+      "command": "context recommend-outputs <package> --format json",
+      "schema_file": "context-output-recommendations-result.schema.json",
+      "result_schema_version": "open-insight.context-output-recommendations.v0.1"
+    },
+    {
       "id": "version-status-result",
       "command": "version status <package> --format json",
       "schema_file": "version-status-result.schema.json",

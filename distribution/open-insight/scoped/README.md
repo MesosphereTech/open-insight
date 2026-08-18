@@ -10,15 +10,18 @@ npx @mesospheretech/open-insight
 
 Then ask your AI:
 
-> Package this folder into one `.insight` file, then use it to answer my
-> questions with source references.
+> Use Open Insight to package this folder into one `.insight` file. Tell me the
+> output path and any parsing warnings.
+
+You can also ask the AI to inspect an existing `.insight`, answer with source
+locations, create a polished HTML page, Word report, or presentation as a
+separate source-backed file, or start read-only MCP access. Open Insight
+prepares the facts and traceable context; the current AI uses its own document
+tools for final output. Installation alone does not scan or upload files.
 
 This is the official scoped alias for `open-insight-cli`. It pins the same
 installer version and does not maintain a separate implementation.
 
-The public npm package is the Alpha installer only. The pinned Core repository
-remains private during owner acceptance, so installation currently requires
-GitHub access to `MesosphereTech/open-insight`. Once the Core repository becomes
-public, the same command will work without repository access.
+The installer and Skill use the same pinned Alpha Core version.
 
 中文说明见 [README.zh-CN.md](README.zh-CN.md)。

@@ -13,7 +13,10 @@ const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 
 export async function main() {
   const invocationRoot = process.cwd();
-  const forwardedArgs = process.argv.slice(2);
+  const requestedArgs = process.argv.slice(2);
+  const progressDisabled = requestedArgs.includes("--no-progress");
+  const forwardedArgs = requestedArgs.filter((arg) => arg !== "--no-progress");
+  if (!progressDisabled && !forwardedArgs.includes("--progress")) forwardedArgs.push("--progress");
   const coreRoot = await ensureCoreRoot({
     scriptDir,
     invocationRoot,

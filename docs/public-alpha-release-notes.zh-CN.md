@@ -1,4 +1,4 @@
-# Open Insight v0.1.0-alpha.4 中文候选说明
+# Open Insight v0.1.0-alpha.5 中文候选说明
 
 状态：**public 静默测试 Alpha**。干净 Core 仓库公开 3-7 天用于安装和首次
 使用验证，尚未开始发布宣传。
@@ -29,6 +29,11 @@ npx @mesospheretech/open-insight
 - normalized 内容、查询块、阅读顺序、解析诊断、source map 和 digest；
 - XLSX 公式证据保留，但不执行或重算公式；
 - CLI 与 MCP 共用的只读 Runtime；
+- 一行命令同时安装 Context Skill 与官方长文 HTML Surface Skill；
+- 检测到 WorkBuddy 时自动注册通用只读 MCP，调用工具时必须显式传入
+  `.insight` 的绝对路径；
+- 文件夹编译进度和根据包内容生成的后续输出建议；
+- 完整 HTML 阅读稿与审计稿，并可选择本地 Codex 或 Gemini 在基础包外完成排版；
 - Validator、机器契约和诚实的 `degraded` / `unsupported` 状态；
 - 完全合成、英文优先的公开演示材料。
 

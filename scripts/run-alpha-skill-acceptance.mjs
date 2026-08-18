@@ -20,8 +20,10 @@ const plannedSteps = [
   "compile_single_insight",
   "validate_package",
   "read_cli_summary",
+  "read_cli_output_recommendations",
   "read_cli_answer_context",
-  "read_mcp_answer_context"
+  "read_mcp_answer_context",
+  "read_mcp_output_recommendations"
 ];
 
 function redact(value) {
@@ -108,6 +110,7 @@ async function writeReport(report) {
     `- working_tree_clean: \`${report.environment.working_tree_clean ?? "not_checked"}\``,
     `- single_file_insight: \`${report.results?.single_file_insight ?? false}\``,
     `- cli_mcp_answer_context_parity: \`${report.results?.cli_mcp_answer_context_parity ?? false}\``,
+    `- cli_mcp_output_recommendations_parity: \`${report.results?.cli_mcp_output_recommendations_parity ?? false}\``,
     "",
     "## 步骤",
     "",
@@ -189,7 +192,7 @@ async function main() {
   let report;
 
   try {
-    process.stderr.write("[alpha-skill-acceptance] 1/7 创建当前提交的临时发布快照。\n");
+    process.stderr.write("[alpha-skill-acceptance] 1/9 创建当前提交的临时发布快照。\n");
     const snapshot = run(gitCommand, ["clone", "--no-local", "--single-branch", repoRoot, releaseSource], {
       timeoutMs: 300_000
     });
@@ -227,7 +230,7 @@ async function main() {
       NO_COLOR: "1"
     });
 
-    process.stderr.write("[alpha-skill-acceptance] 2/7 从独立 Skill 安装固定版本 Core。\n");
+    process.stderr.write("[alpha-skill-acceptance] 2/9 从独立 Skill 安装固定版本 Core。\n");
     const bootstrap = run(process.execPath, [path.join(standaloneSkill, "scripts", "bootstrap.mjs")], {
       cwd: consumerRoot,
       env,
@@ -253,7 +256,7 @@ async function main() {
     const cliWrapper = path.join(standaloneSkill, "scripts", "cli.mjs");
     const packageRelative = path.join("output", "github-alpha.source-bundled.insight");
 
-    process.stderr.write("[alpha-skill-acceptance] 3/7 在仓库外编译单文件 .insight。\n");
+    process.stderr.write("[alpha-skill-acceptance] 3/9 在仓库外编译单文件 .insight。\n");
     const compile = run(
       process.execPath,
       [
@@ -278,7 +281,7 @@ async function main() {
       !(await exists(`${packagePath}.zip`));
     if (!singleFileInsight) throw new Error("编译结果不是唯一的单文件 .insight。");
 
-    process.stderr.write("[alpha-skill-acceptance] 4/7 校验生成包。\n");
+    process.stderr.write("[alpha-skill-acceptance] 4/9 校验生成包。\n");
     const validate = run(process.execPath, [cliWrapper, "validate", packageRelative, "--format", "json"], {
       cwd: consumerRoot,
       env
@@ -287,7 +290,7 @@ async function main() {
     const validateReport = validate.ok ? parseJson(validate.stdout, "validate result") : undefined;
     if (!validate.ok || validateReport.status !== "valid") throw new Error(`生成包校验未通过。\n${validate.stderr}`);
 
-    process.stderr.write("[alpha-skill-acceptance] 5/7 通过 CLI 读取上下文摘要。\n");
+    process.stderr.write("[alpha-skill-acceptance] 5/9 通过 CLI 读取上下文摘要。\n");
     const summary = run(process.execPath, [cliWrapper, "context", "summary", packageRelative, "--format", "json"], {
       cwd: consumerRoot,
       env
@@ -297,7 +300,27 @@ async function main() {
     if (!summary.ok || summaryReport.status !== "ok") throw new Error(`CLI summary 读取失败。\n${summary.stderr}`);
     if (summaryReport.source_mode !== "source_bundled") throw new Error("CLI summary 没有确认 source_bundled。");
 
-    process.stderr.write("[alpha-skill-acceptance] 6/7 通过 CLI 获取有界回答上下文。\n");
+    process.stderr.write("[alpha-skill-acceptance] 6/9 通过 CLI 读取编译后输出建议。\n");
+    const outputRecommendations = run(
+      process.execPath,
+      [cliWrapper, "context", "recommend-outputs", packageRelative, "--format", "json"],
+      { cwd: consumerRoot, env }
+    );
+    steps.push(publicStep("read_cli_output_recommendations", outputRecommendations));
+    const outputRecommendationsReport = outputRecommendations.ok
+      ? parseJson(outputRecommendations.stdout, "output recommendations")
+      : undefined;
+    if (
+      !outputRecommendations.ok ||
+      outputRecommendationsReport.status !== "ok" ||
+      outputRecommendationsReport.recommendations?.length < 3 ||
+      outputRecommendationsReport.model_invoked !== false ||
+      outputRecommendationsReport.base_package_mutation !== false
+    ) {
+      throw new Error(`CLI output recommendations 未返回安全的可选内容与格式。\n${outputRecommendations.stderr}`);
+    }
+
+    process.stderr.write("[alpha-skill-acceptance] 7/9 通过 CLI 获取有界回答上下文。\n");
     const answerContext = run(
       process.execPath,
       [
@@ -316,7 +339,7 @@ async function main() {
       throw new Error(`CLI answer-context 未返回可消费上下文。\n${answerContext.stderr}`);
     }
 
-    process.stderr.write("[alpha-skill-acceptance] 7/7 通过 MCP 获取等价回答上下文。\n");
+    process.stderr.write("[alpha-skill-acceptance] 8/9 通过 MCP 获取等价回答上下文。\n");
     const mcpInput = [
       JSON.stringify({
         jsonrpc: "2.0",
@@ -333,6 +356,12 @@ async function main() {
           name: "open_insight_answer_context",
           arguments: { query: "本期收入是多少？", token_budget: 1200, max_follow_up_reads: 2 }
         }
+      }),
+      JSON.stringify({
+        jsonrpc: "2.0",
+        id: 3,
+        method: "tools/call",
+        params: { name: "open_insight_recommend_outputs", arguments: {} }
       })
     ].join("\n");
     const mcp = run(process.execPath, [cliWrapper, "mcp", "serve", packageRelative, "--transport", "stdio"], {
@@ -354,6 +383,16 @@ async function main() {
     const cliRefs = new Set(answerReport.source_refs ?? []);
     const parity = cliRefs.size > 0 && equivalentJson(answerReport, mcpAnswer);
     if (!parity) throw new Error("CLI 与 MCP 返回的完整 answer-context 不等价。");
+    process.stderr.write("[alpha-skill-acceptance] 9/9 核对 MCP 输出建议与 CLI 等价。\n");
+    const mcpOutputRecommendations = mcpFrames.find((frame) => frame.id === 3)?.result?.structuredContent;
+    const recommendationParity = Boolean(mcpOutputRecommendations) && equivalentJson(outputRecommendationsReport, mcpOutputRecommendations);
+    steps.push({
+      id: "read_mcp_output_recommendations",
+      status: recommendationParity ? "passed" : "failed",
+      duration_ms: 0,
+      exit_code: recommendationParity ? 0 : 1
+    });
+    if (!recommendationParity) throw new Error("CLI 与 MCP 返回的输出建议不等价。");
 
     report = {
       schema_version: "open-insight.alpha-skill-acceptance.v0.1",
@@ -377,6 +416,9 @@ async function main() {
         cli_answer_context_status: answerReport.status,
         mcp_answer_context_status: mcpAnswer.status,
         cli_mcp_answer_context_parity: parity,
+        output_recommendation_count: outputRecommendationsReport.recommendations.length,
+        output_recommendation_formats: [...new Set(outputRecommendationsReport.recommendations.map((item) => item.primary_format))],
+        cli_mcp_output_recommendations_parity: recommendationParity,
         source_ref_count: cliRefs.size
       },
       safety: { model_invoked: false, model_env_forwarded: false, private_materials_read: false, base_package_mutation: false }

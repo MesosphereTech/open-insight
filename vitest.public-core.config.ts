@@ -19,7 +19,10 @@ export default defineConfig({
       "tests/core-oss-context-skill-docs.test.ts",
       "tests/core-oss-skill-folder-compile.test.ts",
       "tests/core-oss-skill-standalone-install.test.ts",
-      "tests/open-insight-installer.test.ts"
+      "tests/open-insight-installer.test.ts",
+      "tests/core-oss-official-surface-docs.test.ts",
+      "tests/skill-full-document-surface-script.test.ts",
+      "tests/surface-cli-runtime-launch.test.ts"
     ],
     exclude: ["node_modules/**", "dist/**", "output/**", "tmp/**", "unpacked/**"],
     environment: "node",

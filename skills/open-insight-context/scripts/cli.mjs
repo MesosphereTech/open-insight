@@ -35,7 +35,7 @@ function normalizeUserPaths(inputArgs, invocationRoot) {
   const args = [...inputArgs];
   if (["validate", "inspect"].includes(args[0])) resolvePathArgument(args, 1, invocationRoot);
   if (args[0] === "context") resolvePathArgument(args, 2, invocationRoot);
-  if (args[0] === "mcp" && args[1] === "serve") resolvePathArgument(args, 2, invocationRoot);
+  if (args[0] === "mcp" && args[1] === "serve" && args[2] !== "--unbound") resolvePathArgument(args, 2, invocationRoot);
   if (args[0] === "version" && ["status", "log"].includes(args[1])) resolvePathArgument(args, 2, invocationRoot);
   for (const option of ["--direct-baseline", "--direct-baseline-summary"]) {
     resolvePathOption(args, option, invocationRoot);

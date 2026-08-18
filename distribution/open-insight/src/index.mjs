@@ -1,15 +1,18 @@
 import { spawnSync } from "node:child_process";
 import { createRequire } from "node:module";
 import path from "node:path";
+import { registerWorkBuddyMcp } from "./workbuddy-mcp.mjs";
 
 const require = createRequire(import.meta.url);
 const packageJson = require("../package.json");
 
 export const OPEN_INSIGHT_INSTALLER_VERSION = packageJson.version;
 export const OPEN_INSIGHT_SKILL_NAME = "open-insight-context";
-export const OPEN_INSIGHT_CORE_REF = "v0.1.0-alpha.4";
+export const OPEN_INSIGHT_SURFACE_SKILL_NAME = "open-insight-full-document-surface";
+export const OPEN_INSIGHT_SKILL_NAMES = [OPEN_INSIGHT_SKILL_NAME, OPEN_INSIGHT_SURFACE_SKILL_NAME];
+export const OPEN_INSIGHT_CORE_REF = "v0.1.0-alpha.5";
 export const OPEN_INSIGHT_SKILL_SOURCE =
-  `https://github.com/MesosphereTech/open-insight/tree/${OPEN_INSIGHT_CORE_REF}/skills/${OPEN_INSIGHT_SKILL_NAME}`;
+  `https://github.com/MesosphereTech/open-insight/tree/${OPEN_INSIGHT_CORE_REF}/skills`;
 export const SKILLS_INSTALLER_VERSION = "1.5.9";
 
 const MODEL_ENV_KEYS = new Set([
@@ -104,12 +107,12 @@ export function parseInstallerArgs(argv) {
 export function buildSkillsInstallerArgs(options) {
   const args = [
     "add",
-    OPEN_INSIGHT_SKILL_SOURCE,
-    "--skill",
-    OPEN_INSIGHT_SKILL_NAME
+    OPEN_INSIGHT_SKILL_SOURCE
   ];
+  for (const skillName of OPEN_INSIGHT_SKILL_NAMES) args.push("--skill", skillName);
   if (options.scope === "global") args.push("--global");
   args.push(...options.passthrough);
+  if (!args.some((arg) => arg === "--yes" || arg === "-y")) args.push("--yes");
   return args;
 }
 
@@ -120,11 +123,13 @@ export function createInstallerPlan(options) {
     package_name: packageJson.name,
     package_version: OPEN_INSIGHT_INSTALLER_VERSION,
     skill_name: OPEN_INSIGHT_SKILL_NAME,
+    skill_names: OPEN_INSIGHT_SKILL_NAMES,
     skill_source: OPEN_INSIGHT_SKILL_SOURCE,
     core_ref: OPEN_INSIGHT_CORE_REF,
     install_scope: options.scope,
     skills_installer_version: SKILLS_INSTALLER_VERSION,
     first_use_auto_bootstrap: true,
+    workbuddy_mcp_auto_registration: true,
     model_invoked: false
   };
 }
@@ -146,9 +151,37 @@ Options:
   --version, -v    Print the installer version
   --help, -h       Show this help
 
-After installation, ask your AI to compile a folder into one .insight file.
+After installation, ask your AI to compile a folder into one .insight file or render a polished long-form HTML reading copy.
 The first compile or read prepares and verifies pinned Core ${OPEN_INSIGHT_CORE_REF}.
 `;
+}
+
+export function renderPostInstallGuide() {
+  return [
+    "",
+    "Open Insight is ready.",
+    "The Context Skill and the official long-form HTML Surface Skill are installed together.",
+    "You do not need to remember CLI commands. Ask your AI in plain language:",
+    '- "Use Open Insight to package this folder into one .insight file. Tell me the output path and any parsing warnings."',
+    '- "Read this .insight file and explain what information it contains."',
+    '- "Answer my question from this .insight file and cite the source file and location for each important claim."',
+    '- "Use the installed Open Insight Surface Skill to turn this .insight into a polished long-form HTML reading copy. Save it separately and preserve source references."',
+    '- "Use this .insight to create a Word report or presentation with the current AI client. Save it separately and preserve source references."',
+    '- "Use the installed read-only Open Insight MCP to query this .insight file."',
+    "",
+    "Open Insight 已安装。你不需要记住命令，直接告诉当前 AI 你想做什么：",
+    "Context Skill 与官方长文 HTML Surface Skill 已经同时安装。",
+    '- “请使用 Open Insight，把这个资料文件夹打包成一个 .insight 文件，并告诉我输出位置和解析警告。”',
+    '- “请读取这个 .insight，先告诉我里面有哪些资料和主要内容。”',
+    '- “请根据这个 .insight 回答我的问题，每个重要结论都注明来源文件和原文位置。”',
+    '- “请使用已经安装的 Open Insight Surface Skill，把这个 .insight 生成一份好看的长文 HTML 阅读稿，另存并保留来源。”',
+    '- “请根据这个 .insight，使用当前 AI 客户端生成 Word 报告或 PPT，另存为外部文件，并保留重要内容的来源。”',
+    '- “请使用已经安装的 Open Insight 只读 MCP，持续查询这个 .insight。”',
+    "",
+    "Open Insight only reads a folder or file after you ask. Installation does not scan or upload your files.",
+    "Open Insight 只会在你明确提出任务后读取指定资料；安装本身不会扫描或上传文件。",
+    `The first compile or read automatically prepares and verifies pinned Core ${OPEN_INSIGHT_CORE_REF}.`
+  ].join("\n") + "\n";
 }
 
 function resolveSkillsCli() {
@@ -163,7 +196,8 @@ export function runOpenInsightInstaller(
     skillsCli,
     stdout = process.stdout,
     stderr = process.stderr,
-    env = process.env
+    env = process.env,
+    registerMcp = registerWorkBuddyMcp
   } = {}
 ) {
   const options = parseInstallerArgs(argv);
@@ -183,9 +217,10 @@ export function runOpenInsightInstaller(
         ? `${JSON.stringify(plan, null, 2)}\n`
         : [
             "Open Insight installation plan",
-            `- Skill: ${plan.skill_name}`,
+            `- Skills: ${plan.skill_names.join(", ")}`,
             `- Core: ${plan.core_ref}`,
             `- Scope: ${plan.install_scope}`,
+            "- WorkBuddy MCP auto-registration: enabled when WorkBuddy is detected",
             "- Model call: no"
           ].join("\n") + "\n"
     );
@@ -195,8 +230,8 @@ export function runOpenInsightInstaller(
   stdout.write(
     [
       "Open Insight - One File, Any AI",
-      `Installing the pinned Context Skill (${OPEN_INSIGHT_CORE_REF}).`,
-      "正在安装 Open Insight Context Skill。"
+      `Installing the pinned Context and Surface Skills (${OPEN_INSIGHT_CORE_REF}).`,
+      "正在安装 Open Insight Context 与长文 HTML Surface Skills。"
     ].join("\n") + "\n"
   );
 
@@ -221,13 +256,15 @@ export function runOpenInsightInstaller(
     };
   }
 
-  stdout.write(
-    [
-      "",
-      "Open Insight is ready.",
-      "Ask your AI: Package this folder into one .insight file.",
-      "Open Insight 已就绪。首次编译或读取会自动准备并校验固定版本 Core。"
-    ].join("\n") + "\n"
-  );
-  return { exitCode: 0, status: "installed", plan };
+  const mcpRegistration = registerMcp();
+  if (mcpRegistration.status === "ready") {
+    stdout.write("Open Insight read-only MCP was registered for WorkBuddy. Reload WorkBuddy to use it.\n");
+    stdout.write("Open Insight 只读 MCP 已为 WorkBuddy 自动配置；重新加载 WorkBuddy 后即可使用。\n");
+  } else if (mcpRegistration.status === "degraded") {
+    stderr.write(
+      `Open Insight Skills are installed, but WorkBuddy MCP registration was not changed (${mcpRegistration.reason}). CLI remains available.\n`
+    );
+  }
+  stdout.write(renderPostInstallGuide());
+  return { exitCode: 0, status: "installed", plan, mcpRegistration };
 }

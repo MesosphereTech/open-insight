@@ -15,11 +15,17 @@ describe("Core OSS context Skill docs", () => {
       "research library",
       "agent handoff snapshot",
       "information collection -> one .insight",
+      "briefly orient",
+      "Do not make an ordinary user learn CLI syntax",
+      "installation alone does not scan or upload files",
+      "open-insight-full-document-surface",
+      "renders long-form HTML",
+      "own document or presentation capability for Word or PPT",
       "Chinese guide: [`SKILL.zh-CN.md`](SKILL.zh-CN.md)",
       "npx open-insight-cli",
       "npx @mesospheretech/open-insight",
       "pins the generic Skill installer",
-      "v0.1.0-alpha.4",
+      "v0.1.0-alpha.5",
       "bootstrap.mjs\" --check-only",
       "do not ask an ordinary user to run bootstrap",
       "automatically downloads the immutable Core ref",
@@ -45,6 +51,14 @@ describe("Core OSS context Skill docs", () => {
       "--max-total-normalized-bytes",
       "--source-analysis-cache-dir",
       "--progress",
+      "Do not leave the user without feedback during compilation",
+      "never invent a completion percentage",
+      "Suggest useful next outputs after compilation",
+      "context recommend-outputs",
+      "data-driven output",
+      "three or four useful next steps",
+      "It does not call a model, infer an industry",
+      "selected output, recommendation, or generated material back",
       "--ocr llm",
       "markitdown-ocr",
       "OPEN_INSIGHT_OCR_*",
@@ -83,7 +97,11 @@ describe("Core OSS context Skill docs", () => {
       "npx open-insight-cli",
       "npx @mesospheretech/open-insight",
       "普通用户不需要复制 GitHub 长路径",
-      "v0.1.0-alpha.4",
+      "主动用简短自然语言告诉用户怎么用",
+      "安装本身不会扫描或上传用户文件",
+      "官方 Surface Skill 可以直接生成长文 HTML",
+      "Word 或 PPT 当前由用户所用 AI 客户端",
+      "v0.1.0-alpha.5",
       "普通用户不需要再手工运行 bootstrap",
       "第一次使用时自动下载固定 Core",
       "OPEN_INSIGHT_AUTO_BOOTSTRAP=0",
@@ -103,6 +121,8 @@ describe("Core OSS context Skill docs", () => {
       "只开放 `validate`、`inspect`、`context`、`mcp serve`",
       "stderr",
       "stdout",
+      "不能让用户长时间得不到反馈",
+      "不能编造完成百分比",
       "open-insight.core-skill-folder-compile.v0.1",
       "query_index_available",
       "streaming_sha256",
@@ -148,6 +168,11 @@ describe("Core OSS context Skill docs", () => {
     expect(metadata).toContain('display_name: "Open Insight 上下文库"');
     expect(metadata).toContain("$open-insight-context");
     expect(recipe).toContain('node "<skill-root>/scripts/cli.mjs" context summary');
+    expect(recipe).toContain("编译后的主动建议");
+    expect(recipe).toContain("context recommend-outputs");
+    expect(recipe).toContain("不调用模型做预判断");
+    expect(recipe).toContain("不猜行业、项目或用户");
+    expect(recipe).toContain("不把建议或最终材料写回 base `.insight` package");
     for (const staleCommand of ["npm run context:token-eval", "npm run demo:compact-context", "npm run demo:context-token-eval"]) {
       expect(recipe).not.toContain(staleCommand);
     }

@@ -108,9 +108,44 @@ Prepare once
 用户：请安装 Open Insight Context Skill。
 用户：把 ./materials 准备成一个可供 AI 使用的 .insight。
 Agent：在本地准备固定版本 Core，编译并校验 my-context.insight。
+Agent：根据来源类型、结构、诊断和 source_mode，主动给出几个可选的输出内容与格式。
 用户：使用 my-context.insight 回答当前问题，并注明来自哪个文件。
 Agent：通过 Skill、CLI 或 MCP 取得有限上下文，必要时回查来源，再生成回答。
 ```
+
+安装成功后，安装器与 Skill 必须主动提供一段简短的自然语言上手说明，而不是
+要求普通用户先阅读 CLI 文档。说明至少覆盖：把指定文件夹打包为一个 `.insight`、
+了解已有 `.insight` 包含什么、基于来源位置问答、通过只读 MCP 持续使用。
+同时明确安装本身不会扫描或上传文件，只有用户指定路径或包后才开始读取。
+
+上手说明还必须覆盖外部材料生成：用户可以要求官方 Surface Skill 基于
+`.insight` 生成长文 HTML，也可以要求当前 AI 使用自身文档或演示能力生成
+Word 报告、PPT/演示稿或其他办公材料，并保留重要内容的来源。Open Insight
+Core 提供事实、结构、有界上下文和追溯交接；官方 Surface Skill 提供 HTML
+渲染，Word/PPT 当前由外部 AI 客户端生成。最终文件必须保存在 base `.insight`
+包外。不得把外部客户端的 Word/PPT 能力表述为 Core 内置模型或固定渲染器，
+也不得暗示所有 AI 客户端都具备相同的文件生成质量。
+
+一行安装必须同时交付 `open-insight-context` Context Skill 与
+`open-insight-full-document-surface` Open Insight 官方消费 Surface Skill。
+首个官方 Surface 是长文 HTML 阅读稿：它从 `.insight` 的 normalized source、
+reading order、表格和追溯信息生成 base package 之外的完整 HTML，并允许用户
+选择由本地 Codex/Gemini 等 Agent 完成最终排版。该 Surface 是开源工具链随附的
+官方消费者，不改变 `.insight` 核心定义，也不把 HTML 写回 base package。
+Word 与 PPT 在当前 Alpha 仍由用户所选 AI 客户端的文档/演示能力生成；Open
+Insight 负责事实交接与来源边界，不得把外部客户端能力误报为 Core 内置导出器。
+
+每次成功编译后，Agent 必须读取 Core 的数据驱动输出建议，并主动以自然语言
+向用户列出三到四个“内容 + 格式”选项，例如阅读 HTML、Word 报告、PPT 演示稿、
+带来源问答或审计说明。建议只能基于来源类型和数量、长文/表格等结构、解析
+诊断和 `source_mode`；Core 不调用模型做预判断，不猜行业、项目或业务结论，
+也不替用户自动选择或生成材料。建议及最终材料均不得写回 base package。
+
+用户执行一行安装已经表达了安装 Open Insight 完整本地工具链的意图。安装器
+不得再要求用户分别安装 Context Skill、官方 Surface Skill 或重复确认同一安装。
+对支持本地 stdio MCP 的已识别客户端，安装器应在同一次流程注册 Open Insight
+MCP；注册必须只追加自己的配置、保持幂等并保留原配置备份。无法安全识别客户端
+或客户端不支持自动注册时，安装仍可完成并诚实降级到 CLI，不能伪造 MCP 已就绪。
 
 这里的“Any AI”不是指任意聊天网页天然认识 `.insight` 后缀，而是指任何
 **能够调用 Open Insight Skill、CLI 或 MCP 的 AI 客户端**都可以消费同一份
@@ -259,6 +294,7 @@ Agent 构建者和工具集成方。信息可以来自办公文件、网页导�
 | 只给模型当前问题需要的内容 | `context answer-context`、`search-chunks --compact`、reading-order window 与 `--token-budget` | token 节省取决于材料和问题；不能把空检索或弱检索计为成功 |
 | 检查回答来自哪里 | `source_refs`、`lineage_refs`、`parse_diagnostic_ids`、`source_map_refs` 与 `resolve-source` | 可追溯不等于模型回答自动正确；parser 质量和来源模式必须同时披露 |
 | 默认在本地处理 | Core 编译、校验、SQLite/FTS 和 CLI/MCP 默认不调用模型、不上传材料 | 用户显式启用远程 OCR 或外部模型时，适用其自行选择的数据边界 |
+| 编译后选择下一步 | `context recommend-outputs` 根据包的来源、结构、诊断与 `source_mode` 给 Agent 可解释的候选内容和格式 | 建议不是行业判断、业务结论或模型生成；用户必须选择，输出位于 base package 外 |
 | 继续生成回答或办公材料 | 用户自己的 LLM 基于返回的上下文生成分析、HTML、Word、PDF 或演示材料 | 生成物位于 base package 外，不能自动标记为人工验证结果 |
 
 ## 3. 主链路：Skill-first，CLI/MCP 可等价访问
@@ -270,6 +306,8 @@ Core OSS 的默认体验是 Skill-first：用户或 Agent 先通过 Context Skil
 Skill 负责把本地材料编译、读取边界和消费者行为说明交给 Agent。普通用户入口必须保持为品牌化的一行命令 `npx @mesospheretech/open-insight`；短命令 `npx open-insight-cli` 作为等价入口保留。两个 npm 包必须复用同一安装器实现，然后直接编译或读取；不能要求用户先克隆开发仓库、理解 monorepo、复制 GitHub tree 长路径，或把手工 bootstrap 当作主流程。品牌安装包内部可以复用固定版本的通用 Skill 安装器，但必须固定不可变 Skill tag、隐藏实现细节、隔离模型与 OCR 密钥，并保持可审计的 dry-run 安装计划。
 
 第一次调用编译或只读 CLI wrapper 时，如果固定版本 Core 尚未存在，Skill 必须自动下载固定 tag、校验实际 commit、安装依赖并构建 CLI/MCP；准备进度写入 `stderr`，不能污染 JSON stdout。显式 `bootstrap.mjs` 只作为排障或管理员管理入口。自动准备不隐式安装模型、不读取模型 key、不调用模型，也不把来源文件上传到外部服务。
+
+文件夹编译的 Skill wrapper 必须默认提供可观察进度：至少包括发现的来源数量、编译、校验、完成四个稳定阶段，底层逐来源事件、已用时间和长任务心跳。进度只写入 `stderr`，机器 JSON 继续只写入 `stdout`。当 WorkBuddy 等 Agent 客户端不直接流式展示终端输出时，Skill 必须要求 Agent 主动向用户转述开始、阶段变化、长阶段心跳和最终结果；进度只能基于真实事件，不得伪造完成百分比。
 
 当用户显式设置 `OPEN_INSIGHT_CORE_HOME` 时，该路径是唯一 Core 查找和安装位置，不能静默复用其他全局或相邻 Core。设置 `OPEN_INSIGHT_AUTO_BOOTSTRAP=0` 时，缺少 Core 必须诚实阻断并提供修复动作。这样固定版本校验、自动化测试和多项目隔离不会被机器上的旧安装污染。
 
@@ -290,7 +328,7 @@ CLI 提供编译、校验和上下文读取能力；MCP stdio 服务复用相同
 - `parse_diagnostic_ids`
 - `source_map_refs`
 
-关键读取能力包括来源摘要、来源列表、对象列表、chunk 检索、表查询、来源解析、诊断、material contract、handoff、answer-context 与 token 估算。`answer-context`、handoff 与 material contract 只组织给外部模型的有界输入，不代表 Core OSS 调用模型或保证模型答案正确。
+关键读取能力包括来源摘要、来源列表、对象列表、chunk 检索、表查询、来源解析、诊断、编译后输出建议、material contract、handoff、answer-context 与 token 估算。`recommend-outputs`、`answer-context`、handoff 与 material contract 只组织给外部模型的有界输入，不代表 Core OSS 调用模型或保证模型答案正确。
 
 ## 4. 来源与索引模型
 

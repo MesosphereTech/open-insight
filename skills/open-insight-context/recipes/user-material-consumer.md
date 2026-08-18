@@ -4,6 +4,30 @@
 
 `.insight` 不是固定报告，也不是问答产品本身。生成材料属于外部消费结果，应输出到外部文件、overlay 或 derived package，不写回 base package。
 
+## 编译后的主动建议
+
+编译成功后，Agent 必须先读取 Core 的数据驱动建议，再用自然语言给用户提供
+3-4 个可选的下一步；不要要求普通用户自己从 JSON 或 CLI 命令中猜测用途：
+
+```bash
+node "<skill-root>/scripts/cli.mjs" context recommend-outputs <package.insight> --format json
+```
+
+每项建议必须同时说明**内容**和**格式**，例如：完整阅读稿（HTML）、正式报告
+（Word）、演示提纲或演示稿（PPT）、带来源的持续问答（Q&A）、或解析/证据
+审计说明（audit）。建议依据 `source_types`、来源数量、长文、表格/结构化数据、
+`parse_diagnostics` 和 `source_mode`；不调用模型做预判断，不猜行业、项目或用户
+意图，也不把建议或最终材料写回 base `.insight` package。
+
+Agent 应明确让用户选择，而不是擅自开始生成。例如：
+
+> 这份资料包含多份长文和结构化表格，建议下一步选择其一：1) 生成可阅读的
+> HTML 整理稿；2) 生成带来源的 Word 报告；3) 生成 PPT 演示提纲；4) 直接开始
+> 带来源问答。当前包为 source_light 时，原始文件不在包内，引用基于已提取文本。
+
+Core 只提供事实、建议依据和追溯交接；当前 AI 客户端负责生成最终文件，并应把
+生成结果保存到 base package 外。
+
 ## 读取顺序
 
 固定按这个顺序读取，不要跳过诊断和追源：
@@ -34,7 +58,9 @@ node "<skill-root>/scripts/cli.mjs" context handoff <package.insight> --query "<
 node "<skill-root>/scripts/cli.mjs" context handoff <package.insight> --query "<query>" --token-budget 2000 --direct-baseline <file-or-dir> --format json
 node "<skill-root>/scripts/cli.mjs" context resolve-source <package.insight> <object-or-ref-id> --format json
 node "<skill-root>/scripts/cli.mjs" context material-contract <package.insight> --format json
+node "<skill-root>/scripts/cli.mjs" context recommend-outputs <package.insight> --format json
 # MCP tool: open_insight_material_contract
+# MCP tool: open_insight_recommend_outputs
 ```
 
 MCP 生成材料前还应调用 `open_insight_version_status` 和 `open_insight_version_log`，只读确认版本图、父包、合并、回档、review patch 与 `base_package_mutation=false` 边界。

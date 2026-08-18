@@ -12,9 +12,12 @@ npx @mesospheretech/open-insight
 
 > 把这个文件夹打包成一个 `.insight` 文件，然后基于来源引用回答我的问题。
 
+也可以直接让 AI 读取已有 `.insight`、按来源位置回答问题、生成好看的 HTML、
+Word 报告或 PPT 并另存为外部文件，或启动只读 MCP。Open Insight 提供事实和
+可追溯上下文，最终文件由当前 AI 使用自身的文档能力生成。安装本身不会扫描
+或上传文件，只有你明确指定资料后才会读取。
+
 这是 `open-insight-cli` 的官方 scoped 品牌别名，固定使用同一个安装器版本，
 不维护第二套实现。
 
-当前公开 npm 包仅提供 Alpha 安装入口。Core 仓库仍处于私有验收阶段，因此
-安装机器需要拥有 `MesosphereTech/open-insight` 的 GitHub 访问权限。Core
-仓库公开后，同一条命令可以匿名使用。
+当前公开 npm 包提供 Alpha 安装入口；安装器与 Skill 使用同一固定 Core 版本。

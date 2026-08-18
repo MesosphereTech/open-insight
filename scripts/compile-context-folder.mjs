@@ -18,6 +18,29 @@ function hasFlag(name) {
   return process.argv.includes(name);
 }
 
+function formatElapsed(startedAt) {
+  return `${Math.max(0, Math.round((Date.now() - startedAt) / 1000))} 秒`;
+}
+
+function writeProgress(enabled, message) {
+  if (enabled) process.stderr.write(`[Open Insight] ${message}\n`);
+}
+
+async function runWithProgressHeartbeat(task, { enabled, label, intervalMs = 15_000 }) {
+  const startedAt = Date.now();
+  const heartbeat = enabled
+    ? setInterval(() => {
+        writeProgress(true, `${label}仍在进行，已用时 ${formatElapsed(startedAt)}。大型 PDF 或 Office 文件可能需要更久。`);
+      }, intervalMs)
+    : undefined;
+  heartbeat?.unref?.();
+  try {
+    return await task();
+  } finally {
+    if (heartbeat) clearInterval(heartbeat);
+  }
+}
+
 function safeBaseName(value) {
   const normalized = String(value || "context-library")
     .trim()
@@ -102,6 +125,8 @@ async function main() {
       handling: "included_with_metadata_or_parser_diagnostic"
     }));
   await mkdir(outputDir, { recursive: true });
+  const workflowStartedAt = Date.now();
+  writeProgress(progressEnabled, `阶段 1/4：已发现 ${sourceFiles.length} 个文件，准备本地编译。`);
 
   const cliModule = path.join(coreRoot, "apps", "cli", "dist", "cli.js");
   const { runCli } = await import(pathToFileURL(cliModule).href);
@@ -127,9 +152,22 @@ async function main() {
       if (sourceAnalysisCacheDir !== undefined) compileArgs.push("--source-analysis-cache-dir", sourceAnalysisCacheDir);
       compileArgs.push("--format", "json");
 
-      const compile = parseJsonOutput(await runCli(compileArgs, coreRoot), `${sourceMode} compile-pack`);
+      writeProgress(
+        progressEnabled,
+        `阶段 2/4：正在生成 ${sourceMode} 包（${sourceFiles.length} 个文件）。逐文件状态会继续显示。`
+      );
+      const compileResult = await runWithProgressHeartbeat(() => runCli(compileArgs, coreRoot), {
+        enabled: progressEnabled,
+        label: `阶段 2/4：${sourceMode} 编译`
+      });
+      const compile = parseJsonOutput(compileResult, `${sourceMode} compile-pack`);
+      writeProgress(progressEnabled, `阶段 3/4：正在校验 ${sourceMode} 包和只读上下文索引。`);
       const validate = parseJsonOutput(await runCli(["validate", outputPath, "--format", "json"], coreRoot), `${sourceMode} validate`);
       const summary = parseJsonOutput(await runCli(["context", "summary", outputPath, "--format", "json"], coreRoot), `${sourceMode} context summary`);
+      const outputRecommendations = parseJsonOutput(
+        await runCli(["context", "recommend-outputs", outputPath, "--format", "json"], coreRoot),
+        `${sourceMode} context recommend-outputs`
+      );
       packages.push({
         source_mode: sourceMode,
         package_path: path.relative(invocationRoot, outputPath).replaceAll(path.sep, "/"),
@@ -143,7 +181,9 @@ async function main() {
         context_status: summary.status,
         package_id: summary.package_id,
         source_count: summary.counts?.sources ?? sourceFiles.length,
-        query_index_available: summary.query_index?.available ?? summary.capabilities?.query_index ?? summary.availability?.query_index ?? false
+        query_index_available: summary.query_index?.available ?? summary.capabilities?.query_index ?? summary.availability?.query_index ?? false,
+        output_recommendations: outputRecommendations.recommendations,
+        proactive_user_message_cn: outputRecommendations.proactive_user_message_cn
       });
     }
   } finally {
@@ -190,6 +230,10 @@ async function main() {
                   command: process.execPath,
                   args: [skillCliWrapper, "context", "search-chunks", packagePath, "<query>", "--compact", "--format", "json"]
                 },
+                cli_recommend_outputs: {
+                  command: process.execPath,
+                  args: [skillCliWrapper, "context", "recommend-outputs", packagePath, "--format", "json"]
+                },
                 mcp_stdio: {
                   command: process.execPath,
                   args: [skillCliWrapper, "mcp", "serve", packagePath, "--transport", "stdio"]
@@ -228,6 +272,18 @@ async function main() {
     "## Packages",
     "",
     ...packages.map((item) => `- \`${item.source_mode}\`: ${item.package_path}（validate=${item.validation_status}, context=${item.context_status}）`),
+    "",
+    "## 根据内容结构推荐的下一步",
+    "",
+    ...packages.flatMap((item) => [
+      `### ${item.source_mode}`,
+      "",
+      ...item.output_recommendations.slice(0, 4).map(
+        (recommendation) =>
+          `- **${recommendation.title_cn}**：${recommendation.content_suggestion_cn}（建议格式：\`${recommendation.primary_format}\`）`
+      ),
+      ""
+    ]),
     ...(nonstandardSources.length > 0
       ? ["", "## 非标准扩展来源", "", ...nonstandardSources.map((item) => `- \`${item.relative_path}\`：已保留并进入 metadata / parser diagnostic 路径。`)]
       : []),
@@ -239,11 +295,21 @@ async function main() {
   ].join("\n");
   await writeAtomic(jsonPath, `${JSON.stringify(report, null, 2)}\n`);
   await writeAtomic(markdownPath, `${markdown}\n`);
+  writeProgress(
+    progressEnabled,
+    `阶段 4/4：编译完成，共处理 ${sourceFiles.length} 个文件，生成 ${packages.length} 个 .insight，用时 ${formatElapsed(workflowStartedAt)}。`
+  );
+  if (progressEnabled) {
+    const firstPackage = packages[0];
+    for (const line of firstPackage?.proactive_user_message_cn ?? []) writeProgress(true, line);
+  }
 
   if (format === "json") console.log(JSON.stringify(report, null, 2));
   else {
     console.log(`Open Insight 文件夹编译：${report.status}`);
     for (const item of packages) console.log(`- ${item.source_mode}: ${item.package_path}`);
+    const firstPackage = packages[0];
+    for (const line of firstPackage?.proactive_user_message_cn ?? []) console.log(line);
   }
 }
 

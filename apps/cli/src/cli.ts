@@ -27,6 +27,7 @@ import {
   answerWithGroundedModel,
   answerWithPreparedContext,
   buildContextUserMaterialContract,
+  recommendContextOutputs,
   createOpenAICompatibleModelAdapterFromEnv,
   listOpenAICompatibleModelsFromEnv,
   listContextDiagnostics,
@@ -44,6 +45,7 @@ import {
   type ContextObjectKind,
   type ContextObjectsResult,
   type ContextUserMaterialContractResult,
+  type ContextOutputRecommendationsResult,
   type ContextSourceResolveResult,
   type ContextSourcesResult,
   type ContextSummaryResult,
@@ -196,6 +198,7 @@ const CONTEXT_ANSWER_CONTEXT_SCHEMA_VERSION = "open-insight.answer-context.v0.1"
 const CONTEXT_SOURCE_RESOLVE_SCHEMA_VERSION = "open-insight.context-source-resolve.v0.1" as const;
 const CONTEXT_DIAGNOSTICS_SCHEMA_VERSION = "open-insight.context-diagnostics.v0.1" as const;
 const CONTEXT_USER_MATERIAL_CONTRACT_SCHEMA_VERSION = "open-insight.user-material-contract.v0.1" as const;
+const CONTEXT_OUTPUT_RECOMMENDATIONS_SCHEMA_VERSION = "open-insight.context-output-recommendations.v0.1" as const;
 const VERSION_DERIVE_SCHEMA_VERSION = "open-insight.version-derive.v0.1" as const;
 const VERSION_ROLLBACK_SCHEMA_VERSION = "open-insight.version-rollback.v0.1" as const;
 const VERSION_MERGE_SCHEMA_VERSION = "open-insight.version-merge.v0.1" as const;
@@ -212,7 +215,8 @@ type ContextCliResult =
   | ({ schema_version: typeof CONTEXT_ANSWER_CONTEXT_SCHEMA_VERSION } & ContextAnswerContextResult)
   | ({ schema_version: typeof CONTEXT_SOURCE_RESOLVE_SCHEMA_VERSION } & ContextSourceResolveResult)
   | ({ schema_version: typeof CONTEXT_DIAGNOSTICS_SCHEMA_VERSION } & ContextDiagnosticsResult)
-  | ({ schema_version: typeof CONTEXT_USER_MATERIAL_CONTRACT_SCHEMA_VERSION } & ContextUserMaterialContractResult);
+  | ({ schema_version: typeof CONTEXT_USER_MATERIAL_CONTRACT_SCHEMA_VERSION } & ContextUserMaterialContractResult)
+  | ({ schema_version: typeof CONTEXT_OUTPUT_RECOMMENDATIONS_SCHEMA_VERSION } & ContextOutputRecommendationsResult);
 
 type ContextCliHandoffResult = { schema_version: typeof CONTEXT_HANDOFF_SCHEMA_VERSION } & ContextHandoffResult;
 type ContextHandoffRouteRecipe = ContextHandoffResult["material_generation_recipes"]["routes"][number];
@@ -2414,8 +2418,9 @@ export async function runCli(args: string[], invocationRoot: string, options: Ru
   insight conformance inspect <asset-id|asset-path> [--format json|text]
   insight inspect <package-file-or-dir> [--format json|text]
   insight validate <package-file-or-dir> [--format json|text]
-  insight context <summary|list-sources|list-objects|query-table|search-chunks|token-eval|handoff|resolve-source|diagnostics|material-contract> <package-file-or-dir> [args] [--format json|text]
+  insight context <summary|list-sources|list-objects|query-table|search-chunks|token-eval|handoff|resolve-source|diagnostics|material-contract|recommend-outputs> <package-file-or-dir> [args] [--format json|text]
   insight mcp serve <package-file-or-dir> --transport stdio
+  insight mcp serve --unbound --transport stdio
   insight ask <package-root> <question> [--model auto|deterministic|mock|real] [--save-overlay <output-dir>] [--format json|text]
   insight compile-pack <source-file> <output.insight> [--source <extra-file>] [--title <title>] [--package-id <id>] [--template <text>] [--template-file <file>] [--domain <domain-id>] [--source-mode source_bundled|source_light] [--parser auto|builtin|markitdown] [--ocr off|llm] [--parser-timeout-ms <ms>] [--max-source-bytes <bytes|KB|MB|GB>] [--max-total-source-bytes <bytes|KB|MB|GB>] [--max-normalized-bytes <bytes|KB|MB|GB>] [--max-total-normalized-bytes <bytes|KB|MB|GB>] [--source-analysis-cache-dir <dir>] [--format json|text]
   insight compile <source-file> <output-dir> [--source <extra-file>] [--title <title>] [--package-id <id>] [--template <text>] [--template-file <file>] [--domain <domain-id>] [--source-mode source_bundled|source_light] [--parser auto|builtin|markitdown] [--ocr off|llm] [--parser-timeout-ms <ms>] [--max-source-bytes <bytes|KB|MB|GB>] [--max-total-source-bytes <bytes|KB|MB|GB>] [--max-normalized-bytes <bytes|KB|MB|GB>] [--max-total-normalized-bytes <bytes|KB|MB|GB>] [--source-analysis-cache-dir <dir>] [--format json|text]
@@ -2440,7 +2445,7 @@ async function runContextCommand(args: string[], invocationRoot: string, format:
 
   if (!packageArg) {
     throw new Error(
-      "用法：insight context <summary|list-sources|list-objects|query-table|search-chunks|token-eval|handoff|resolve-source|diagnostics|material-contract> <package-root> [args] [--format json|text]"
+      "用法：insight context <summary|list-sources|list-objects|query-table|search-chunks|token-eval|handoff|resolve-source|diagnostics|material-contract|recommend-outputs> <package-root> [args] [--format json|text]"
     );
   }
 
@@ -2666,6 +2671,15 @@ async function runContextCommand(args: string[], invocationRoot: string, format:
     const result: ContextCliResult = {
       schema_version: CONTEXT_USER_MATERIAL_CONTRACT_SCHEMA_VERSION,
       ...(await buildContextUserMaterialContract(packageRoot))
+    };
+
+    return { exitCode: result.status === "ok" || result.status === "unsupported" ? 0 : 1, output: formatContextResult(result, format) };
+  }
+
+  if (subcommand === "recommend-outputs") {
+    const result: ContextCliResult = {
+      schema_version: CONTEXT_OUTPUT_RECOMMENDATIONS_SCHEMA_VERSION,
+      ...(await recommendContextOutputs(packageRoot))
     };
 
     return { exitCode: result.status === "ok" || result.status === "unsupported" ? 0 : 1, output: formatContextResult(result, format) };
@@ -7822,6 +7836,23 @@ function formatContextResult(result: FocusedContextCliResult, requestedFormat: s
     lines.push(`- source_mode_disclosure_required: ${result.source_mode_disclosure_required}`);
     lines.push(`- preferred_chunk_access: ${result.preferred_chunk_access}`);
     lines.push(`- evidence_boundary: ${result.evidence_boundary}`);
+  }
+
+  if ("recommendations" in result) {
+    lines.push("output_recommendations:");
+    lines.push(`- source_count: ${result.recommendation_basis.source_count}`);
+    lines.push(`- source_types: ${formatInlineList(result.recommendation_basis.source_types)}`);
+    lines.push(`- dataset_count: ${result.recommendation_basis.dataset_count}`);
+    lines.push(`- chunk_count: ${result.recommendation_basis.chunk_count}`);
+    lines.push(`- parse_warning_count: ${result.recommendation_basis.parse_warning_count}`);
+    for (const item of result.recommendations) {
+      lines.push(`- ${item.priority}. ${item.title_cn}: ${item.primary_format}`);
+      lines.push(`  - readiness: ${item.readiness}`);
+      lines.push(`  - content: ${item.content_suggestion_cn}`);
+      lines.push(`  - next_action: ${item.next_action_cn}`);
+    }
+    lines.push(`- model_invoked: ${result.model_invoked}`);
+    lines.push(`- base_package_mutation: ${result.base_package_mutation}`);
   }
 
   if ("sources" in result) {

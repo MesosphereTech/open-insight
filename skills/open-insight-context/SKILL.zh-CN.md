@@ -20,9 +20,22 @@ npx @mesospheretech/open-insight
 
 等价短命令为 `npx open-insight-cli`。
 
-品牌安装器在内部固定通用 Skill 安装器和不可变的 `v0.1.0-alpha.4` Skill 来源，普通用户不需要复制 GitHub 长路径。安装器会询问把 Skill 交给哪个受支持的 AI 客户端。npm 包和干净 Core 仓库已进入 public 静默测试，这条命令可以在没有仓库凭据的环境中安装。
+品牌安装器在内部固定通用 Skill 安装器和不可变的 `v0.1.0-alpha.5` Skill 来源，普通用户不需要复制 GitHub 长路径，也不需要再次确认 Skill 安装。它会同时安装 Context Skill 和官方 HTML Surface Skill；检测到 WorkBuddy 时，同一条命令还会自动注册不绑定单个文件的通用只读 MCP。`alpha.5` 当前先在私有开发仓库做候选验收；公开 npm 默认仍保持已发布的 `alpha.4`，直到候选通过并显式发布。
 
-首次运行需要本机已有 Node.js 20.19+（20.x）或 22.12+、npm 10+、Git 和 Python 3.10+。安装 Skill 后，普通用户不需要再手工运行 bootstrap：Agent 直接调用 `compile-folder.mjs` 或 `cli.mjs`，wrapper 会在第一次使用时自动下载固定 Core `v0.1.0-alpha.4`，安装到 `~/.open-insight/core/v0.1.0-alpha.4`，校验 tag 对应的实际 commit，再安装依赖并构建 CLI/MCP。首次准备进度只写入 `stderr`，不会污染 `--format json` 的机器输出，也不会安装或调用任何模型。
+安装完成后，Agent 应主动用简短自然语言告诉用户怎么用，不要求普通用户记 CLI。至少提供以下五类说法：
+
+- “请使用 Open Insight，把这个资料文件夹打包成一个 `.insight` 文件，并告诉我输出位置和解析警告。”
+- “请读取这个 `.insight`，先告诉我里面有哪些资料和主要内容。”
+- “请根据这个 `.insight` 回答我的问题，每个重要结论都注明来源文件和原文位置。”
+- “请使用 Open Insight Surface Skill，把这个 `.insight` 生成一份好看的长文 HTML 阅读稿，另存并保留来源。”
+- “请使用当前 AI 的文档或演示能力，根据这个 `.insight` 生成 Word 报告或 PPT，并保留重要内容的来源。”
+- “请为这个 `.insight` 启动只读 MCP，供当前 AI 持续查询。”
+
+同时必须说明：安装本身不会扫描或上传用户文件；只有用户明确指定路径或 `.insight` 文件后才执行。上手提示保持简短，详细命令仅用于 Agent 执行和排障。
+
+生成材料时必须准确说明分工：Open Insight 提供事实、结构、有界读取和来源追溯；随安装交付的官方 Surface Skill 可以直接生成长文 HTML。Word 或 PPT 当前由用户所用 AI 客户端的文档/演示能力生成。所有生成物另存于 base `.insight` 包外，不能写回或覆盖事实库。
+
+首次运行需要本机已有 Node.js 20.19+（20.x）或 22.12+、npm 10+、Git 和 Python 3.10+。安装 Skill 后，普通用户不需要再手工运行 bootstrap：Agent 直接调用 `compile-folder.mjs` 或 `cli.mjs`，wrapper 会在第一次使用时自动下载固定 Core `v0.1.0-alpha.5`，安装到 `~/.open-insight/core/v0.1.0-alpha.5`，校验 tag 对应的实际 commit，再安装依赖并构建 CLI/MCP。首次准备进度只写入 `stderr`，不会污染 `--format json` 的机器输出，也不会安装或调用任何模型。
 
 以下命令只用于排障或管理员显式管理 Core，不属于普通用户主流程：
 
@@ -31,11 +44,13 @@ node "<skill-root>/scripts/bootstrap.mjs" --check-only
 node "<skill-root>/scripts/bootstrap.mjs"
 ```
 
-wrapper 先以中文阶段进度检查 Node.js、npm、Git 和 Core；`system_checks` 会记录工具版本与状态，缺少依赖时返回 `prerequisite_failed`，并在任何 clone 或 install 前给出中文修复动作。进度从 `阶段 1/5` 到 `阶段 5/5` 写入 `stderr`，安装报告仍写入 JSON / Markdown 文件。随后依次查找 `OPEN_INSIGHT_CORE_HOME`、当前目录、Skill 所在仓库和当前 ref 的版本化安装目录。找不到时，它只克隆固定 tag `v0.1.0-alpha.4`；`OPEN_INSIGHT_CORE_REPOSITORY` 可显式覆盖安装源，`OPEN_INSIGHT_CORE_REF` 可显式覆盖测试 tag/branch。报告只显示 `<configured-repository>`，不记录凭据 URL，并记录 `requested_core_ref`、`resolved_core_commit` 与 `core_ref_verified`。固定 ref 不匹配时返回 `version_mismatch`，不会把移动分支伪装成 Alpha。显式本地开发 Core 会标记为 `local_override`，不能作为发布版本验证。只有管理员设置 `OPEN_INSIGHT_AUTO_BOOTSTRAP=0` 时，自动准备才会关闭；Core 缺失时必须诚实报错，不能静默换用其他版本。
+wrapper 先以中文阶段进度检查 Node.js、npm、Git 和 Core；`system_checks` 会记录工具版本与状态，缺少依赖时返回 `prerequisite_failed`，并在任何 clone 或 install 前给出中文修复动作。进度从 `阶段 1/5` 到 `阶段 5/5` 写入 `stderr`，安装报告仍写入 JSON / Markdown 文件。随后依次查找 `OPEN_INSIGHT_CORE_HOME`、当前目录、Skill 所在仓库和当前 ref 的版本化安装目录。找不到时，它只克隆固定 tag `v0.1.0-alpha.5`；`OPEN_INSIGHT_CORE_REPOSITORY` 可显式覆盖安装源，`OPEN_INSIGHT_CORE_REF` 可显式覆盖测试 tag/branch。报告只显示 `<configured-repository>`，不记录凭据 URL，并记录 `requested_core_ref`、`resolved_core_commit` 与 `core_ref_verified`。固定 ref 不匹配时返回 `version_mismatch`，不会把移动分支伪装成 Alpha。显式本地开发 Core 会标记为 `local_override`，不能作为发布版本验证。只有管理员设置 `OPEN_INSIGHT_AUTO_BOOTSTRAP=0` 时，自动准备才会关闭；Core 缺失时必须诚实报错，不能静默换用其他版本。
 
 Core bootstrap 不调用模型、不安装 Gemini/Claude/Codex、不读取模型 key。默认 `--parser auto` 遇到 PDF、DOCX、XLSX 或 PPTX 时，Skill 会在 `~/.open-insight/parsers/` 自动创建隔离 Python 环境并安装固定版本 MarkItDown；普通用户不需要手工运行 `pip install`。纯文本、Markdown、HTML、CSV/TSV 不触发 parser 安装。本机需要已有 Python 3.10+；缺少 Python 时会给出明确修复说明，不把解析失败伪装成成功。管理员可用 `OPEN_INSIGHT_AUTO_INSTALL_PARSER=0` 关闭自动准备，或用 `OPEN_INSIGHT_PYTHON` 指向自行维护的固定环境；Open Insight 只校验该环境，不修改它。
 
 ## 编译文件夹
+
+编译期间不能让用户长时间得不到反馈。Skill wrapper 默认开启进度，并把来源数量、真实逐文件事件、四个稳定阶段、已用时间和长任务心跳写入 `stderr`；`--format json` 的 `stdout` 仍保持纯 JSON。如果 WorkBuddy、Codex、Gemini 或其他 AI 客户端不直接展示终端 `stderr`，Agent 必须在开始、阶段变化、长阶段约每 30 秒以及完成或失败时，用简短自然语言主动告诉用户当前进度。只能转述已经观察到的阶段、数量、当前文件名和耗时，不能编造完成百分比。
 
 ```bash
 node "<skill-root>/scripts/compile-folder.mjs" \
@@ -48,6 +63,8 @@ node "<skill-root>/scripts/compile-folder.mjs" \
   --source-analysis-cache-dir output/.open-insight-source-analysis-cache/my-context \
   --progress
 ```
+
+`--no-progress` 仅供管理员在静默自动化中使用；普通交互式 Agent 工作流不得关闭进度。
 
 这些相对路径以用户运行命令时所在目录为基准，不以 Core 仓库为基准。因此用户不需要进入 `~/.open-insight/core`。
 
@@ -90,7 +107,7 @@ node "<skill-root>/scripts/compile-folder.mjs" `
 - `--max-source-bytes` / `--max-total-source-bytes`：分别限制单个来源和本批来源总大小，支持 `B`、`KB`、`MB`、`GB` 后缀；默认分别为 `512MB` 和 `4GB`。
 - `--max-normalized-bytes` / `--max-total-normalized-bytes`：分别限制单来源和本批 normalized 内容大小，默认分别为 `128MB` 和 `256MB`，避免 parser 异常膨胀或多文件正文累计耗尽 Node 内存。
 - `--source-analysis-cache-dir <dir>`：复用同内容、同文件名和同 parser 配置的 source analysis，减少重复 MarkItDown 转置；缓存不是事实来源，缓存目录不会写入公开 JSON。
-- `--progress`：把逐来源开始、结束、耗时和 cache 命中状态写到 `stderr`；即使同时使用 `--format json`，`stdout` 仍保持纯 JSON。
+- `--progress`：把四阶段状态、逐来源开始/结束、耗时、cache 命中和长任务心跳写到 `stderr`；Skill wrapper 默认开启。即使同时使用 `--format json`，`stdout` 仍保持纯 JSON。
 
 来源内容哈希采用 `streaming_sha256`，最终单文件 `.insight` 采用 `streaming_zip` 写入；超过任一上限时编译会在失控前阻断并给出中文调整建议，不会静默截断、删除正文或伪装成功。当前 parser 仍需在单来源上完成转置，因此调整上限前必须确认本机内存；扫描/图片型 PDF 的 OCR 是独立的显式增强路径，不会随大文件内存优化自动开启。
 
@@ -151,6 +168,15 @@ MCP 示例：
 ```bash
 node "<skill-root>/scripts/cli.mjs" mcp serve ./output/my-context.source-bundled.insight --transport stdio
 ```
+
+安装器同时安装 `open-insight-full-document-surface`。用户要求好看的长文 HTML
+时，调用该 Skill 的 `scripts/render.mjs`；HTML 是 Open Insight 当前内置
+Surface。Word 与 PPT 当前由用户所用 AI 客户端的文档/演示能力生成，Open
+Insight 提供事实、结构和来源，不把它们误报为 Core 内置导出器。
+
+对 WorkBuddy 的一行安装会尝试注册通用只读 MCP。该服务不绑定或扫描文件；
+每次工具调用必须显式提供 `package_path`。如果 WorkBuddy 配置损坏、已有同名
+冲突或无法识别客户端，安装仍保留 CLI 能力并明确报告降级。
 
 推荐问答最小工具集：`open_insight_context_summary`、`open_insight_list_sources`、`open_insight_validate_context`、`open_insight_answer_context`、`open_insight_resolve_source`。`open_insight_answer_context` 是具体问题的默认入口；只有其返回需要补读时才调用 `open_insight_search_chunks` / resolve。完整工具面还包括对象列表、表查询、token eval、material contract、handoff 和版本状态；以 Core 当前 MCP registry 与 `docs/core-oss-context-access.md` 为准。
 

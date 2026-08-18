@@ -79,7 +79,8 @@ AI 读取契约。SQLite/FTS 是可重建查询索引，不是唯一事实来源
 - 保存 normalized content、读取顺序、query chunks、parse diagnostics、
   source maps、digests 和可重建 SQLite/FTS 索引；
 - 通过 CLI 和 MCP 返回等价、有限、可追溯的上下文；
-- 让外部 AI 在 base package 之外生成回答、分析、HTML、Word、PDF 或演示材料。
+- 使用随安装交付的官方 Surface，在 base package 之外生成长文 reading / audit HTML；
+- 让外部 AI 以 `.insight` 为事实与来源输入，生成 Word、PDF 或演示材料。
 
 图片型 PDF 和扫描件 OCR 仍是显式实验路径，不属于默认 Alpha 能力。任何
 token 节省都必须与非空检索、来源覆盖、数字保真和诊断覆盖一起报告。
@@ -87,8 +88,8 @@ token 节省都必须与非空检索、来源覆盖、数字保真和诊断覆�
 ## 从 Skill 开始
 
 普通用户不需要先理解 monorepo，也不需要手工运行 bootstrap。只运行一条
-命令安装完整 [`open-insight-context`](skills/open-insight-context/SKILL.md)
-Skill：
+命令同时安装 [`open-insight-context`](skills/open-insight-context/SKILL.md)
+与官方长文 HTML Surface Skill：
 
 ```bash
 npx @mesospheretech/open-insight
@@ -97,8 +98,9 @@ npx @mesospheretech/open-insight
 短命令 `npx open-insight-cli` 等价可用；两个包使用同一套固定版本安装器。
 
 品牌安装器在内部固定通用 Skill 安装器和不可变的
-`v0.1.0-alpha.4` Skill 来源，普通用户不需要看到 GitHub 长路径。安装器会
-询问把 Skill 交给哪个受支持的 AI 客户端。`open-insight-cli` npm 安装器
+`v0.1.0-alpha.5` Skill 来源，普通用户不需要看到 GitHub 长路径，也不需要
+第二次确认。检测到 WorkBuddy 时，同一安装还会自动注册通用只读 MCP；每次
+调用显式指定 `.insight` 路径，不扫描磁盘。`open-insight-cli` npm 安装器
 和干净 Core 仓库均已进入 public 静默测试；当前安装不再需要 GitHub 仓库
 权限。2026-08-08 已从全新中文空格目录完成匿名安装、固定 Core bootstrap、
 单文件编译、校验和 compact 检索。
@@ -177,7 +179,7 @@ CLI 和 MCP 复用同一 Runtime。它们不会调用模型、执行包内代码
 
 ## 当前状态
 
-这是 `v0.1.0-alpha.4` 的 3-7 天 public 静默测试版本，不是稳定版本，也未开始
+这是 `v0.1.0-alpha.5` 的 public 静默测试版本，不是稳定版本，也未开始
 发布宣传。
 当前能力和限制见
 [`docs/core-oss-alpha-readiness.md`](docs/core-oss-alpha-readiness.md)，

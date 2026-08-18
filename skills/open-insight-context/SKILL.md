@@ -26,6 +26,29 @@ The user-facing workflow is:
 information collection -> one .insight -> bounded context -> the user's AI output
 ```
 
+After installation, or the first time this Skill is triggered, briefly orient
+the user in their language. Do not make an ordinary user learn CLI syntax.
+Explain that they can ask the AI naturally to:
+
+- package a named local folder into one `.insight` file;
+- inspect an existing `.insight` and describe its sources;
+- answer a question with source file and location references;
+- use the separately installed `open-insight-full-document-surface` Skill to
+  create a polished long-form HTML reading copy as an external file;
+- use the current AI client's document or presentation capability for Word or
+  PPT output, with Open Insight context as its evidence input; or
+- expose one `.insight` through read-only MCP for continued use.
+
+Also state that installation alone does not scan or upload files. Act only on
+the path or package the user explicitly identifies. Keep this orientation
+short; detailed commands remain in the operational sections below.
+
+For material generation, explain the division of responsibility accurately:
+Open Insight supplies facts, structure, bounded reads, and provenance. The
+installed Surface Skill renders long-form HTML. The current AI client uses its
+own document or presentation capability for Word or PPT. Save all generated
+files outside the base `.insight` package.
+
 Explain that Open Insight prepares evidence and context; it is not another chat application
 and does not generate the final answer by itself. The AI client
 must be able to call this Skill, the local CLI, or the MCP server. Do not imply
@@ -37,6 +60,8 @@ Good trigger examples:
 - "Turn this research library into one traceable context file."
 - "Prepare a context snapshot that another agent can continue from."
 - "Use this `.insight` file to answer my question and cite the source files."
+- "Use the Open Insight Surface Skill to create a polished long-form HTML reading copy from this `.insight`."
+- "Use this `.insight` as evidence to create a Word report or presentation with the current AI client."
 - "Give my agent only the relevant context instead of loading every document."
 - "Start a read-only MCP server for this `.insight` file."
 
@@ -64,11 +89,13 @@ npx @mesospheretech/open-insight
 The equivalent short command is `npx open-insight-cli`.
 
 The branded installer pins the generic Skill installer and immutable
-`v0.1.0-alpha.4` Skill source internally. The user does not need to copy a
-GitHub tree URL. The installer asks which supported AI client should receive
-the Skill. The npm package and Core repository remain private candidates until
-release approval; after publication, this command must work without repository
-credentials.
+`v0.1.0-alpha.5` Skill source internally. The user does not need to copy a
+GitHub tree URL or approve a second Skill-installation prompt. It installs the
+Context and official HTML Surface Skills together. When WorkBuddy is detected,
+the same command also registers the generic read-only MCP without binding it to
+one package. The npm package and Core repository remain private candidates
+until release approval; after publication, this command must work without
+repository credentials.
 
 Requirements:
 
@@ -113,6 +140,15 @@ conversion and model OCR are never selected automatically.
 Run from the user's own working directory. Relative source and output paths are
 resolved from that directory, not from the Core checkout.
 
+Do not leave the user without feedback during compilation. The Skill wrapper
+enables progress by default and writes source counts, real processing events,
+four stable workflow stages, elapsed time, and a long-running heartbeat to
+stderr. JSON stdout remains machine-readable. If the AI client does not stream
+terminal stderr, proactively relay a short update when compilation starts,
+when the reported stage changes, about every 30 seconds during a long-running
+stage, and when it completes or fails. Report only observed stages, counts,
+current source names, and elapsed time; never invent a completion percentage.
+
 ```bash
 node "<skill-root>/scripts/compile-folder.mjs" \
   --source-dir ./materials \
@@ -124,6 +160,9 @@ node "<skill-root>/scripts/compile-folder.mjs" \
   --source-analysis-cache-dir ./output/.open-insight-cache \
   --progress
 ```
+
+`--no-progress` is an administrator-only wrapper option for quiet automation.
+Do not use it in an ordinary interactive Agent workflow.
 
 Modes:
 
@@ -138,6 +177,31 @@ suffix and do not use a directory named `*.insight` as the result.
 
 Unknown or unsupported files remain in the source inventory with explicit
 diagnostics. Never describe metadata-only extraction as complete text.
+
+### Suggest useful next outputs after compilation
+
+After a successful compile, the Agent must read the Core's data-driven output
+recommendations before asking the user what to do next:
+
+```bash
+node "<skill-root>/scripts/cli.mjs" context recommend-outputs \
+  ./output/my-context.source-bundled.insight --format json
+```
+
+Turn the returned recommendations into a short natural-language choice of
+three or four useful next steps. Each choice must say both **what** it would
+produce and **which format** it would use, for example a reading HTML, a Word
+report, a presentation, a source-backed Q&A, or an audit note. State that the
+final material is created by the current AI client and remains outside the
+base package.
+
+The Core derives these suggestions only from package facts: source types and
+count, long-form text, tables or structured data, parse diagnostics, and
+`source_mode`. It does not call a model, infer an industry, invent a business
+purpose, or decide for the user. Preserve an `unsupported`, `degraded`, or
+`source_light` boundary in the natural-language explanation. Do not write a
+selected output, recommendation, or generated material back into the base
+`.insight` package.
 
 ## 3. Read for a specific question
 

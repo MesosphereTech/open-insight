@@ -46,6 +46,7 @@ const exactPaths = new Set([
   "scripts/compile-context-folder.mjs",
   "scripts/demo-public-alpha.mjs",
   "scripts/export-public-core.mjs",
+  "scripts/lib/traceability-reference-validation.mjs",
   "scripts/public-alpha-fixtures.mjs",
   "scripts/run-alpha-parser-acceptance.mjs",
   "scripts/run-alpha-skill-acceptance.mjs",
@@ -53,9 +54,12 @@ const exactPaths = new Set([
   "scripts/skill-bootstrap.mjs",
   "scripts/verify-public-core.mjs",
   "tests/core-oss-context-skill-docs.test.ts",
+  "tests/core-oss-official-surface-docs.test.ts",
   "tests/core-oss-skill-folder-compile.test.ts",
   "tests/core-oss-skill-standalone-install.test.ts",
   "tests/open-insight-installer.test.ts",
+  "tests/skill-full-document-surface-script.test.ts",
+  "tests/surface-cli-runtime-launch.test.ts",
   "tests/public-cli-contracts.test.ts",
   "tests/public-core-readme-docs.test.ts",
   "apps/cli/src/localEnv.test.ts",
@@ -84,6 +88,7 @@ const allowedPrefixes = [
   "packages/insight-runtime/",
   "packages/insight-validator/",
   "skills/open-insight-context/",
+  "skills/open-insight-full-document-surface/",
   "spec/"
 ];
 
@@ -210,7 +215,7 @@ function publicPackageJson(sourcePackage) {
         "tsc -b packages/insight-core packages/insight-validator packages/insight-runtime packages/insight-domain-packs packages/insight-compiler apps/cli",
       "test:core-public": "vitest run --config vitest.public-core.config.ts --no-file-parallelism",
       "test:skill-public":
-        "vitest run --config vitest.public-core.config.ts tests/open-insight-installer.test.ts tests/core-oss-context-skill-docs.test.ts tests/core-oss-skill-folder-compile.test.ts tests/core-oss-skill-standalone-install.test.ts --no-file-parallelism",
+        "vitest run --config vitest.public-core.config.ts tests/open-insight-installer.test.ts tests/core-oss-context-skill-docs.test.ts tests/core-oss-official-surface-docs.test.ts tests/skill-full-document-surface-script.test.ts tests/surface-cli-runtime-launch.test.ts tests/core-oss-skill-folder-compile.test.ts tests/core-oss-skill-standalone-install.test.ts --no-file-parallelism",
       "verify:core-public": "node scripts/verify-public-core.mjs",
       "demo:public-alpha": "node scripts/demo-public-alpha.mjs",
       "alpha:skill-acceptance": "node scripts/run-alpha-skill-acceptance.mjs",

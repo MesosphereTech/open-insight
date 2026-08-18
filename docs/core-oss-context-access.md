@@ -18,11 +18,13 @@ insight context search-chunks
 insight context query-table
 insight context resolve-source
 insight context diagnostics
+insight context recommend-outputs
 insight context material-contract
 insight context handoff
 insight context answer-context
 insight context token-eval
 insight mcp serve <package-file-or-dir> --transport stdio
+insight mcp serve --unbound --transport stdio
 ```
 
 `context` 命令默认只读。能力不足应返回结构化 `unsupported` 或 `degraded`，损坏包、危险路径和无效参数才返回失败。
@@ -35,14 +37,31 @@ insight mcp serve <package-file-or-dir> --transport stdio
 node "<skill-root>/scripts/compile-folder.mjs" --source-dir ./materials --output-dir ./output --base-name my-context --mode source_bundled --parser auto
 node "<skill-root>/scripts/cli.mjs" validate ./output/my-context.source-bundled.insight --format json
 node "<skill-root>/scripts/cli.mjs" context summary ./output/my-context.source-bundled.insight --format json
+node "<skill-root>/scripts/cli.mjs" context recommend-outputs ./output/my-context.source-bundled.insight --format json
 node "<skill-root>/scripts/cli.mjs" mcp serve ./output/my-context.source-bundled.insight --transport stdio
 ```
 
+通用 MCP 不在启动时绑定包：
+
+```text
+node "<skill-root>/scripts/cli.mjs" mcp serve --unbound --transport stdio
+```
+
+通用模式下每个工具都必须显式传入 `package_path`。它不会扫描磁盘、不使用
+“最近打开”的包，也不会跨对话记忆包路径。WorkBuddy 被安装器识别时会自动
+注册这一通用只读服务；配置冲突或损坏时不覆盖用户配置，并降级到 CLI。
+
 普通 PDF、Office 文件默认使用 `--ocr off`，保持本地、插件关闭。Skill 在首次遇到 PDF、DOCX、XLSX 或 PPTX 时，会在 `~/.open-insight/parsers/` 自动准备固定版本的隔离 MarkItDown runtime；普通用户不需要手工 `pip install`。扫描/图片型 PDF 的实验性模型 OCR 仍必须由用户配置专用 `OPEN_INSIGHT_OCR_*` 并在编译时传入 `--parser markitdown --ocr llm`；Skill 只在这个显式动作之后自动补齐隔离的 `markitdown-ocr` 插件。它不会自动选择 Azure、模型或 endpoint，外部地址可能接收页面图像。OCR 不属于 CLI/MCP 只读访问过程，CLI/MCP 读取已生成的 `.insight` 时仍不调用模型、不读取 OCR key。
 
-相对路径以用户运行命令时所在目录为基准。`cli.mjs` 只开放读取、校验和 MCP 服务，不开放写入 base package 的命令。首次编译或读取发现 Core 缺失时，wrapper 会自动调用相邻的 bootstrap，准备固定 tag `v0.1.0-alpha.3`、校验实际 commit 并使用版本化安装目录；普通用户不需要单独执行准备命令。安装进度只写 `stderr`，不污染 JSON stdout。显式 `bootstrap.mjs` 只用于排障，`OPEN_INSIGHT_CORE_REF` 只用于测试其他 tag/branch，不能把移动 `main` 当作正式 Alpha。
+相对路径以用户运行命令时所在目录为基准。`cli.mjs` 只开放读取、校验和 MCP 服务，不开放写入 base package 的命令。首次编译或读取发现 Core 缺失时，wrapper 会自动调用相邻的 bootstrap，准备固定 tag `v0.1.0-alpha.5`、校验实际 commit 并使用版本化安装目录；普通用户不需要单独执行准备命令。安装进度只写 `stderr`，不污染 JSON stdout。显式 `bootstrap.mjs` 只用于排障，`OPEN_INSIGHT_CORE_REF` 只用于测试其他 tag/branch，不能把移动 `main` 当作正式 Alpha。
 
 Skill 编译报告的 `access_handoff.packages[]` 会给出可直接用于本机 Agent 的 `cli_summary`、`cli_search_template` 和 `mcp_stdio.command/args`。其中包含本机绝对路径，因此标记为 `local_only=true`、`publish_safe=false`，只用于本机配置，不进入 `.insight` base package。
+
+编译完成后，Agent 应调用 `context recommend-outputs`，把 Core 返回的三到四项
+建议改写为用户可选择的自然语言下一步。每项建议同时包含候选内容和格式
+（HTML、Word、PPT、问答或审计），其依据只能是来源类型和数量、长文、表格或
+结构化数据、parse diagnostics 与 `source_mode`。该预判断不调用模型、不猜行业
+或业务用途、不替用户开始生成，也不将建议或生成物写回 base package。
 
 ## MCP 等价访问
 
@@ -55,12 +74,17 @@ MCP stdio server 复用 CLI/Runtime 的同一套读取逻辑，不维护第二�
 - `open_insight_search_chunks`
 - `open_insight_resolve_source`
 - `open_insight_validate_context`
+- `open_insight_recommend_outputs`
 - `open_insight_material_contract`
 - `open_insight_context_handoff`
 - `open_insight_answer_context`
 - `open_insight_token_eval`
 
 MCP stdout 只能输出 JSON-RPC 协议帧。日志和诊断不能污染 stdout；MCP 不读取模型 key、不调用模型、不执行包内代码、不修改 base package。
+
+安装器同时交付官方 `open-insight-full-document-surface` Skill。它从同一
+`.insight` 生成独立的 reading / audit 长文 HTML；该渲染能力不属于 MCP
+事实访问层，也不会写回 base package。Word/PPT 当前仍由用户的 AI 客户端生成。
 
 ## 机器契约
 
@@ -91,7 +115,7 @@ CLI 的 `context search-chunks`、`context answer-context` 与 MCP 的 `open_ins
 
 ## 模型边界
 
-`material-contract`、`handoff` 和 `answer-context` 只负责为外部 LLM 组织 bounded、可追源的输入。模型调用属于外部消费者或后续 Proof 层，不属于本访问层。模型输出不得自动写回 `.insight` base package，也不得自动标记为 `verified`。
+`recommend-outputs`、`material-contract`、`handoff` 和 `answer-context` 只负责为外部 LLM 组织可解释、有界、可追源的输入或候选路线。`recommend-outputs` 是基于 package facts 的确定性预判断，不调用模型。模型调用属于外部消费者或后续 Proof 层，不属于本访问层。模型输出不得自动写回 `.insight` base package，也不得自动标记为 `verified`。
 
 ## 版本与派生包
 

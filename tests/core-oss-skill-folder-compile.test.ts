@@ -66,6 +66,18 @@ describe("Core OSS Skill folder compile", () => {
     expect(report.packages.every((item) => item.package_path.endsWith(".insight"))).toBe(true);
     expect(report.packages.every((item) => !item.package_path.endsWith(".zip"))).toBe(true);
     expect(report.packages.every((item) => item.query_index_available === true)).toBe(true);
+    expect(report.packages.every((item) => item.output_recommendations.length >= 3)).toBe(true);
+    expect(report.packages[0].output_recommendations.map((item) => item.recommendation_id)).toEqual(
+      expect.arrayContaining([
+        "source_collection_overview",
+        "long_form_reading_restore",
+        "structured_data_analysis",
+        "formal_document_report",
+        "presentation_deck",
+        "source_backed_question_answering"
+      ])
+    );
+    expect(report.packages[0].proactive_user_message_cn.join("\n")).toContain("根据内容结构");
     expect(report.safety).toMatchObject({
       model_invoked: false,
       base_package_mutation: false,
@@ -123,6 +135,7 @@ describe("Core OSS Skill folder compile", () => {
       source_count: 2,
       package_path: expect.stringMatching(/default-mode\.source-bundled\.insight$/u)
     });
+    expect(report.packages[0].output_recommendations.map((item) => item.recommendation_id)).toContain("evidence_quality_audit");
   });
 
   it("passes parser controls, reuses the analysis cache, and keeps progress off JSON stdout", async () => {
@@ -187,6 +200,10 @@ describe("Core OSS Skill folder compile", () => {
     expect(secondReport).toMatchObject(firstReport);
     expect(second.stderr).toContain("cache_hit");
     expect(first.stderr).toContain("[open-insight compile]");
+    expect(first.stderr).toContain("阶段 1/4");
+    expect(first.stderr).toContain("阶段 2/4");
+    expect(first.stderr).toContain("阶段 3/4");
+    expect(first.stderr).toContain("阶段 4/4");
     expect(first.stdout).not.toContain(cacheDir);
     expect(second.stdout).not.toContain(cacheDir);
     expect(firstReport.packages[0].parser_timeout_ms).toBe(5000);
@@ -232,7 +249,10 @@ describe("Core OSS Skill folder compile", () => {
       { cwd: consumerRoot, encoding: "utf8", env }
     );
     expect(compile.status, `${compile.stdout}\n${compile.stderr}`).toBe(0);
+    expect(compile.stderr).toContain("阶段 1/4");
+    expect(compile.stderr).toContain("阶段 4/4");
     const compileReport = JSON.parse(compile.stdout);
+    expect(compileReport.progress_enabled).toBe(true);
     const packagePath = path.join("output", "first-run.source-light.insight");
     expect(compileReport.packages[0].package_path).toBe("output/first-run.source-light.insight");
     expect(compileReport.access_handoff).toMatchObject({
@@ -246,6 +266,7 @@ describe("Core OSS Skill folder compile", () => {
           package_path: "output/first-run.source-light.insight",
           cli_summary: { command: process.execPath },
           cli_search_template: { command: process.execPath },
+          cli_recommend_outputs: { command: process.execPath },
           mcp_stdio: { command: process.execPath }
         }
       ]
@@ -311,5 +332,5 @@ describe("Core OSS Skill folder compile", () => {
     });
     expect(blockedWrite.status).toBe(1);
     expect(blockedWrite.stderr).toContain("只开放只读命令");
-  });
+  }, 120_000);
 });

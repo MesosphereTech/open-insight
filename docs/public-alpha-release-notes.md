@@ -1,4 +1,4 @@
-# Open Insight v0.1.0-alpha.4 Candidate Notes
+# Open Insight v0.1.0-alpha.5 Candidate Notes
 
 Status: **public silent-test Alpha**. The clean Core repository is public for a
 3-7 day installation and first-use test; no launch promotion has started.
@@ -24,10 +24,10 @@ npx @mesospheretech/open-insight
 The branded installer pins the generic Skill installer and fixed-tag Skill
 source internally. The first compile or read prepares the pinned Core
 automatically. Manual bootstrap remains available for troubleshooting, not as
-a normal user step. `@mesospheretech/open-insight@0.1.0-alpha.4` and its
-equivalent short package `open-insight-cli@0.1.0-alpha.4` are published on the
+a normal user step. `@mesospheretech/open-insight@0.1.0-alpha.5` and its
+equivalent short package `open-insight-cli@0.1.0-alpha.5` are published on the
 public npm registry. Both the `latest` and `next` distribution tags resolve to
-`alpha.4`.
+`alpha.5`.
 The pinned Core repository is public. Anonymous installation, fixed-Core
 bootstrap, one-file compilation, validation, and compact retrieval passed from
 a clean directory containing Chinese characters and spaces on 2026-08-08.
@@ -43,6 +43,13 @@ a clean directory containing Chinese characters and spaces on 2026-08-08.
   maps, digests, and a rebuildable query index;
 - additive XLSX formula evidence without formula execution or recalculation;
 - shared read-only Runtime behavior for CLI and MCP;
+- one-command installation of both the Context Skill and the official long-form
+  HTML Surface Skill;
+- automatic generic read-only MCP registration for detected WorkBuddy clients,
+  with explicit absolute package paths required at tool-call time;
+- observable folder-compilation progress and package-aware output suggestions;
+- deterministic reading and audit HTML, with optional local Codex or Gemini
+  layout refinement outside the base package;
 - validation, conformance, machine contracts, and honest degraded or
   unsupported results;
 - a fully synthetic English public demo and reviewed launch media.

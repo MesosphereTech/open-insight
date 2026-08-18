@@ -42,6 +42,11 @@ required by their verified build graph:
 - `apps/cli`
 - MCP source in `apps/cli/src/mcpServer.ts` and its verified Runtime dependencies
 - `skills/open-insight-context`
+- `skills/open-insight-full-document-surface`, the official external HTML
+  consumer installed together with the Context Skill; its outputs stay outside
+  the base package and its tests use only public synthetic fixtures
+- `scripts/lib/traceability-reference-validation.mjs`, required by the official
+  Surface reference gate
 - `distribution/open-insight`, the small branded npm bootstrap package behind
   the public `npx open-insight-cli` command and its thin
   `@mesospheretech/open-insight` scoped alias
@@ -73,7 +78,9 @@ These paths and content classes **must not be exported**:
 - historical product, UI prototype, and pre-Core Beta documentation or tests
 - legacy prose specifications and third-party UI guides whose primary contract
   predates the Core OSS context path
-- commercial Surface templates or customer-specific presentation assets
+- commercial Surface templates or customer-specific presentation assets; this
+  does not exclude the generic official long-form HTML Surface distributed with
+  the open-source Skill toolchain
 - `.env`, `.env.*`, credentials, API keys, and bearer tokens
 - `output/`, `tmp/`, `unpacked/`, screenshots, browser profiles, and local logs
 - customer materials, private source documents, and private Proof inputs

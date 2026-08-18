@@ -20,7 +20,7 @@ Chinese documentation: [README.zh-CN.md](README.zh-CN.md)
   />
 </p>
 
-Install the complete Open Insight Context Skill:
+Install the Context Skill and official long-form HTML Surface Skill:
 
 ```bash
 npx @mesospheretech/open-insight
@@ -80,8 +80,8 @@ collection, not the demo scenario.
 
 ## What a user actually does
 
-1. Install the `open-insight-context` Skill in an AI coding or agent
-   environment.
+1. Install Open Insight once; the Context and official HTML Surface Skills are
+   delivered together.
 2. Ask the agent to package local files or a folder into one `.insight` file.
 3. Ask that agent, or another compatible AI, to use the `.insight` file for a
    question or deliverable.
@@ -130,9 +130,9 @@ See the [Core product contract](docs/core-oss-prd.md) and
 
 ## 10-minute quickstart
 
-### 1. Install the Open Insight Context Skill
+### 1. Install Open Insight
 
-Install the complete `open-insight-context` Skill with one command:
+Install both official Skills with one command:
 
 ```bash
 npx @mesospheretech/open-insight
@@ -142,12 +142,18 @@ The shorter equivalent command is `npx open-insight-cli`. Both packages use the
 same pinned installer implementation.
 
 The branded installer pins both the generic Skill installer and the immutable
-`v0.1.0-alpha.4` Skill source, so users do not need a GitHub tree URL. Choose
-your supported AI client when prompted. The `open-insight-cli` npm launcher is
+`v0.1.0-alpha.5` Skill source, so users do not need a GitHub tree URL or a
+second confirmation. When WorkBuddy is detected, the same install registers
+the generic read-only Open Insight MCP. The `open-insight-cli` npm launcher is
 public, and the Core repository is now in a public silent-test window.
 Installation no longer requires repository credentials. Anonymous installation,
 fixed-Core bootstrap, one-file compilation, validation, and compact retrieval
 were verified from a clean directory on 2026-08-08.
+
+The installed HTML Surface can turn a `.insight` into a polished long-form
+reading or audit HTML outside the base package. Word and presentation output
+currently use the selected AI client's document tools with Open Insight as the
+traceable evidence input.
 
 ### 2. Compile a folder into one file
 

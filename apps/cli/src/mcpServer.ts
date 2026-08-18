@@ -9,6 +9,7 @@ import {
   listContextObjects,
   listContextSources,
   queryContextTable,
+  recommendContextOutputs,
   resolveContextSource,
   summarizeContextPackage,
   type ContextObjectKind,
@@ -41,6 +42,7 @@ const CONTEXT_ANSWER_CONTEXT_SCHEMA_VERSION = "open-insight.answer-context.v0.1"
 const CONTEXT_SOURCE_RESOLVE_SCHEMA_VERSION = "open-insight.context-source-resolve.v0.1" as const;
 const CONTEXT_DIAGNOSTICS_SCHEMA_VERSION = "open-insight.context-diagnostics.v0.1" as const;
 const CONTEXT_USER_MATERIAL_CONTRACT_SCHEMA_VERSION = "open-insight.user-material-contract.v0.1" as const;
+const CONTEXT_OUTPUT_RECOMMENDATIONS_SCHEMA_VERSION = "open-insight.context-output-recommendations.v0.1" as const;
 const MCP_VALIDATE_CONTEXT_SCHEMA_VERSION = "open-insight.mcp-validate-context.v0.1" as const;
 const MCP_TOKEN_BUDGET_SCHEMA = { type: "number", minimum: 500, maximum: 12000 } as const;
 
@@ -66,18 +68,19 @@ interface JsonRpcRequest {
 }
 
 interface McpServerContext {
-  packageRoot: string;
+  packageRoot?: string;
   schemaRoot: string;
 }
 
 export interface ServeMcpStdioOptions {
-  packageRoot: string;
+  packageRoot?: string;
+  unbound?: boolean;
   schemaRoot: string;
   input?: Readable;
   output?: Writable;
 }
 
-const toolDefinitions = [
+const boundToolDefinitions = [
   {
     name: "open_insight_context_summary",
     description: "读取 .insight 上下文信息库摘要，不调用模型、不执行包内代码。",
@@ -179,6 +182,15 @@ const toolDefinitions = [
     }
   },
   {
+    name: "open_insight_recommend_outputs",
+    description: "根据包内来源、长文、表格和解析状态推荐适合生成的内容与格式；只读、不调用模型、不写回包。",
+    inputSchema: {
+      type: "object",
+      properties: {},
+      additionalProperties: false
+    }
+  },
+  {
     name: "open_insight_context_handoff",
     description: "一次性返回外部 LLM 生成用户材料所需的 compact context、token eval、material contract 和安全边界。",
     inputSchema: {
@@ -239,10 +251,29 @@ const toolDefinitions = [
   }
 ];
 
+export function getToolDefinitions(unbound: boolean) {
+  if (!unbound) return boundToolDefinitions;
+  return boundToolDefinitions.map((definition) => ({
+    ...definition,
+    description: `${definition.description} 通用模式下必须显式传入 package_path。`,
+    inputSchema: {
+      ...definition.inputSchema,
+      properties: {
+        package_path: {
+          type: "string",
+          description: "要读取的本地 .insight 单文件或已解包目录的绝对路径。"
+        },
+        ...definition.inputSchema.properties
+      },
+      required: Array.from(new Set(["package_path", ...(definition.inputSchema.required ?? [])]))
+    }
+  }));
+}
+
 export function parseMcpServeArgs(args: string[], invocationRoot: string): ServeMcpStdioOptions {
   const [command, subcommand] = args;
   if (command !== "mcp" || subcommand !== "serve") {
-    throw new Error("用法：insight mcp serve <package-file-or-dir> --transport stdio");
+    throw new Error("用法：insight mcp serve <package-file-or-dir> --transport stdio，或 insight mcp serve --unbound --transport stdio");
   }
 
   const transport = getFlagValue(args, "--transport") ?? "stdio";
@@ -250,13 +281,18 @@ export function parseMcpServeArgs(args: string[], invocationRoot: string): Serve
     throw new Error("当前 MCP v0 只支持 --transport stdio");
   }
 
+  const unbound = args.includes("--unbound");
   const packageArg = getMcpPackageArg(args);
-  if (!packageArg) {
-    throw new Error("用法：insight mcp serve <package-file-or-dir> --transport stdio");
+  if (!packageArg && !unbound) {
+    throw new Error("用法：insight mcp serve <package-file-or-dir> --transport stdio，或 insight mcp serve --unbound --transport stdio");
+  }
+  if (packageArg && unbound) {
+    throw new Error("--unbound 不能同时指定固定 .insight 路径。通用模式由每次工具调用传入 package_path。");
   }
 
   return {
-    packageRoot: path.resolve(invocationRoot, packageArg),
+    ...(packageArg ? { packageRoot: path.resolve(invocationRoot, packageArg) } : {}),
+    ...(unbound ? { unbound: true } : {}),
     schemaRoot: path.resolve(invocationRoot, "spec/schemas")
   };
 }
@@ -264,12 +300,8 @@ export function parseMcpServeArgs(args: string[], invocationRoot: string): Serve
 export async function serveMcpStdio(options: ServeMcpStdioOptions): Promise<void> {
   const input = options.input ?? process.stdin;
   const output = options.output ?? process.stdout;
-  await withReadablePackageRoot(options.packageRoot, async (packageRoot) => {
-    const context: McpServerContext = {
-      packageRoot,
-      schemaRoot: options.schemaRoot
-    };
-
+  const run = async (packageRoot?: string) => {
+    const context: McpServerContext = { ...(packageRoot ? { packageRoot } : {}), schemaRoot: options.schemaRoot };
     input.setEncoding("utf8");
     let buffer = "";
 
@@ -296,7 +328,16 @@ export async function serveMcpStdio(options: ServeMcpStdioOptions): Promise<void
         output.write(`${JSON.stringify(response)}\n`);
       }
     }
-  });
+  };
+
+  if (options.unbound) {
+    await run();
+    return;
+  }
+  if (!options.packageRoot) {
+    throw new Error("MCP 缺少 .insight 路径；通用服务请使用 --unbound。");
+  }
+  await withReadablePackageRoot(options.packageRoot, run);
 }
 
 async function withReadablePackageRoot<T>(packageInput: string, action: (readablePackageRoot: string) => Promise<T>): Promise<T> {
@@ -366,7 +407,7 @@ async function handleMcpRequest(request: JsonRpcRequest, context: McpServerConte
 
   if (request.method === "tools/list") {
     return {
-      tools: toolDefinitions
+      tools: getToolDefinitions(!context.packageRoot)
     };
   }
 
@@ -392,6 +433,31 @@ async function handleMcpRequest(request: JsonRpcRequest, context: McpServerConte
 }
 
 async function callTool(toolName: string, args: JsonObject, context: McpServerContext): Promise<JsonObject> {
+  if (context.packageRoot) {
+    if (args.package_path !== undefined) {
+      throw new Error("当前 MCP 已绑定固定 .insight，工具调用不能覆盖 package_path。");
+    }
+    return callToolForPackage(toolName, args, {
+      packageRoot: context.packageRoot,
+      schemaRoot: context.schemaRoot
+    });
+  }
+
+  const packagePath = asString(
+    args.package_path,
+    `${toolName} 缺少 package_path。通用 MCP 不会扫描磁盘，请显式指定要读取的 .insight。`
+  );
+  if (!path.isAbsolute(packagePath)) {
+    throw new Error(`${toolName} 的 package_path 必须是绝对路径，避免不同客户端工作目录导致误读。`);
+  }
+  const scopedArgs = { ...args };
+  delete scopedArgs.package_path;
+  return withReadablePackageRoot(packagePath, (packageRoot) =>
+    callToolForPackage(toolName, scopedArgs, { packageRoot, schemaRoot: context.schemaRoot })
+  );
+}
+
+async function callToolForPackage(toolName: string, args: JsonObject, context: Required<McpServerContext>): Promise<JsonObject> {
   if (toolName === "open_insight_context_summary") {
     return {
       schema_version: CONTEXT_SUMMARY_SCHEMA_VERSION,
@@ -469,6 +535,13 @@ async function callTool(toolName: string, args: JsonObject, context: McpServerCo
     return {
       schema_version: CONTEXT_USER_MATERIAL_CONTRACT_SCHEMA_VERSION,
       ...(await buildContextUserMaterialContract(context.packageRoot))
+    };
+  }
+
+  if (toolName === "open_insight_recommend_outputs") {
+    return {
+      schema_version: CONTEXT_OUTPUT_RECOMMENDATIONS_SCHEMA_VERSION,
+      ...(await recommendContextOutputs(context.packageRoot))
     };
   }
 
